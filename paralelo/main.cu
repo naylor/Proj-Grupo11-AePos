@@ -70,9 +70,6 @@ int main(int argc, char** argv) {
     int blocks = (imageParams->linha/numMaxLinhas)+1;
     PPMBlock* block = (PPMBlock *)malloc(sizeof(PPMBlock) * blocks);
 
-    printf("\nMemoria Assincrona: %d\n", blocks);
-
-
     // FAZ A DIVISAO DE LINHAS
     // POR BLOCOS
     int i=0;
