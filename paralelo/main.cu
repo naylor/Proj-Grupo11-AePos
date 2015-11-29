@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
 
     printf("\nCarga de Trabalho: %d", numMaxLinhas);
     printf("\nMemoria Compartilhada: %s", ct->sharedMemory==1?"Ativado":"Desativado");
-    printf("\nMemoria Assincrona: %s", ct->async==1?"Ativado":"Desativado");
+    printf("\nMemoria Assincrona: %s\n", ct->async==1?"Ativado":"Desativado");
 
     timer* tempo; // RELOGIO
     tempo = start_timer(); // INICIA O RELOGIO
@@ -69,6 +69,9 @@ int main(int argc, char** argv) {
     // DE BLOCOS QUE SERAO GERADOS
     int blocks = 1;
     PPMBlock* block = (PPMBlock *)malloc(sizeof(PPMBlock) * ceil(imageParams->linha/numMaxLinhas)+1);
+
+    printf("\nMemoria Assincrona: %s\n", ceil(imageParams->linha/numMaxLinhas)+1);
+
 
     // FAZ A DIVISAO DE LINHAS
     // POR BLOCOS
