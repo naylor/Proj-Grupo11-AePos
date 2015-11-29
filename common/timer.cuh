@@ -12,7 +12,8 @@ typedef struct {
     double timeval_diff, timespec_diff, clock_diff_time;
 } timer;
 
-timer* start_timer();
+void start_timer(timer* t);
+void show_timer(timer* t);
 void stop_timer(timer* t);
 
 #endif

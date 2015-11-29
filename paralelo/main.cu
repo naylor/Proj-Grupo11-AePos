@@ -55,8 +55,11 @@ int main(int argc, char** argv) {
     printf("\nMemoria Compartilhada: %s", ct->sharedMemory==1?"Ativado":"Desativado");
     printf("\nMemoria Assincrona: %s\n", ct->async==1?"Ativado":"Desativado");
 
-    timer* tempo; // RELOGIO
-    tempo = start_timer(); // INICIA O RELOGIO
+    timer* tempoC; // RELOGIO APLICACAO
+    timer* tempoR; // RELOGIO LEITURA
+    timer* tempoS; // RELOGIO SMOOTH
+    timer* tempoW; // RELOGIO WRITE
+
 
     //GRAVA O CABECALHO DA
     //IMAGEM DE SAIDA
@@ -84,7 +87,6 @@ int main(int argc, char** argv) {
         i++;
     }
 
-
     // CRIA UM THREAD PARA CADA DIVISAO
     #pragma omp parallel num_threads(i) shared(i, ct, imageParams, block, t, streamSmooth)
     {
@@ -92,30 +94,40 @@ int main(int argc, char** argv) {
         for(int t=0; t<i; t++) {
             // FAZ A LEITURA DA PARTE DA IMAGEM
             // NO DISCO
+            start_timer(tempoR); //INICIA O RELOGIO
             getImageBlocks(ct, imageParams, block,  t);
+            stop_timer(tempoR);
 
             // APLICA O SMOOTH
+            start_timer(tempoS); //INICIA O RELOGIO
             applySmooth(ct, imageParams, block, t, streamSmooth);
+            stop_timer(tempoS);
 
             // FAZ A GRAVACAO
+            start_timer(tempoW); //INICIA O RELOGIO
             writePPMPixels(ct, imageParams, block, t);
+            stop_timer(tempoW);
         }
         #pragma omp barrier
     }
+
+    //PARA O RELOGIO
+    show_timer(tempoR);
+    show_timer(tempoS);
+    show_timer(tempoW);
+    stop_timer(tempoC);
+    show_timer(tempoC);
 
     // DESTROI O CUDA STREAM
     if (ct->async == 1)
         for (int i = 0; i < numMaxLinhas; ++i)
             cudaStreamDestroy(streamSmooth[i]);
 
-    //PARA O RELOGIO
-    stop_timer(tempo);
-
     //ESCREVE NO ARQUIVO DE LOGS
     //writeFile(ct, imageParams, tempo);
 
     // LIMPAR A MEMORIA
-    cleanMemory(imageParams, block, tempo, ct);
+    cleanMemory(imageParams, block, tempoC, ct);
 
     return 0;
 
