@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
         numMaxLinhas = ct->numMaxLinhas;
 
     if (numMaxLinhas > r) {
-        printf("\nCarga de trabalho nao permitido. Maximo para essa imagem: %d", r);
+        printf("\nCarga de trabalho nao permitido. Maximo para essa imagem: %d\n", r);
         exit(0);
     }
 
