@@ -61,7 +61,7 @@ int main(int argc, char** argv) {
     timer* tempoM = (timer* )malloc(sizeof(timer)); // RELOGIO MemCpy
     timer* tempoW = (timer* )malloc(sizeof(timer)); // RELOGIO WRITE
 
-    start_timer(tempoC); // INICIA O RELOGIO DA APLICACAO
+    start_timer(tempoA); // INICIA O RELOGIO DA APLICACAO
 
     //GRAVA O CABECALHO DA
     //IMAGEM DE SAIDA
