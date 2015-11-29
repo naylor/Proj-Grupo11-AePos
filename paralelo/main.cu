@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
     printf("\nMemoria Compartilhada: %s", ct->sharedMemory==1?"Ativado":"Desativado");
     printf("\nMemoria Assincrona: %s\n", ct->async==1?"Ativado":"Desativado");
 
-    timer* tempoC = (timer* )malloc(sizeof(timer)); // RELOGIO APLICACAO
+    timer* tempoA = (timer* )malloc(sizeof(timer)); // RELOGIO APLICACAO
     timer* tempoR = (timer* )malloc(sizeof(timer)); // RELOGIO LEITURA
     timer* tempoS = (timer* )malloc(sizeof(timer)); // RELOGIO SMOOTH
     timer* tempoM = (timer* )malloc(sizeof(timer)); // RELOGIO MemCpy
@@ -115,8 +115,8 @@ int main(int argc, char** argv) {
     show_timer(tempoS, "SMOOTH");
     show_timer(tempoM, "MEMCPY");
     show_timer(tempoW, "WRITE");
-    stop_timer(tempoC);
-    show_timer(tempoC, "CUDA");
+    stop_timer(tempoA);
+    show_timer(tempoA, "TOTAL");
 
     // DESTROI O CUDA STREAM
     if (ct->async == 1)
