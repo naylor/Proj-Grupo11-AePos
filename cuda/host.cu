@@ -3,6 +3,7 @@
 #include <unistd.h>
 
 #include "host.cuh"
+#include "kernel.cuh"
 
 #define BLOCK_DIM 32
 

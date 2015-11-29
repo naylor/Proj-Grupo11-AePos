@@ -1,7 +1,7 @@
 #ifndef KERNEL_H_INCLUDED
 #define KERNEL_H_INCLUDED
 
-#include "../common/imagem.cuh"
+#include "../common/funcao.cuh"
 
 __global__ void smoothPGM_noSH(PGMPixel* kInput, PGMPixel* kOutput, int coluna, int linha, int li, int lf);
 __global__ void smoothPPM_noSH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, int linha, int li, int lf);

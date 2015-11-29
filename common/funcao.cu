@@ -6,6 +6,7 @@
 #include <unistd.h>
 
 #include "funcao.cuh"
+#include "imagem.cuh"
 
 // FUNCAO PARA RETORNAR UM VALOR DENTRO
 // DE UM RANGE
@@ -73,7 +74,7 @@ int in_array(char *array[], int size, char *lookfor)
 }
 
 // LIMPAR MEMORIA
-void cleanMemory(PPMImageParams* imageParams, PPMBlock* bloco, initialParams* ct) {
+void cleanMemory(initialParams* ct, PPMImageParams* imageParams, PPMBlock* bloco) {
     if(imageParams != NULL)
         free(imageParams);
     if(bloco != NULL)
@@ -83,7 +84,7 @@ void cleanMemory(PPMImageParams* imageParams, PPMBlock* bloco, initialParams* ct
 }
 
 // FUNCAO PARA GERAR O ARQUIVO DE LOG
-void writeFile(PPMImageParams* imageParams, initialParams* ct, timer* tr, timer* tw, timer* ta) {
+void writeFile(initialParams* ct, PPMImageParams* imageParams, timer* tr, timer* tw, timer* ta) {
 
 	//filename
 	char filename[200];

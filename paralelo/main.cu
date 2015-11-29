@@ -3,6 +3,10 @@
 #include <unistd.h>
 
 #include "main.cuh"
+#include "../common/imagem.cuh"
+#include "../common/timer.cuh"
+#include "../common/funcao.cuh"
+#include "../cuda/host.cuh"
 
 int main(int argc, char** argv) {
 
@@ -120,10 +124,13 @@ int main(int argc, char** argv) {
             cudaStreamDestroy(streamSmooth[i]);
 
     //ESCREVE NO ARQUIVO DE LOGS
-    //writeFile(ct, imageParams, tempoR, tempoW, tempoA);
+    writeFile(ct, imageParams, tempoR, tempoW, tempoA);
 
     // LIMPAR A MEMORIA
-    //cleanMemory(ct, imageParams, block);
+    cleanMemory(ct, imageParams, block);
+    free(tempoR);
+    free(tempoW);
+    free(tempoA);
 
     return 0;
 

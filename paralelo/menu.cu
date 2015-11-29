@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../common/funcao.cuh"
 #include "menu.cuh"
 
 void menu(initialParams* ct, int argc, char **argv){
