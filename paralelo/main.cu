@@ -46,10 +46,10 @@ int main(int argc, char** argv) {
     if (ct->numMaxLinhas > 0)
         numMaxLinhas = ct->numMaxLinhas;
 
-    if (numMaxLinhas > r) {
-        printf("\nCarga de trabalho nao permitido. Maximo para essa imagem: %d\n", r);
-        exit(0);
-    }
+    //if (numMaxLinhas > r) {
+    //    printf("\nCarga de trabalho nao permitido. Maximo para essa imagem: %d\n", r);
+    //    exit(0);
+    //}
 
     printf("\nCarga de Trabalho: %d", numMaxLinhas);
     printf("\nMemoria Compartilhada: %s", ct->sharedMemory==1?"Ativado":"Desativado");
