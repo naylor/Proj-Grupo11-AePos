@@ -14,8 +14,8 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
     // DEFINE A QUANTIDADE DE LINHAS DO
     // BLOCO LIDO E DO BLOCO QUE SERA
     // GRAVADO EM DISCO
-    int linhasIn = block[numBlock].linhasIn;
-    int linhasOut = block[numBlock].linhasOut;
+    float linhasIn = block[numBlock].linhasIn;
+    float linhasOut = block[numBlock].linhasOut;
 
     // SE A IMAGEM FOR PPM
     if (strcmp(imageParams->tipo, "P6")==0) {
