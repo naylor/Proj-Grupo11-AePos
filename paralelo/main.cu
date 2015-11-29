@@ -127,7 +127,7 @@ int main(int argc, char** argv) {
     //writeFile(ct, imageParams, tempo);
 
     // LIMPAR A MEMORIA
-    cleanMemory(imageParams, block, tempoC, ct);
+    cleanMemory(imageParams, block, tempoA, ct);
 
     return 0;
 
