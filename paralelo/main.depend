@@ -1,0 +1,89 @@
+# depslib dependency file v1.0
+1448106219 source:/media/naylor/DADOS/Faculdades/Doutorado - USP/Disciplinas/SSC5795 - Programação Concorrente/Trabalhos/Trabalho 3/naylor/paralelo/main.c
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+	"../common/imagem.h"
+	"../cuda/kernel.cuh"
+
+1447943512 /media/naylor/DADOS/Faculdades/Doutorado - USP/Disciplinas/SSC5795 - Programação Concorrente/Trabalhos/Trabalho 3/naylor/common/imagem.h
+
+1448284643 /media/naylor/DADOS/Faculdades/Doutorado - USP/Disciplinas/SSC5795 - Programação Concorrente/Trabalhos/Trabalho 3/naylor/cuda/kernel.cuh
+	"../common/imagem.cuh"
+
+1448106181 source:/media/naylor/DADOS/Faculdades/Doutorado - USP/Disciplinas/SSC5795 - Programação Concorrente/Trabalhos/Trabalho 3/naylor/common/imagem.c
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<string.h>
+	<unistd.h>
+	"imagem.h"
+
+1448109835 source:/media/naylor/DADOS/Faculdades/Doutorado - USP/Disciplinas/SSC5795 - Programação Concorrente/Trabalhos/Trabalho 3/naylor/cuda/kernel.cu
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+	"kernel.cuh"
+	"../common/imagem.cuh"
+
+1448242543 /media/naylor/DADOS/Faculdades/Doutorado - USP/Disciplinas/SSC5795 - Programação Concorrente/Trabalhos/Trabalho 3/naylor/common/imagem.cuh
+	"funcao.cuh"
+
+1448279506 source:/media/naylor/DADOS/Faculdades/Doutorado - USP/Disciplinas/SSC5795 - Programação Concorrente/Trabalhos/Trabalho 3/naylor/common/imagem.cu
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<string.h>
+	<unistd.h>
+	"imagem.cuh"
+
+1448318306 source:/media/naylor/DADOS/Faculdades/Doutorado - USP/Disciplinas/SSC5795 - Programação Concorrente/Trabalhos/Trabalho 3/naylor/paralelo/main.cu
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+	"../cuda/kernel.cuh"
+	"../common/imagem.cuh"
+	"../common/funcao.cuh"
+	"../common/timer.cuh"
+	"menu.cuh"
+
+1448109835 /media/naylor/DADOS/Faculdades/Doutorado - USP/Disciplinas/SSC5795 - Programação Concorrente/Trabalhos/Trabalho 3/naylor/cuda/kernel.cu
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+	"kernel.cuh"
+	"../common/imagem.cuh"
+
+1448145175 source:/media/naylor/DADOS/Faculdades/Doutorado - USP/Disciplinas/SSC5795 - Programação Concorrente/Trabalhos/Trabalho 3/naylor/common/funcao.cu
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<dirent.h>
+	<string.h>
+	<unistd.h>
+	"funcao.cuh"
+	"imagem.cuh"
+
+1448143243 /media/naylor/DADOS/Faculdades/Doutorado - USP/Disciplinas/SSC5795 - Programação Concorrente/Trabalhos/Trabalho 3/naylor/common/funcao.cuh
+	"imagem.cuh"
+	"timer.cuh"
+
+1448141124 /media/naylor/DADOS/Faculdades/Doutorado - USP/Disciplinas/SSC5795 - Programação Concorrente/Trabalhos/Trabalho 3/naylor/common/timer.cuh
+	<time.h>
+	<sys/time.h>
+	<stdbool.h>
+
+1448141546 source:/media/naylor/DADOS/Faculdades/Doutorado - USP/Disciplinas/SSC5795 - Programação Concorrente/Trabalhos/Trabalho 3/naylor/common/timer.cu
+	<stdlib.h>
+	<stdio.h>
+	"timer.cuh"
+
+1448117645 source:/media/naylor/DADOS/Faculdades/Doutorado - USP/Disciplinas/SSC5795 - Programação Concorrente/Trabalhos/Trabalho 3/naylor/paralelo/menu.cu
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"menu.cuh"
+
+1448117574 /media/naylor/DADOS/Faculdades/Doutorado - USP/Disciplinas/SSC5795 - Programação Concorrente/Trabalhos/Trabalho 3/naylor/paralelo/menu.cuh
+	"../common/funcao.cuh"
+

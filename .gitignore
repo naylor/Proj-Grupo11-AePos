@@ -1,0 +1,13 @@
+*.PGM
+*.PPM
+smooth
+*.o
+*.ppm
+*.pgm
+!model.ppm
+!model.pgm
+images_out/*.ppm
+images_out/*.PPM
+images_out/*.PGM
+images_out/*.pgm
+resultados/*.txt
