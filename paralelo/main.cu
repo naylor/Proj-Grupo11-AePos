@@ -112,10 +112,10 @@ int main(int argc, char** argv) {
     }
 
     //PARA O RELOGIO
-    show_timer(tempoR);
-    show_timer(tempoS);
-    show_timer(tempoW);
-    stop_timer(tempoC);
+    show_timer(tempoR, "READ");
+    show_timer(tempoS, "SMOOTH");
+    show_timer(tempoW, "WRITE");
+    stop_timer(tempoC, "APLICACAO");
     show_timer(tempoC);
 
     // DESTROI O CUDA STREAM
