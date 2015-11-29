@@ -24,8 +24,8 @@ typedef struct {
 
 unsigned int rand_interval(unsigned int min, unsigned int max);
 void getCommandLineOptions(initialParams* ct, files* f, int argc, char *argv[]);
-void cleanMemory(PPMImageParams* imageParams, PPMBlock* bloco, timer* t, initialParams* ct);
-void writeFile(initialParams* ct, PPMImageParams* imageParams, timer* t);
+void cleanMemory(initialParams* ct, PPMImageParams* imageParams, PPMBlock* bloco);
+void writeFile(initialParams* ct, PPMImageParams* imageParams, timer* tr, timer* tw, timer* ta);
 files* listDir(const char *dir);
 int in_array(char *array[], int size, char *lookfor);
 

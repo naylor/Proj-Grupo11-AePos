@@ -5,7 +5,6 @@
 #include <string.h>
 #include <unistd.h>
 #include "funcao.cuh"
-#include "imagem.cuh"
 
 // FUNCAO PARA RETORNAR UM VALOR DENTRO
 // DE UM RANGE
@@ -72,20 +71,10 @@ int in_array(char *array[], int size, char *lookfor)
     return 0;
 }
 
-// LIMPAR MEMORIA
-void cleanMemory(PPMImageParams* imageParams, PPMBlock* bloco, timer* t, initialParams* ct) {
-    if(imageParams != NULL)
-        free(imageParams);
-    if(bloco != NULL)
-        free(bloco);
-    if(ct != NULL)
-        free(ct);
-    if(t != NULL)
-        free(t);
-}
+
 
 // FUNCAO PARA GERAR O ARQUIVO DE LOG
-void writeFile(PPMImageParams* imageParams, timer* t, initialParams* ct) {
+void writeFile(PPMImageParams* imageParams, initialParams* ct, timer* tr, timer* tw, timer* ta) {
 
 	//filename
 	char filename[200];
@@ -97,15 +86,16 @@ void writeFile(PPMImageParams* imageParams, timer* t, initialParams* ct) {
         printf("\nNao foi possivel gravar o arquivo no diretorio dos resultados: %s\n\n", filename);
 		ct->erro = -101;
 	}
-	fprintf(f, "%c\t%i\t%s\t%s\t%ix%i\t%.2f\n",
+	fprintf(f, "%c\t%i\t%s\t%s\t%ix%i\t%.2f\t%.2f\t%.2f\n",
         ct->typeAlg,
 		ct->numMaxLinhas,
         ct->async?"yes":"no",
         ct->sharedMemory?"yes":"no",
         imageParams->linha,
         imageParams->coluna,
-		//datetime,
-		t->timeval_diff);
+		tr->timeval_diff,
+		tw->timeval_diff,
+		ta->timeval_diff);
 
 	fclose(f);
 }
