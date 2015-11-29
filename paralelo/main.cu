@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
     int blocks = 1;
     PPMBlock* block = (PPMBlock *)malloc(sizeof(PPMBlock) * ceil(imageParams->linha/numMaxLinhas)+1);
 
-    printf("\nMemoria Assincrona: %s\n", ceil(imageParams->linha/numMaxLinhas)+1);
+    printf("\nMemoria Assincrona: %c\n", ceil(imageParams->linha/numMaxLinhas)+1);
 
 
     // FAZ A DIVISAO DE LINHAS
