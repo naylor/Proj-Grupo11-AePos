@@ -58,6 +58,7 @@ int main(int argc, char** argv) {
     timer* tempoC = (timer* )malloc(sizeof(timer)); // RELOGIO APLICACAO
     timer* tempoR = (timer* )malloc(sizeof(timer)); // RELOGIO LEITURA
     timer* tempoS = (timer* )malloc(sizeof(timer)); // RELOGIO SMOOTH
+    timer* tempoM = (timer* )malloc(sizeof(timer)); // RELOGIO MemCpy
     timer* tempoW = (timer* )malloc(sizeof(timer)); // RELOGIO WRITE
 
     start_timer(tempoC); // INICIA O RELOGIO DA APLICACAO
@@ -99,10 +100,7 @@ int main(int argc, char** argv) {
             getImageBlocks(ct, imageParams, block,  t);
             stop_timer(tempoR);
 
-            // APLICA O SMOOTH
-            start_timer(tempoS); //INICIA O RELOGIO
-            applySmooth(ct, imageParams, block, t, streamSmooth);
-            stop_timer(tempoS);
+            applySmooth(ct, imageParams, block, t, streamSmooth, tempoS, tempoM);
 
             // FAZ A GRAVACAO
             start_timer(tempoW); //INICIA O RELOGIO
