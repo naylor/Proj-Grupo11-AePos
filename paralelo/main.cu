@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
 
     // ALOCA MEMORIA PARA A QUANTIDADE
     // DE BLOCOS QUE SERAO GERADOS
-    int blocks = imageParams->linha/numMaxLinhas)+1;
+    int blocks = (imageParams->linha/numMaxLinhas)+1;
     PPMBlock* block = (PPMBlock *)malloc(sizeof(PPMBlock) * blocks);
 
     printf("\nMemoria Assincrona: %d\n", blocks);
