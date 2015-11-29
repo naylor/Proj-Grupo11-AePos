@@ -18,7 +18,7 @@ void stop_timer(timer* t) {
 void show_timer(timer* t, const char* tipo) {
 	//timeval diff
 	t->timeval_diff = t->timeval_diff_s * 1000.0; // sec to ms
-	t->timeval_diff = t->timeval_diff_u / 1000.0; // us to ms
+	t->timeval_diff += t->timeval_diff_u / 1000.0; // us to ms
 
     printf("[time %s] %.2fms\n", tipo, t->timeval_diff);
 }
