@@ -113,6 +113,7 @@ int main(int argc, char** argv) {
     //PARA O RELOGIO
     show_timer(tempoR, "READ");
     show_timer(tempoS, "SMOOTH");
+    show_timer(tempoM, "MEMCPY");
     show_timer(tempoW, "WRITE");
     stop_timer(tempoC);
     show_timer(tempoC, "CUDA");
