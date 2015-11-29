@@ -43,8 +43,8 @@ int main(int argc, char** argv) {
 
     // SE FOI DEFINIDA A QUANTIDADE DE LINHAS
     // PELO MENU, ALTERAR AQUI
-    int r = 11000000/imageParams->coluna;
-    numMaxLinhas = r;
+    //int r = 11000000/imageParams->coluna;
+    //numMaxLinhas = r;
 
     // DEFINA A CARGA MAXIMA DELINHAS
     if (ct->numMaxLinhas > 0)
