@@ -29,7 +29,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
 
         // DEFINICAO DO TAMANHO PADRAO
         // DO BLOCO
-        dim3 blockDims(256,1,1);
+        dim3 blockDims(1024,1,1);
         // SE A OPCAO DE SHARED MEMORY
         // FOR ATIVADA, DEFINE O TAMANHO
         // DO BLOCO PARA 32
