@@ -60,6 +60,7 @@ int main(int argc, char** argv) {
     timer* tempoS = (timer* )malloc(sizeof(timer)); // RELOGIO SMOOTH
     timer* tempoW = (timer* )malloc(sizeof(timer)); // RELOGIO WRITE
 
+    show_timer(tempoR, "CUDA"); // INICIA O RELOGIO DA APLICACAO
 
     //GRAVA O CABECALHO DA
     //IMAGEM DE SAIDA
@@ -94,9 +95,9 @@ int main(int argc, char** argv) {
         for(int t=0; t<i; t++) {
             // FAZ A LEITURA DA PARTE DA IMAGEM
             // NO DISCO
-            //start_timer(tempoR); //INICIA O RELOGIO
+            start_timer(tempoR); //INICIA O RELOGIO
             getImageBlocks(ct, imageParams, block,  t);
-            //stop_timer(tempoR);
+            stop_timer(tempoR);
 
             // APLICA O SMOOTH
             start_timer(tempoS); //INICIA O RELOGIO
@@ -104,19 +105,19 @@ int main(int argc, char** argv) {
             stop_timer(tempoS);
 
             // FAZ A GRAVACAO
-            //start_timer(tempoW); //INICIA O RELOGIO
+            start_timer(tempoW); //INICIA O RELOGIO
             writePPMPixels(ct, imageParams, block, t);
-            //stop_timer(tempoW);
+            stop_timer(tempoW);
         }
         #pragma omp barrier
     }
 
     //PARA O RELOGIO
-    //show_timer(tempoR, "READ");
+    show_timer(tempoR, "READ");
     show_timer(tempoS, "SMOOTH");
-    //show_timer(tempoW, "WRITE");
-    //stop_timer(tempoC, "APLICACAO");
-    //show_timer(tempoC);
+    show_timer(tempoW, "WRITE");
+    stop_timer(tempoC);
+    show_timer(tempoC, "CUDA");
 
     // DESTROI O CUDA STREAM
     if (ct->async == 1)
