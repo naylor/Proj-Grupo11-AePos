@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
     timer* tempoS = (timer* )malloc(sizeof(timer)); // RELOGIO SMOOTH
     timer* tempoW = (timer* )malloc(sizeof(timer)); // RELOGIO WRITE
 
-    show_timer(tempoR, "CUDA"); // INICIA O RELOGIO DA APLICACAO
+    show_timer(tempoC, "CUDA"); // INICIA O RELOGIO DA APLICACAO
 
     //GRAVA O CABECALHO DA
     //IMAGEM DE SAIDA
