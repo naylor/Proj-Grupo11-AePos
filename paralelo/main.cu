@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
     if (ct->numMaxLinhas > 0)
         numMaxLinhas = ct->numMaxLinhas;
     else {
-        int r = 14000000/imageParams->coluna;
+        int r = 11000000/imageParams->coluna;
         numMaxLinhas = r;
     }
 
