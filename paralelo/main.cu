@@ -93,9 +93,9 @@ int main(int argc, char** argv) {
     }
 
     // CRIA UM THREAD PARA CADA DIVISAO
-    #pragma omp parallel num_threads(i) shared(i, ct, imageParams, block, t, streamSmooth)
-    {
-        #pragma omp for
+    //#pragma omp parallel num_threads(i) shared(i, ct, imageParams, block, t, streamSmooth)
+    //{
+        //#pragma omp for
         for(int t=0; t<i; t++) {
             // FAZ A LEITURA DA PARTE DA IMAGEM
             // NO DISCO
@@ -109,8 +109,8 @@ int main(int argc, char** argv) {
             start_timer(tempoW); //INICIA O RELOGIO
             writePPMPixels(ct, imageParams, block, t);
             stop_timer(tempoW);
-        }
-        #pragma omp barrier
+        //}
+        //#pragma omp barrier
     }
 
     //PARA O RELOGIO
@@ -125,7 +125,7 @@ int main(int argc, char** argv) {
             cudaStreamDestroy(streamSmooth[i]);
 
     //ESCREVE NO ARQUIVO DE LOGS
-    //writeFile(ct, imageParams, tempo);
+    writeFile(ct, imageParams, tempo);
 
     // LIMPAR A MEMORIA
     cleanMemory(imageParams, block, tempoA, ct);
