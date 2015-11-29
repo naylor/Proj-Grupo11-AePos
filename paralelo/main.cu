@@ -2,12 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "../cuda/host.cuh"
-#include "../common/imagem.cuh"
-#include "../common/timer.cuh"
-
-#include "menu.cuh"
-#include "../common/funcao.cuh"
+#include "main.cuh"
 
 int main(int argc, char** argv) {
 
@@ -125,10 +120,10 @@ int main(int argc, char** argv) {
             cudaStreamDestroy(streamSmooth[i]);
 
     //ESCREVE NO ARQUIVO DE LOGS
-    writeFile(ct, imageParams, tempoR, tempoW, tempoA);
+    //writeFile(ct, imageParams, tempoR, tempoW, tempoA);
 
     // LIMPAR A MEMORIA
-    cleanMemory(ct, imageParams, block);
+    //cleanMemory(ct, imageParams, block);
 
     return 0;
 

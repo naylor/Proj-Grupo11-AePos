@@ -1,7 +1,6 @@
 #ifndef IMAGEM_H_INCLUDED
 #define IMAGEM_H_INCLUDED
 
-
 typedef struct {
     unsigned char red,green,blue;
 } PPMPixel;
@@ -30,7 +29,7 @@ typedef struct {
     char tipo[2];
 } PPMImageParams;
 
-#include "funcao.cuh"
+#include "../paralelo/menu.cuh"
 
 void getPPMParameters(initialParams* ct, PPMImageParams* imageParams);
 

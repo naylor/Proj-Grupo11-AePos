@@ -4,6 +4,7 @@
 #include <dirent.h>
 #include <string.h>
 #include <unistd.h>
+
 #include "funcao.cuh"
 
 // FUNCAO PARA RETORNAR UM VALOR DENTRO
@@ -71,7 +72,15 @@ int in_array(char *array[], int size, char *lookfor)
     return 0;
 }
 
-
+// LIMPAR MEMORIA
+void cleanMemory(PPMImageParams* imageParams, PPMBlock* bloco, initialParams* ct) {
+    if(imageParams != NULL)
+        free(imageParams);
+    if(bloco != NULL)
+        free(bloco);
+    if(ct != NULL)
+        free(ct);
+}
 
 // FUNCAO PARA GERAR O ARQUIVO DE LOG
 void writeFile(PPMImageParams* imageParams, initialParams* ct, timer* tr, timer* tw, timer* ta) {

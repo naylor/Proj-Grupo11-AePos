@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+
 #include "host.cuh"
-#include "kernel.cuh"
 
 #define BLOCK_DIM 32
 
