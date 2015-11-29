@@ -55,10 +55,10 @@ int main(int argc, char** argv) {
     printf("\nMemoria Compartilhada: %s", ct->sharedMemory==1?"Ativado":"Desativado");
     printf("\nMemoria Assincrona: %s\n", ct->async==1?"Ativado":"Desativado");
 
-    timer* tempoC; // RELOGIO APLICACAO
-    timer* tempoR; // RELOGIO LEITURA
-    timer* tempoS; // RELOGIO SMOOTH
-    timer* tempoW; // RELOGIO WRITE
+    timer* tempoC = (timer* )malloc(sizeof(timer)); // RELOGIO APLICACAO
+    timer* tempoR = (timer* )malloc(sizeof(timer)); // RELOGIO LEITURA
+    timer* tempoS = (timer* )malloc(sizeof(timer)); // RELOGIO SMOOTH
+    timer* tempoW = (timer* )malloc(sizeof(timer)); // RELOGIO WRITE
 
 
     //GRAVA O CABECALHO DA

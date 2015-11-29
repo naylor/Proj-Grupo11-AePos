@@ -4,9 +4,6 @@
 #include "timer.cuh"
 
 void start_timer(timer* t) {
-	if (t == NULL) {
-        t = (timer* )malloc(sizeof(timer));
-	}
     gettimeofday(&t->timeval_start, NULL);
     #ifdef __linux__
     #endif
