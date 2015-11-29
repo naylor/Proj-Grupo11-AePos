@@ -115,8 +115,8 @@ int main(int argc, char** argv) {
     show_timer(tempoR, "READ");
     show_timer(tempoS, "SMOOTH");
     show_timer(tempoW, "WRITE");
-    stop_timer(tempoC, "APLICACAO");
-    show_timer(tempoC);
+    //stop_timer(tempoC, "APLICACAO");
+    //show_timer(tempoC);
 
     // DESTROI O CUDA STREAM
     if (ct->async == 1)

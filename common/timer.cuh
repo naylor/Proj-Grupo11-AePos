@@ -13,7 +13,7 @@ typedef struct {
 } timer;
 
 void start_timer(timer* t);
-void show_timer(timer* t, char* tipo);
+void show_timer(timer* t, const char* tipo);
 void stop_timer(timer* t);
 
 #endif

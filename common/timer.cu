@@ -21,7 +21,7 @@ void stop_timer(timer* t) {
 	t->clock_diff_time += ((float) t->clock_diff / CLOCKS_PER_SEC * 1000.0);
 }
 
-void show_timer(timer* t, char* tipo) {
+void show_timer(timer* t, const char* tipo) {
     printf("[time %s] %.2fms\n", tipo, t->timeval_diff);
      printf("[clock %s] %d ticks -> %.2fms\n", tipo, (int) t->clock_diff, t->clock_diff_time);
 }
