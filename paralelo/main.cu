@@ -46,6 +46,10 @@ int main(int argc, char** argv) {
     // PELO MENU, ALTERAR AQUI
     if (ct->numMaxLinhas > 0)
         numMaxLinhas = ct->numMaxLinhas;
+    else {
+        int r = 14000000/imageParams->coluna;
+        numMaxLinhas = r;
+    }
 
     printf("\nCarga de Trabalho: %d", numMaxLinhas);
     printf("\nMemoria Compartilhada: %s", ct->sharedMemory==1?"Ativado":"Desativado");
