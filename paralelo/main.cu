@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
             stop_timer(tempoR);
 
             applySmooth(ct, imageParams, block, t, streamSmooth);
-            sleep(1);
+
             // FAZ A GRAVACAO
             start_timer(tempoW); //INICIA O RELOGIO
             writePPMPixels(ct, imageParams, block, t);
