@@ -8,8 +8,7 @@
 
 // FUNCAO __HOST__
 // DEFINICAO DOS PARAMETROS DE CHAMADA DO KERNEL
-void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block, int numBlock,
-                  cudaStream_t* streamSmooth, timer* tempoS, timer* tempoM) {
+void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block, int numBlock, cudaStream_t* streamSmooth) {
 
     // DEFINE A QUANTIDADE DE LINHAS DO
     // BLOCO LIDO E DO BLOCO QUE SERA
@@ -40,17 +39,14 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
 
         // EXECUTA O CUDAMEMCPY
         // ASSINCRONO OU SINCRONO
-        start_timer(tempoM); //INICIA O RELOGIO
         if (ct->async == 1)
             cudaMemcpyAsync( kInput, block[numBlock].ppmIn, linhasIn, cudaMemcpyHostToDevice, streamSmooth[numBlock] );
         else
             cudaMemcpy( kInput, block[numBlock].ppmIn, linhasIn, cudaMemcpyHostToDevice);
-        stop_timer(tempoM); //PARA O RELOGIO
 
         // EXECUTA A FUNCAO SMOOTH NO KERNEL
         // SE A OPCAO DE SHARED MEMORY FOR ATIVADA
         // CHAMA A FUNCAO smoothPPM_SH
-        start_timer(tempoS); //INICIA O RELOGIO
         if (ct->async == 1) {
             if (ct->sharedMemory == 1)
                 smoothPPM_SH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
@@ -62,17 +58,14 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
             else
                 smoothPPM_noSH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
         }
-        stop_timer(tempoS); //PARA O RELOGIO
 
         // RETORNA A IMAGEM PARA
         // A VARIAVEL DE SAIDA PARA
         // GRAVACAO NO ARQUIVO
-        start_timer(tempoM); //INICIA O RELOGIO
         if (ct->async == 1)
             cudaMemcpyAsync(block[numBlock].ppmOut, kOutput, linhasOut, cudaMemcpyDeviceToHost, streamSmooth[numBlock] );
         else
             cudaMemcpy(block[numBlock].ppmOut, kOutput, linhasOut, cudaMemcpyDeviceToHost );
-        stop_timer(tempoM); //PARA O RELOGIO
 
         // LIBERA A MEMORIA
         cudaFree(kInput);
@@ -102,17 +95,14 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
 
         // EXECUTA O CUDAMEMCPY
         // ASSINCRONO OU SINCRONO
-        start_timer(tempoM); //INICIA O RELOGIO
         if (ct->async == 1)
             cudaMemcpyAsync( kInput, block[numBlock].pgmIn, linhasIn, cudaMemcpyHostToDevice, streamSmooth[numBlock] );
         else
             cudaMemcpy( kInput, block[numBlock].pgmIn, linhasIn, cudaMemcpyHostToDevice);
-        stop_timer(tempoM); //PARA O RELOGIO
 
         // EXECUTA A FUNCAO SMOOTH NO KERNEL
         // SE A OPCAO DE SHARED MEMORY FOR ATIVADA
         // CHAMA A FUNCAO smoothPPM_SH
-        start_timer(tempoS); //INICIA O RELOGIO
         if (ct->async == 1) {
             if (ct->sharedMemory == 1)
                 smoothPGM_SH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
@@ -124,17 +114,14 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
             else
                 smoothPGM_noSH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
         }
-        stop_timer(tempoS); //PARA O RELOGIO
 
         // RETORNA A IMAGEM PARA
         // A VARIAVEL DE SAIDA PARA
         // GRAVACAO NO ARQUIVO
-        start_timer(tempoM); //INICIA O RELOGIO
         if (ct->async == 1)
             cudaMemcpyAsync(block[numBlock].pgmOut, kOutput, linhasOut, cudaMemcpyDeviceToHost, streamSmooth[numBlock] );
         else
             cudaMemcpy(block[numBlock].pgmOut, kOutput, linhasOut, cudaMemcpyDeviceToHost );
-        stop_timer(tempoM); //PARA O RELOGIO
 
         // LIBERA A MEMORIA
         cudaFree(kInput);
