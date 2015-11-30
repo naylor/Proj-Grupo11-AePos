@@ -133,7 +133,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
     cudaDeviceSynchronize();
 
     if (ct->debug >= 1)
-        printf("Apply Smooth[%d][%s] - L[%d] li:%d, lf:%d\n",
-               numBlock, imageParams->tipo, linhasIn, block[numBlock].li, block[numBlock].lf);
+        printf("Apply Smooth[%d][%s] - li:%d, lf:%d\n",
+               numBlock, imageParams->tipo, block[numBlock].li, block[numBlock].lf);
 
 }
