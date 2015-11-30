@@ -8,44 +8,6 @@
 #define BLOCK_DIM 32
 #define BLOCK_DEFAULT 512
 
-#define CUDA_CALL(cuda_function, ...)  { \
-    cudaError_t status = cuda_function(__VA_ARGS__); \
-    cudaEnsureSuccess(status, #cuda_function, false, __FILE__, __LINE__); \
-}
-
-bool cudaEnsureSuccess(cudaError_t status, const char* status_context_description,
-        bool die_on_error, bool debug_prints, const char* filename, unsigned line_number) {
-    if (status_context_description == NULL)
-        status_context_description = "";
-    if (status == cudaSuccess) {
-    #if REPORT_CUDA_SUCCESS
-         cerr <<  "Succeeded: " << status_context_description << std::endl << std::flush;
-    #endif
-        return true;
-    }
-    const char* errorString = cudaGetErrorString(status);
-    printf("CUDA Error: ");
-    if (status_context_description != NULL) {
-        printf("%s", status_context_description);
-    }
-    if (errorString != NULL) {
-        printf("%s", errorString);
-    }
-    else {
-        printf("%s", status);
-    }
-    if (filename != NULL) {
-
-        printf("%s %s",filename , line_number);
-    }
-
-    if(die_on_error) {
-        exit(EXIT_FAILURE);
-            // ... or cerr << "FATAL ERROR" << etc. etc.
-    }
-    return false;
-}
-
 // FUNCAO __HOST__
 // DEFINICAO DOS PARAMETROS DE CHAMADA DO KERNEL
 void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block, int numBlock, cudaStream_t* streamSmooth) {
@@ -152,7 +114,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
             if (ct->sharedMemory == 1)
                 smoothPGM_SH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
             else
-                CUDA_CALL ( smoothPGM_noSH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf) );
+                smoothPGM_noSH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
         }
 
         // RETORNA A IMAGEM PARA
