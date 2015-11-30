@@ -49,12 +49,15 @@
 			<Option link="1" />
 		</Unit>
 		<Unit filename="../common/timer.cuh" />
+		<Unit filename="../cuda/host.cu" />
+		<Unit filename="../cuda/host.cuh" />
 		<Unit filename="../cuda/kernel.cu" />
 		<Unit filename="../cuda/kernel.cuh" />
 		<Unit filename="main.cu">
 			<Option compile="1" />
 			<Option link="1" />
 		</Unit>
+		<Unit filename="main.cuh" />
 		<Unit filename="menu.cu">
 			<Option compile="1" />
 			<Option link="1" />
