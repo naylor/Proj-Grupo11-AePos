@@ -5,7 +5,7 @@
 #include "host.cuh"
 #include "kernel.cuh"
 
-#define BLOCK_DIM 32
+#define BLOCK_DIM 64
 #define BLOCK_DEFAULT 512
 
 // FUNCAO __HOST__
@@ -92,7 +92,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // FOR ATIVADA, DEFINE O TAMANHO
         // DO BLOCO PARA 32
         if (ct->sharedMemory == 1)
-            blockDims.x = 64;
+            blockDims.x = BLOCK_DIM;
         dim3 gridDims((unsigned int) ceil((double)(linhasIn/blockDims.x)), 1, 1 );
 
         // EXECUTA O CUDAMEMCPY
