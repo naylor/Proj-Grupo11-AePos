@@ -92,7 +92,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // FOR ATIVADA, DEFINE O TAMANHO
         // DO BLOCO PARA 32
         if (ct->sharedMemory == 1)
-            blockDims.x = BLOCK_DIM-4;
+            blockDims.x = BLOCK_DIM;
         dim3 gridDims((unsigned int) ceil((double)(linhasIn/blockDims.x)), 1, 1 );
 
         // EXECUTA O CUDAMEMCPY
