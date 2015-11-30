@@ -30,8 +30,8 @@ __global__ void smoothPGM_SH(PGMPixel* kInput, PGMPixel* kOutput, int coluna, in
     unsigned int shX = threadIdx.x + 2;
 
     // POPULANDO O BLOCO 20X20 (4X4 BORDA)
-    for(int l = -2; l <= BLOCK_DIM+2; ++l) {
-        for(int c = -2; c <= BLOCK_DIM+2; ++c) {
+    for(int l = -2; l <= BLOCK_DIM-2; ++l) {
+        for(int c = -2; c <= BLOCK_DIM-2; ++c) {
             const int p = (l+offset)+c;
             sharedMem[shY+l][shX+c] = kInput[p];
         }
