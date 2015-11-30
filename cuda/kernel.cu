@@ -65,8 +65,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     int l = (offset-c)/coluna; // LINHA
 
     // TIRANDO A BORDA DO PROCESSAMENTO
-    if ( l > lf-li || c < 2 || c > coluna-2 || (li == 0 && l < 2) || (lf==linha-1 && l > (lf-li)-2) )
-        return;
+
 
     // DEFININDO THREAD+2
     // PARA COMECAR EM -2 (BORDA)
