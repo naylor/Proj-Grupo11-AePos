@@ -4,7 +4,7 @@
 
 #include "kernel.cuh"
 
-#define BLOCK_DIM 28
+#define BLOCK_DIM 32
 
 // FUNCAO PARA APLICAR SMOOTH
 // COM SHARED MEMORY EM IMAGENS PGM
