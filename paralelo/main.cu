@@ -43,17 +43,17 @@ int main(int argc, char** argv) {
 
     // SE FOI DEFINIDA A QUANTIDADE DE LINHAS
     // PELO MENU, ALTERAR AQUI
-    //int r = 11000000/imageParams->coluna;
-    //numMaxLinhas = r;
+    int r = 11000000/imageParams->coluna;
+    numMaxLinhas = r;
 
     // DEFINA A CARGA MAXIMA DELINHAS
     if (ct->numMaxLinhas > 0)
         numMaxLinhas = ct->numMaxLinhas;
 
-    //if (numMaxLinhas > r) {
-    //    printf("\nCarga de trabalho nao permitido. Maximo para essa imagem: %d\n", r);
-    //    exit(0);
-    //}
+    if (numMaxLinhas > r) {
+        printf("\nCarga de trabalho nao permitido. Maximo para essa imagem: %d\n", r);
+        exit(0);
+    }
 
     printf("\nCarga de Trabalho: %d", numMaxLinhas);
     printf("\nMemoria Compartilhada: %s", ct->sharedMemory==1?"Ativado":"Desativado");
