@@ -36,7 +36,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // FOR ATIVADA, DEFINE O TAMANHO
         // DO BLOCO PARA 32
         if (ct->sharedMemory == 1)
-            blockDims.x = BLOCK_DIM+4;
+            blockDims.x = BLOCK_DIM;
         dim3 gridDims((unsigned int) ceil((double)(linhasIn/blockDims.x)), 1, 1 );
 
         // EXECUTA O CUDAMEMCPY
@@ -51,7 +51,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // CHAMA A FUNCAO smoothPPM_SH
         if (ct->async == 1) {
             if (ct->sharedMemory == 1)
-                smoothPPM_SH<<<256, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
+                smoothPPM_SH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
             else
                 smoothPPM_noSH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
         } else {
@@ -92,7 +92,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // FOR ATIVADA, DEFINE O TAMANHO
         // DO BLOCO PARA 32
         if (ct->sharedMemory == 1)
-            blockDims.x = BLOCK_DIM;
+            blockDims.x = BLOCK_DIM-4;
         dim3 gridDims((unsigned int) ceil((double)(linhasIn/blockDims.x)), 1, 1 );
 
         // EXECUTA O CUDAMEMCPY
