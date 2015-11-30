@@ -24,9 +24,9 @@ bool cudaEnsureSuccess(cudaError_t status, const char* status_context_descriptio
         return true;
     }
     const char* errorString = cudaGetErrorString(status);
-    cerr << "CUDA Error: ";
+    printf("CUDA Error: ");
     if (status_context_description != NULL) {
-        cerr << status_context_description << ": ";
+        printf("%s", status_context_description);
     }
     if (errorString != NULL) {
         cerr << errorString;
