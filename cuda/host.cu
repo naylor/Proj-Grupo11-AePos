@@ -29,17 +29,16 @@ bool cudaEnsureSuccess(cudaError_t status, const char* status_context_descriptio
         printf("%s", status_context_description);
     }
     if (errorString != NULL) {
-        cerr << errorString;
+        printf("%s", errorString);
     }
     else {
-        cerr << "(Unknown CUDA status code " << status << ")";
+        printf("%s", status);
     }
     if (filename != NULL) {
 
-        cerr << filename << ":" << line_number;
+        printf("%s %s",filename , line_number);
     }
 
-    cerr << std::endl << std::flush;
     if(die_on_error) {
         exit(EXIT_FAILURE);
             // ... or cerr << "FATAL ERROR" << etc. etc.
