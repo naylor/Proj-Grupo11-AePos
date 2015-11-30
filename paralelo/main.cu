@@ -50,10 +50,10 @@ int main(int argc, char** argv) {
     if (ct->numMaxLinhas > 0)
         numMaxLinhas = ct->numMaxLinhas;
 
-    if (numMaxLinhas > r) {
-        printf("\nCarga de trabalho nao permitido. Maximo para essa imagem: %d\n", r);
-        exit(0);
-    }
+    //if (numMaxLinhas > r) {
+    //    printf("\nCarga de trabalho nao permitido. Maximo para essa imagem: %d\n", r);
+    //    exit(0);
+    //}
 
     int blocks = (imageParams->linha/numMaxLinhas)+1;
 
