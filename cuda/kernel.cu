@@ -13,7 +13,7 @@ __global__ void smoothPGM_SH(PGMPixel* kInput, PGMPixel* kOutput, int coluna, in
     // DEFINICAO DO TAMANHO ODO BLOCO PARA
     // MEMORIA COMPARTILHADA
     // RESERVA TECNICA DE 4X4 PARA BORDA
-    __shared__ PGMPixel sharedMem[BLOCK_DIM+4][BLOCK_DIM+4];
+    __shared__ PGMPixel sharedMem[BLOCK_DIM][BLOCK_DIM];
 
     // OFFSET DA COLUNA*LINHA
     unsigned int offset = blockIdx.x * BLOCK_DIM + threadIdx.x;
