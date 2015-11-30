@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include <shrUtils.h>
+
 #include "host.cuh"
 #include "kernel.cuh"
 
