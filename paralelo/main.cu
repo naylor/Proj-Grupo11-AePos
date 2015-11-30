@@ -55,6 +55,8 @@ int main(int argc, char** argv) {
         exit(0);
     }
 
+    int blocks = (imageParams->linha/numMaxLinhas)+1;
+
     printf("\nCarga de Trabalho: %d", numMaxLinhas);
     printf("\nMemoria Compartilhada: %s", ct->sharedMemory==1?"Ativado":"Desativado");
     printf("\nMemoria Assincrona: %s\n", ct->async==1?"Ativado":"Desativado");
@@ -70,15 +72,14 @@ int main(int argc, char** argv) {
     writePPMHeader(ct, imageParams);
 
     // CRIA OS CUDA STREAM PARA ASYNC
-    cudaStream_t streamSmooth[numMaxLinhas];
+    cudaStream_t streamSmooth[blocks];
 
     if (ct->async == 1)
-        for (int i = 0; i < numMaxLinhas; ++i)
+        for (int i = 0; i < blocks; ++i)
             cudaStreamCreate(&streamSmooth[i]);
 
     // ALOCA MEMORIA PARA A QUANTIDADE
     // DE BLOCOS QUE SERAO GERADOS
-    int blocks = (imageParams->linha/numMaxLinhas)+1;
     PPMBlock* block = (PPMBlock *)malloc(sizeof(PPMBlock) * blocks);
 
     // FAZ A DIVISAO DE LINHAS
@@ -120,7 +121,7 @@ int main(int argc, char** argv) {
 
     // DESTROI O CUDA STREAM
     if (ct->async == 1)
-        for (int i = 0; i < numMaxLinhas; ++i)
+        for (int i = 0; i < blocks; ++i)
             cudaStreamDestroy(streamSmooth[i]);
 
     //ESCREVE NO ARQUIVO DE LOGS
