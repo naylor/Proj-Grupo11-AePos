@@ -92,25 +92,19 @@ int main(int argc, char** argv) {
         i++;
     }
 
-    // CRIA UM THREAD PARA CADA DIVISAO
-    #pragma omp parallel num_threads(i) shared(i, ct, imageParams, block, t, streamSmooth)
-    {
-        #pragma omp for
-        for(int t=0; t<i; t++) {
-            // FAZ A LEITURA DA PARTE DA IMAGEM
-            // NO DISCO
-            start_timer(tempoR); //INICIA O RELOGIO
-            getImageBlocks(ct, imageParams, block,  t);
-            stop_timer(tempoR);
+    for(int t=0; t<i; t++) {
+        // FAZ A LEITURA DA PARTE DA IMAGEM
+        // NO DISCO
+        start_timer(tempoR); //INICIA O RELOGIO
+        getImageBlocks(ct, imageParams, block,  t);
+        stop_timer(tempoR);
 
-            applySmooth(ct, imageParams, block, t, streamSmooth);
+        applySmooth(ct, imageParams, block, t, streamSmooth);
 
-            // FAZ A GRAVACAO
-            start_timer(tempoW); //INICIA O RELOGIO
-            writePPMPixels(ct, imageParams, block, t);
-            stop_timer(tempoW);
-        }
-        #pragma omp barrier
+        // FAZ A GRAVACAO
+        start_timer(tempoW); //INICIA O RELOGIO
+        writePPMPixels(ct, imageParams, block, t);
+        stop_timer(tempoW);
     }
 
     //PARA O RELOGIO
