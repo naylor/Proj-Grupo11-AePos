@@ -51,7 +51,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // CHAMA A FUNCAO smoothPPM_SH
         if (ct->async == 1) {
             if (ct->sharedMemory == 1)
-                smoothPPM_SH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
+                smoothPPM_SH<<<2147483647, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
             else
                 smoothPPM_noSH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
         } else {
@@ -107,7 +107,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // CHAMA A FUNCAO smoothPPM_SH
         if (ct->async == 1) {
             if (ct->sharedMemory == 1)
-                smoothPGM_SH<<<36, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
+                smoothPGM_SH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
             else
                 smoothPGM_noSH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
         } else {
