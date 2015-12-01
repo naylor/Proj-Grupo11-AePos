@@ -37,10 +37,14 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // DO BLOCO PARA 32
         if (ct->sharedMemory == 1)
             blockDims.x = BLOCK_DIM;
-        dim3 gridDims((block[numBlock].linhasIn/blockDims.x+100), 1, 1 );
+        dim3 gridDims((block[numBlock].linhasIn/blockDims.x+64), 1, 1 );
 
         // EXECUTA O CUDAMEMCPY
         // ASSINCRONO OU SINCRONO
+        if (ct->async == 1)
+            cudaMemcpyAsync( kInput, block[numBlock].ppmIn, block[numBlock].linhasIn, cudaMemcpyHostToDevice, streamSmooth[numBlock] );
+        else
+            cudaMemcpy( kInput, block[numBlock].ppmIn, block[numBlock].linhasIn, cudaMemcpyHostToDevice);
 
         // EXECUTA A FUNCAO SMOOTH NO KERNEL
         // SE A OPCAO DE SHARED MEMORY FOR ATIVADA
@@ -49,18 +53,22 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
             if (ct->sharedMemory == 1)
                 smoothPPM_SH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
             else
-                smoothPPM_noSH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>();
+                smoothPPM_noSH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
         } else {
             if (ct->sharedMemory == 1)
                 smoothPPM_SH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
             else
-                smoothPPM_noSH<<<(976563,1,1),(1024,1,1)>>>();
+                smoothPPM_noSH<<<(976563,1,1),(1024,1,1)>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
         }
         printf("Apply Smooth[%d][%s] - li:%d, lf:%d %d\n",
                numBlock, imageParams->tipo, block[numBlock].linhasIn, block[numBlock].lf, gridDims.x);
         // RETORNA A IMAGEM PARA
         // A VARIAVEL DE SAIDA PARA
         // GRAVACAO NO ARQUIVO
+        if (ct->async == 1)
+            cudaMemcpyAsync(block[numBlock].ppmOut, kOutput, block[numBlock].linhasOut, cudaMemcpyDeviceToHost, streamSmooth[numBlock] );
+        else
+            cudaMemcpy(block[numBlock].ppmOut, kOutput, block[numBlock].linhasOut, cudaMemcpyDeviceToHost );
 
         // LIBERA A MEMORIA
         cudaFree(kInput);
