@@ -15,8 +15,8 @@ typedef struct {
     PGMPixel *pgmIn;
     PGMPixel *pgmOut;
     int li, lf;
-    double linhasIn;
-    double linhasOut;
+    int linhasIn;
+    int linhasOut;
 } PPMBlock;
 
 typedef struct {
