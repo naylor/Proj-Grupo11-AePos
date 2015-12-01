@@ -99,7 +99,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // DO BLOCO PARA 32
         if (ct->sharedMemory == 1)
             blockDims.x = BLOCK_DIM;
-        dim3 gridDims((unsigned int) ceil((double)(linhasIn/blockDims.x)), 1, 1 );
+        dim3 gridDims((unsigned int) ceil((double)(linhasIn/blockDims.x))+1, 1, 1 );
 
         // EXECUTA O CUDAMEMCPY
         // ASSINCRONO OU SINCRONO
@@ -120,7 +120,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
             if (ct->sharedMemory == 1)
                 smoothPGM_SH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
             else
-                smoothPGM_noSH<<<1024, 1024>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
+                smoothPGM_noSH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
         }
 
         // RETORNA A IMAGEM PARA
