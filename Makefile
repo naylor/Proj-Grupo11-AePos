@@ -7,17 +7,17 @@ SRCCUDA=cuda/
 SRCCOM=common/
 SRCPAR=paralelo/
 cuda=PPMcuda
-LIB=-L/usr/lib/x86_64-linux-gnu/libcudart.so -lcudart
+LIB=-arch=sm_30
 
 SOURCES=$(wildcard $(SRCPAR)*.cu $(SRCCOM)*.cu $(SRCCUDA)*.cu)
 
 all: $(cuda)
 
 $(cuda): $(SOURCES:.cu=.o)
-	nvcc -o $@ $^
+	nvcc -o $@ $^ $(LIB)
 
 %.o: %.cu 
-	nvcc -c $< -o $@ 
+	nvcc -c $< -o $@ $(LIB)
 
 clean:
 	rm -f $(SRCCUDA)*.o $(SRCCOM)*.o $(SRCPAR)*.o
