@@ -43,17 +43,9 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // EXECUTA A FUNCAO SMOOTH NO KERNEL
         // SE A OPCAO DE SHARED MEMORY FOR ATIVADA
         // CHAMA A FUNCAO smoothPPM_SH
-        if (ct->async == 1) {
-            if (ct->sharedMemory == 1)
-                smoothPPM_SH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
-            else
-                smoothPPM_noSH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>();
-        } else {
-            if (ct->sharedMemory == 1)
-                smoothPPM_SH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
-            else
+
                 smoothPPM_noSH<<<18339, 512>>>();
-        }
+
         printf("Apply Smooth[%d][%s] - li:%d, lf:%d %d\n",
                numBlock, imageParams->tipo, block[numBlock].linhasIn, block[numBlock].lf, gridDims.x);
         // RETORNA A IMAGEM PARA
