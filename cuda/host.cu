@@ -134,12 +134,13 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // LIBERA A MEMORIA
         cudaFree(kInput);
         cudaFree(kOutput);
+            if (ct->debug >= 1)
+        printf("Apply Smooth[%d][%s] - li:%d, lf:%d %d\n",
+               numBlock, imageParams->tipo, block[numBlock].li, block[numBlock].lf, ceil((double)(linhasIn/blockDims.x)));
     }
 
     cudaDeviceSynchronize();
 
-    if (ct->debug >= 1)
-        printf("Apply Smooth[%d][%s] - li:%d, lf:%d %d\n",
-               numBlock, imageParams->tipo, block[numBlock].li, block[numBlock].lf, ceil((double)(linhasIn/blockDims.x)));
+
 
 }
