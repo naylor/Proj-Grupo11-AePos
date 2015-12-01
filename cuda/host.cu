@@ -49,7 +49,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // SE A OPCAO DE SHARED MEMORY FOR ATIVADA
         // CHAMA A FUNCAO smoothPPM_SH
 
-                smoothPPM_noSH<<<gridDims, blockDims>>>();
+                smoothPPM_noSH<<<1, 16>>>();
 
                 cudaDeviceSynchronize();
                 printf("2 %s", cudaGetErrorName (cudaGetLastError()));
