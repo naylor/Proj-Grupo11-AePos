@@ -39,18 +39,36 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
             blockDims.x = BLOCK_DIM;
         dim3 gridDims((block[numBlock].linhasIn/blockDims.x+100), 1, 1 );
 
+        // EXECUTA O CUDAMEMCPY
+        // ASSINCRONO OU SINCRONO
+        if (ct->async == 1)
+            cudaMemcpyAsync( kInput, block[numBlock].ppmIn, block[numBlock].linhasIn, cudaMemcpyHostToDevice, streamSmooth[numBlock] );
+        else
+            cudaMemcpy( kInput, block[numBlock].ppmIn, block[numBlock].linhasIn, cudaMemcpyHostToDevice);
 
         // EXECUTA A FUNCAO SMOOTH NO KERNEL
         // SE A OPCAO DE SHARED MEMORY FOR ATIVADA
         // CHAMA A FUNCAO smoothPPM_SH
-
-                smoothPPM_noSH<<<1, 512>>>();
-
+        if (ct->async == 1) {
+            if (ct->sharedMemory == 1)
+                smoothPPM_SH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
+            else
+                smoothPPM_noSH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>();
+        } else {
+            if (ct->sharedMemory == 1)
+                smoothPPM_SH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
+            else
+                smoothPPM_noSH<<<150223, 1024>>>();
+        }
         printf("Apply Smooth[%d][%s] - li:%d, lf:%d %d\n",
                numBlock, imageParams->tipo, block[numBlock].linhasIn, block[numBlock].lf, gridDims.x);
         // RETORNA A IMAGEM PARA
         // A VARIAVEL DE SAIDA PARA
         // GRAVACAO NO ARQUIVO
+        if (ct->async == 1)
+            cudaMemcpyAsync(block[numBlock].ppmOut, kOutput, block[numBlock].linhasOut, cudaMemcpyDeviceToHost, streamSmooth[numBlock] );
+        else
+            cudaMemcpy(block[numBlock].ppmOut, kOutput, block[numBlock].linhasOut, cudaMemcpyDeviceToHost );
 
         // LIBERA A MEMORIA
         cudaFree(kInput);
