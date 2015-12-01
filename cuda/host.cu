@@ -6,7 +6,7 @@
 #include "kernel.cuh"
 
 #define BLOCK_DIM 32
-#define BLOCK_DEFAULT 512
+#define BLOCK_DEFAULT 1024
 
 // FUNCAO __HOST__
 // DEFINICAO DOS PARAMETROS DE CHAMADA DO KERNEL
