@@ -27,7 +27,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
 
         // ALOCAR MEMORIA
         cudaMalloc( (void**) &kInput, linhasIn);
-        cudaMalloc( (void**) &kOutput, linhasIn);
+        cudaMalloc( (void**) &kOutput, linhasOut);
 
         // DEFINICAO DO TAMANHO PADRAO
         // DO BLOCO
@@ -61,14 +61,14 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
                 smoothPPM_noSH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
                 printf("%s", cudaGetErrorName (cudaGetLastError()));
         }
-
+cudaDeviceSynchronize();
         // RETORNA A IMAGEM PARA
         // A VARIAVEL DE SAIDA PARA
         // GRAVACAO NO ARQUIVO
         if (ct->async == 1)
             cudaMemcpyAsync(block[numBlock].ppmOut, kOutput, linhasOut, cudaMemcpyDeviceToHost, streamSmooth[numBlock] );
         else
-            cudaMemcpy(block[numBlock].ppmIn, kOutput, linhasOut, cudaMemcpyDeviceToHost );
+            cudaMemcpy(block[numBlock].ppmOut, kOutput, linhasOut, cudaMemcpyDeviceToHost );
 
         // LIBERA A MEMORIA
         cudaFree(kInput);
