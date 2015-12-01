@@ -37,7 +37,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // DO BLOCO PARA 32
         if (ct->sharedMemory == 1)
             blockDims.x = BLOCK_DIM;
-        dim3 gridDims(976563,1,1);
+        dim3 gridDims(2147483647,1,1);
 
         // EXECUTA O CUDAMEMCPY
         // ASSINCRONO OU SINCRONO
