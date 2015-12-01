@@ -8,6 +8,7 @@
 #include "../common/funcao.cuh"
 #include "../cuda/host.cuh"
 
+
 int main(int argc, char** argv) {
 
     // ALOCA MEMORIA PARA OS PARAMETROS
