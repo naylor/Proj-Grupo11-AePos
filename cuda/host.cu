@@ -59,7 +59,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
                 smoothPPM_SH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
             else
                 smoothPPM_noSH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
-                checkCudaErrors(cudaDeviceSynchronize());
+                cudaDeviceSynchronize();
                 printf("%s", cudaGetErrorName (cudaGetLastError()));
         }
 
