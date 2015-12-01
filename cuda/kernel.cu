@@ -80,6 +80,8 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
             sharedMem[shY+l][shX+c].blue = 0;
         }
     }
+        printf(" Smooth %d-%d\n", shY+l, shY+x);
+
     // SINCRONIZANDO AS THREADS
     __syncthreads();
 
