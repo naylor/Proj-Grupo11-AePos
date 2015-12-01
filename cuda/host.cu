@@ -31,13 +31,13 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
 
         // DEFINICAO DO TAMANHO PADRAO
         // DO BLOCO
-        dim3 blockDims(BLOCK_DEFAULT,1,1);
+        dim3 blockDims(976563,1,1);
         // SE A OPCAO DE SHARED MEMORY
         // FOR ATIVADA, DEFINE O TAMANHO
         // DO BLOCO PARA 32
         if (ct->sharedMemory == 1)
-            blockDims.x = BLOCK_DIM;
-        dim3 gridDims((block[numBlock].linhasIn/blockDims.x+64), 1, 1 );
+            blockDims.x = (1024,1,1);
+        //dim3 gridDims((block[numBlock].linhasIn/blockDims.x+64), 1, 1 );
 
         // EXECUTA O CUDAMEMCPY
         // ASSINCRONO OU SINCRONO
@@ -58,7 +58,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
             if (ct->sharedMemory == 1)
                 smoothPPM_SH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
             else
-                smoothPPM_noSH<<<(976563,1,1),(1024,1,1)>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
+                smoothPPM_noSH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
         }
         printf("Apply Smooth[%d][%s] - li:%d, lf:%d %d\n",
                numBlock, imageParams->tipo, block[numBlock].linhasIn, block[numBlock].lf, gridDims.x);
