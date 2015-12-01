@@ -41,19 +41,28 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
 
         // EXECUTA O CUDAMEMCPY
         // ASSINCRONO OU SINCRONO
-
-            cudaMemcpy( kInput, kOutput, linhasIn, cudaMemcpyHostToDevice);
+        if (ct->async == 1)
+            cudaMemcpyAsync( kInput, block[numBlock].ppmIn, linhasIn, cudaMemcpyHostToDevice, streamSmooth[numBlock] );
+        else
+            cudaMemcpy( kInput, block[numBlock].ppmIn, linhasIn, cudaMemcpyHostToDevice);
             cudaDeviceSynchronize();
         printf("1 %s", cudaGetErrorName (cudaGetLastError()));
         // EXECUTA A FUNCAO SMOOTH NO KERNEL
         // SE A OPCAO DE SHARED MEMORY FOR ATIVADA
         // CHAMA A FUNCAO smoothPPM_SH
-
-                smoothPPM_noSH<<<1, 16>>>();
-
+        if (ct->async == 1) {
+            if (ct->sharedMemory == 1)
+                smoothPPM_SH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
+            else
+                smoothPPM_noSH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
+        } else {
+            if (ct->sharedMemory == 1)
+                smoothPPM_SH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
+            else
+                smoothPPM_noSH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
                 cudaDeviceSynchronize();
                 printf("2 %s", cudaGetErrorName (cudaGetLastError()));
-
+        }
 
         // RETORNA A IMAGEM PARA
         // A VARIAVEL DE SAIDA PARA
@@ -111,7 +120,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
             if (ct->sharedMemory == 1)
                 smoothPGM_SH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
             else
-                smoothPGM_noSH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
+                smoothPGM_noSH<<<1024, 1024>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
         }
 
         // RETORNA A IMAGEM PARA
