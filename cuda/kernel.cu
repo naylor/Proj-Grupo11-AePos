@@ -118,29 +118,6 @@ __global__ void smoothPPM_noSH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, 
     if ( l > lf-li || c < 2 || c > coluna-2 || (li == 0 && l < 2) || (lf==linha-1 && l > (lf-li)-2) )
         return;
 
-    // APLICANDO O SMOOTH NO BLOCO
-    int sumr = 0;
-    int sumb = 0;
-    int sumg = 0;
-
-    for(int l2 = -2; l2 <= 2; ++l2) {
-        for(int c2 = -2; c2 <= 2; ++c2) {
-            if((c+l2) >= 2 && (c+l2) < coluna-2 && (l+c2) >= -2 && (l+c2) <= lf-li+4) {
-                int p = (offset + 2*coluna)+(l2*coluna)+c2;
-                if (li == 0)
-                    p = offset + 2*coluna;
-                sumr += kInput[p].red;
-                sumg += kInput[p].green;
-                sumb += kInput[p].blue;
-            }
-        }
-    }
-
-    // GRAVANDO O RESULTADO
-    // NA IMAGEM DE SAIDA
-    kOutput[offset].red = sumr/25;
-    kOutput[offset].green = sumg/25;
-    kOutput[offset].blue = sumb/25;
 
 }
 
