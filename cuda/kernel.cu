@@ -60,7 +60,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     __shared__ PPMPixel sharedMem[BLOCK_DIM+4][BLOCK_DIM+4];
 
     // OFFSET DA COLUNA*LINHA
-    unsigned int offset = blockIdx.x *  BLOCK_DIM + threadIdx.x;
+    unsigned int offset = blockIdx.x * BLOCK_DIM + threadIdx.x;
     int c = offset % coluna; // COLUNA
     int l = (offset-c)/coluna; // LINHA
 
@@ -72,19 +72,35 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     // PARA COMECAR EM -2 (BORDA)
     unsigned int shY = threadIdx.y + 2;
     unsigned int shX = threadIdx.x + 2;
-        printf(" Smooth %d-%d\n", shY+l, shY+c);
 
     // POPULANDO O BLOCO 20X20 (4X4 BORDA)
     for(int l = -2; l <= BLOCK_DIM+2; ++l) {
         for(int c = -2; c <= BLOCK_DIM+2; ++c) {
             const int p = (l+offset)+c;
-            sharedMem[shY+l][shX+c].blue = 0;
+            sharedMem[shY+l][shX+c] = kInput[p];
         }
     }
-
     // SINCRONIZANDO AS THREADS
     __syncthreads();
 
+    // APLICANDO O SMOOTH NO BLOCO
+    float blue;
+    float green;
+    float red;
+
+    for(int i = -2; i <= 2; ++i) {
+        for(int j = -2; j <= 2; ++j) {
+            blue += sharedMem[shY+i][shX+j].blue;
+            green += sharedMem[shY+i][shX+j].green;
+            red += sharedMem[shY+i][shX+j].red;
+        }
+    }
+
+    // GRAVANDO O RESULTADO
+    // NA IMAGEM DE SAIDA
+    kOutput[offset].blue = blue/25;
+    kOutput[offset].green = green/25;
+    kOutput[offset].red = red/25;
 
 }
 
