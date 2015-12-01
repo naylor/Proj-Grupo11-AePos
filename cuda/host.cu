@@ -41,10 +41,8 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
 
         // EXECUTA O CUDAMEMCPY
         // ASSINCRONO OU SINCRONO
-        if (ct->async == 1)
-            cudaMemcpyAsync( kInput, kOutput, 0, cudaMemcpyHostToDevice, streamSmooth[numBlock] );
-        else
-            cudaMemcpy( kInput, block[numBlock].ppmIn, linhasIn, cudaMemcpyHostToDevice);
+
+            cudaMemcpy( kInput, kOutput, linhasIn, cudaMemcpyHostToDevice);
             cudaDeviceSynchronize();
         printf("1 %s", cudaGetErrorName (cudaGetLastError()));
         // EXECUTA A FUNCAO SMOOTH NO KERNEL
