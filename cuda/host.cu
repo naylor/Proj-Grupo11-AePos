@@ -99,7 +99,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // DO BLOCO PARA 32
         if (ct->sharedMemory == 1)
             blockDims.x = BLOCK_DIM;
-        dim3 gridDims((unsigned int) ceil((double)(linhasIn*300/blockDims.x))+1, 1, 1 );
+        dim3 gridDims((unsigned int) ceil((double)(linhasIn/blockDims.x)), 1, 1 );
 
         // EXECUTA O CUDAMEMCPY
         // ASSINCRONO OU SINCRONO
@@ -139,7 +139,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
     cudaDeviceSynchronize();
 
     if (ct->debug >= 1)
-        printf("Apply Smooth[%d][%s] - li:%d, lf:%d\n",
-               numBlock, imageParams->tipo, block[numBlock].li, block[numBlock].lf);
+        printf("Apply Smooth[%d][%s] - li:%d, lf:%d %d\n",
+               numBlock, imageParams->tipo, block[numBlock].li, block[numBlock].lf, ceil((double)(linhasIn/blockDims.x)));
 
 }
