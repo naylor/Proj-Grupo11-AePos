@@ -72,6 +72,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     // PARA COMECAR EM -2 (BORDA)
     unsigned int shY = threadIdx.y + 2;
     unsigned int shX = threadIdx.x + 2;
+        printf(" Smooth %d-%d\n", shY+l, shY+c);
 
     // POPULANDO O BLOCO 20X20 (4X4 BORDA)
     for(int l = -2; l <= BLOCK_DIM+2; ++l) {
@@ -80,7 +81,6 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
             sharedMem[shY+l][shX+c].blue = 0;
         }
     }
-        printf(" Smooth %d-%d\n", shY+l, shY+c);
 
     // SINCRONIZANDO AS THREADS
     __syncthreads();
