@@ -44,7 +44,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // SE A OPCAO DE SHARED MEMORY FOR ATIVADA
         // CHAMA A FUNCAO smoothPPM_SH
 
-                smoothPPM_noSH<<<18339, 512>>>();
+                smoothPPM_noSH<<<1, 512>>>();
 
         printf("Apply Smooth[%d][%s] - li:%d, lf:%d %d\n",
                numBlock, imageParams->tipo, block[numBlock].linhasIn, block[numBlock].lf, gridDims.x);
