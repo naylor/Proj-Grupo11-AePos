@@ -61,7 +61,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
                 smoothPPM_noSH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
         }
         printf("Apply Smooth[%d][%s] - li:%d, lf:%d %d\n",
-               numBlock, imageParams->tipo, linhasIn, block[numBlock].lf, ceil((double)(linhasIn/blockDims.x)));
+               numBlock, imageParams->tipo, block[numBlock].linhasIn, block[numBlock].lf, ceil((double)(linhasIn/blockDims.x)));
         // RETORNA A IMAGEM PARA
         // A VARIAVEL DE SAIDA PARA
         // GRAVACAO NO ARQUIVO
