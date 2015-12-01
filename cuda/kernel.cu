@@ -83,24 +83,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     // SINCRONIZANDO AS THREADS
     __syncthreads();
 
-    // APLICANDO O SMOOTH NO BLOCO
-    float blue;
-    float green;
-    float red;
 
-    for(int i = -2; i <= 2; ++i) {
-        for(int j = -2; j <= 2; ++j) {
-            blue += sharedMem[shY+i][shX+j].blue;
-            green += sharedMem[shY+i][shX+j].green;
-            red += sharedMem[shY+i][shX+j].red;
-        }
-    }
-
-    // GRAVANDO O RESULTADO
-    // NA IMAGEM DE SAIDA
-    kOutput[offset].blue = blue/25;
-    kOutput[offset].green = green/25;
-    kOutput[offset].red = red/25;
 
 }
 
