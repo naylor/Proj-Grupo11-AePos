@@ -26,8 +26,8 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         PPMPixel* kOutput;
 
         // ALOCAR MEMORIA
-        cudaMalloc( (void**) &kInput, linhasIn);
-        cudaMalloc( (void**) &kOutput, linhasOut);
+        cudaMalloc( (void**) &kInput, block[numBlock].linhasIn);
+        cudaMalloc( (void**) &kOutput, block[numBlock].linhasOut);
 
         // DEFINICAO DO TAMANHO PADRAO
         // DO BLOCO
@@ -37,14 +37,14 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // DO BLOCO PARA 32
         if (ct->sharedMemory == 1)
             blockDims.x = BLOCK_DIM;
-        dim3 gridDims((unsigned int) ceil((double)(linhasIn/blockDims.x)), 1, 1 );
+        dim3 gridDims((unsigned int) ceil((double)(block[numBlock].linhasIn/blockDims.x)), 1, 1 );
 
         // EXECUTA O CUDAMEMCPY
         // ASSINCRONO OU SINCRONO
         if (ct->async == 1)
-            cudaMemcpyAsync( kInput, block[numBlock].ppmIn, linhasIn, cudaMemcpyHostToDevice, streamSmooth[numBlock] );
+            cudaMemcpyAsync( kInput, block[numBlock].ppmIn, block[numBlock].linhasIn, cudaMemcpyHostToDevice, streamSmooth[numBlock] );
         else
-            cudaMemcpy( kInput, block[numBlock].ppmIn, linhasIn, cudaMemcpyHostToDevice);
+            cudaMemcpy( kInput, block[numBlock].ppmIn, block[numBlock].linhasIn, cudaMemcpyHostToDevice);
 
         // EXECUTA A FUNCAO SMOOTH NO KERNEL
         // SE A OPCAO DE SHARED MEMORY FOR ATIVADA
@@ -66,9 +66,9 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // A VARIAVEL DE SAIDA PARA
         // GRAVACAO NO ARQUIVO
         if (ct->async == 1)
-            cudaMemcpyAsync(block[numBlock].ppmOut, kOutput, linhasOut, cudaMemcpyDeviceToHost, streamSmooth[numBlock] );
+            cudaMemcpyAsync(block[numBlock].ppmOut, kOutput, block[numBlock].linhasOut, cudaMemcpyDeviceToHost, streamSmooth[numBlock] );
         else
-            cudaMemcpy(block[numBlock].ppmOut, kOutput, linhasOut, cudaMemcpyDeviceToHost );
+            cudaMemcpy(block[numBlock].ppmOut, kOutput, block[numBlock].linhasOut, cudaMemcpyDeviceToHost );
 
         // LIBERA A MEMORIA
         cudaFree(kInput);
