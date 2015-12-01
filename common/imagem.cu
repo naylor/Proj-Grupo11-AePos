@@ -217,7 +217,7 @@ int getImageBlocks(initialParams* ct, PPMImageParams* imageParams, PPMBlock* blo
     fseek(fp, imageParams->posIniFileIn+offset, SEEK_SET);
 
     if (ct->debug >= 1)
-        printf("Read Block[%d] posIniFileIn %d, Offset %d L[%d][%d]\n\n", imageParams->coluna * linhas * sizeof(PPMPixel),
+        printf("Read Block[%d] posIniFileIn %d, Offset %d L[%d][%d]\n\n", block[numBlock].linhasIn,
                imageParams->posIniFileIn, offset,
                block[numBlock].li,
                block[numBlock].lf);
