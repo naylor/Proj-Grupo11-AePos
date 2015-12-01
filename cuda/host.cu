@@ -41,10 +41,6 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
 
         // EXECUTA O CUDAMEMCPY
         // ASSINCRONO OU SINCRONO
-        if (ct->async == 1)
-            cudaMemcpyAsync( kInput, block[numBlock].ppmIn, block[numBlock].linhasIn, cudaMemcpyHostToDevice, streamSmooth[numBlock] );
-        else
-            cudaMemcpy( kInput, block[numBlock].ppmIn, block[numBlock].linhasIn, cudaMemcpyHostToDevice);
 
         // EXECUTA A FUNCAO SMOOTH NO KERNEL
         // SE A OPCAO DE SHARED MEMORY FOR ATIVADA
@@ -65,10 +61,6 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // RETORNA A IMAGEM PARA
         // A VARIAVEL DE SAIDA PARA
         // GRAVACAO NO ARQUIVO
-        if (ct->async == 1)
-            cudaMemcpyAsync(block[numBlock].ppmOut, kOutput, block[numBlock].linhasOut, cudaMemcpyDeviceToHost, streamSmooth[numBlock] );
-        else
-            cudaMemcpy(block[numBlock].ppmOut, kOutput, block[numBlock].linhasOut, cudaMemcpyDeviceToHost );
 
         // LIBERA A MEMORIA
         cudaFree(kInput);
