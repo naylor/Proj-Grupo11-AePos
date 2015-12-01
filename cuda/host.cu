@@ -54,7 +54,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
             if (ct->sharedMemory == 1)
                 smoothPPM_SH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
             else
-                smoothPPM_noSH<<<150223, 1024>>>();
+                smoothPPM_noSH<<<99999, 1024>>>();
         }
         printf("Apply Smooth[%d][%s] - li:%d, lf:%d %d\n",
                numBlock, imageParams->tipo, block[numBlock].linhasIn, block[numBlock].lf, gridDims.x);
