@@ -45,8 +45,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
             cudaMemcpyAsync( kInput, block[numBlock].ppmIn, linhasIn, cudaMemcpyHostToDevice, streamSmooth[numBlock] );
         else
             cudaMemcpy( kInput, block[numBlock].ppmIn, linhasIn, cudaMemcpyHostToDevice);
-            cudaDeviceSynchronize();
-        printf("1 %s", cudaGetErrorName (cudaGetLastError()));
+
         // EXECUTA A FUNCAO SMOOTH NO KERNEL
         // SE A OPCAO DE SHARED MEMORY FOR ATIVADA
         // CHAMA A FUNCAO smoothPPM_SH
@@ -60,10 +59,9 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
                 smoothPPM_SH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
             else
                 smoothPPM_noSH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
-                cudaDeviceSynchronize();
-                printf("2 %s", cudaGetErrorName (cudaGetLastError()));
         }
-
+        printf("Apply Smooth[%d][%s] - li:%d, lf:%d %d\n",
+               numBlock, imageParams->tipo, block[numBlock].li, block[numBlock].lf, ceil((double)(linhasIn/blockDims.x)));
         // RETORNA A IMAGEM PARA
         // A VARIAVEL DE SAIDA PARA
         // GRAVACAO NO ARQUIVO
@@ -71,9 +69,6 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
             cudaMemcpyAsync(block[numBlock].ppmOut, kOutput, linhasOut, cudaMemcpyDeviceToHost, streamSmooth[numBlock] );
         else
             cudaMemcpy(block[numBlock].ppmOut, kOutput, linhasOut, cudaMemcpyDeviceToHost );
-                cudaDeviceSynchronize();
-
-        printf("3 %s", cudaGetErrorName (cudaGetLastError()));
 
         // LIBERA A MEMORIA
         cudaFree(kInput);
@@ -134,13 +129,12 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // LIBERA A MEMORIA
         cudaFree(kInput);
         cudaFree(kOutput);
-            if (ct->debug >= 1)
-        printf("Apply Smooth[%d][%s] - li:%d, lf:%d %d\n",
-               numBlock, imageParams->tipo, block[numBlock].li, block[numBlock].lf, ceil((double)(linhasIn/blockDims.x)));
     }
 
     cudaDeviceSynchronize();
 
-
+    if (ct->debug >= 1)
+        printf("Apply Smooth[%d][%s] - li:%d, lf:%d\n",
+               numBlock, imageParams->tipo, block[numBlock].li, block[numBlock].lf);
 
 }
