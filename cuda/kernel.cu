@@ -60,7 +60,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     __shared__ PPMPixel sharedMem[BLOCK_DIM+4][BLOCK_DIM+4];
 
     // OFFSET DA COLUNA*LINHA
-    unsigned int offset = blockIdx.x *  blockDim.x + threadIdx.x;
+    unsigned int offset = blockIdx.x *  BLOCK_DIM + threadIdx.x;
     int c = offset % coluna; // COLUNA
     int l = (offset-c)/coluna; // LINHA
 
