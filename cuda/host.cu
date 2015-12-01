@@ -37,7 +37,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // DO BLOCO PARA 32
         if (ct->sharedMemory == 1)
             blockDims.x = BLOCK_DIM;
-        dim3 gridDims((unsigned int) ceil((double)(block[numBlock].linhasIn/blockDims.x)), 1, 1 );
+        dim3 gridDims((unsigned int) ceil(block[numBlock].linhasIn/blockDims.x), 1, 1 );
 
         // EXECUTA O CUDAMEMCPY
         // ASSINCRONO OU SINCRONO
@@ -61,7 +61,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
                 smoothPPM_noSH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
         }
         printf("Apply Smooth[%d][%s] - li:%d, lf:%d %d\n",
-               numBlock, imageParams->tipo, block[numBlock].linhasIn, block[numBlock].lf, ceil((double)(block[numBlock].linhasIn/blockDims.x)));
+               numBlock, imageParams->tipo, block[numBlock].linhasIn, block[numBlock].lf, ceil(block[numBlock].linhasIn/blockDims.x));
         // RETORNA A IMAGEM PARA
         // A VARIAVEL DE SAIDA PARA
         // GRAVACAO NO ARQUIVO
