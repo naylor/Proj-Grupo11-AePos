@@ -5,7 +5,7 @@
 #include "host.cuh"
 #include "kernel.cuh"
 
-#define BLOCK_DIM 32
+#define BLOCK_DIM 64
 #define BLOCK_DEFAULT 512
 
 // FUNCAO __HOST__
