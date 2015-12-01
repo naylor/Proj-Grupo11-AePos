@@ -45,7 +45,8 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
             cudaMemcpyAsync( kInput, block[numBlock].ppmIn, linhasIn, cudaMemcpyHostToDevice, streamSmooth[numBlock] );
         else
             cudaMemcpy( kInput, block[numBlock].ppmIn, linhasIn, cudaMemcpyHostToDevice);
-
+                cudaDeviceSynchronize();
+                printf("1 %s", cudaGetErrorName (cudaGetLastError()));
         // EXECUTA A FUNCAO SMOOTH NO KERNEL
         // SE A OPCAO DE SHARED MEMORY FOR ATIVADA
         // CHAMA A FUNCAO smoothPPM_SH
@@ -60,7 +61,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
             else
                 smoothPPM_noSH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
                 cudaDeviceSynchronize();
-                printf("%s", cudaGetErrorName (cudaGetLastError()));
+                printf("2 %s", cudaGetErrorName (cudaGetLastError()));
         }
 
         // RETORNA A IMAGEM PARA
@@ -70,7 +71,8 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
             cudaMemcpyAsync(block[numBlock].ppmOut, kOutput, linhasOut, cudaMemcpyDeviceToHost, streamSmooth[numBlock] );
         else
             cudaMemcpy(block[numBlock].ppmOut, kOutput, linhasOut, cudaMemcpyDeviceToHost );
-
+                cudaDeviceSynchronize();
+                printf("3 %s", cudaGetErrorName (cudaGetLastError()));
         // LIBERA A MEMORIA
         cudaFree(kInput);
         cudaFree(kOutput);
