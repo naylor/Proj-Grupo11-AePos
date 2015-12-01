@@ -104,7 +104,7 @@ int main(int argc, char** argv) {
 
         // FAZ A GRAVACAO
         start_timer(tempoW); //INICIA O RELOGIO
-        //writePPMPixels(ct, imageParams, block, t);
+        writePPMPixels(ct, imageParams, block, t);
         stop_timer(tempoW);
     }
 
