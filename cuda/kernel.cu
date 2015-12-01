@@ -106,7 +106,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
 
 // FUNCAO PARA APLICAR SMOOTH
 // SEM SHARED MEMORY EM IMAGENS PPM
-__global__ void smoothPPM_noSH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, int linha, int li, int lf) {
+__global__ void smoothPPM_noSH(PPMPixel* kInput, PPMPixel* kOutput) {
 
 
 
