@@ -21,7 +21,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     const int filter_offset_y = fHeight/2;
 
     float output_value = 0.0f;
-
+    int cont = 0;
     //Make sure the current thread is inside the image bounds
     if(xIndex<width && yIndex<height)
     {
@@ -32,11 +32,12 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
             {
                 //No need to worry about Out-Of-Range access. tex2D automatically handles it.
                 output_value += tex2D(tex8u,xIndex + i,yIndex + j);
+                cont++;
             }
         }
 
         //Average the output value
-        output_value /= (fWidth * fHeight);
+        output_value = output_value/cont;
 
         //Write the averaged value to the output.
         //Transform 2D index to 1D index, because image is actually in linear memory
