@@ -35,14 +35,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, unsigned char* output, int coluna
             }
         }
 
-        //Average the output value
-        output_value /= (coluna * linha);
 
-        //Write the averaged value to the output.
-        //Transform 2D index to 1D index, because image is actually in linear memory
-        int index = yIndex * coluna+2 + xIndex;
-
-        output[index] = static_cast<unsigned char>(output_value);
     }
 
 }
