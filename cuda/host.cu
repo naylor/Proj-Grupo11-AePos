@@ -60,10 +60,10 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
     const int filterWidth = 5;
     const int filterHeight = 5;
 
-    unsigned char CPUinput[width*width];
+    unsigned char CPUinput[linhasIn];
     unsigned char CPUoutput[width*width];
 
-    for(int t=0; t<width*width; t++)
+    for(int t=0; t<linhasIn; t++)
         CPUinput[t] = block[numBlock].pgmIn[t].gray;
 
 
