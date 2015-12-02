@@ -33,6 +33,7 @@ void box_filter_8u_c1(PPMImageParams* imageParams, PPMBlock* block, int numBlock
 
         const int width = imageParams->coluna;
         const int height = imageParams->linha;
+        printf("Apply Smooth[%d] ", height );
 
         //CPUinput = (unsigned char *)malloc(imageParams->coluna * imageParams->linha * sizeof(unsigned char));
         //CPUoutput = (unsigned char *)malloc(imageParams->coluna * imageParams->linha * sizeof(unsigned char));
@@ -40,7 +41,6 @@ void box_filter_8u_c1(PPMImageParams* imageParams, PPMBlock* block, int numBlock
         unsigned char CPUinput[imageParams->coluna * imageParams->linha];
         unsigned char CPUoutput[imageParams->coluna * imageParams->linha];
 
-        printf("Apply Smooth[%d] ", height );
 
 
         for(int t=0; t<imageParams->coluna*imageParams->linha; t++) {
