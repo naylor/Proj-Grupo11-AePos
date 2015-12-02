@@ -52,7 +52,7 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
 {
 
     int linhasIn = block[numBlock].linhasIn;
-    int linhasOut = block[numBlock].linhasOut;
+    double linhasOut = block[numBlock].linhasOut;
 
     const int width = imageParams->coluna;
     const int height = block[numBlock].lf-block[numBlock].li;
@@ -61,7 +61,7 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
     const int filterHeight = 5;
 
     unsigned char CPUinput[linhasIn];
-    unsigned char CPUoutput[linhasOut];
+    unsigned char CPUoutput[width*height];
 
     for(int t=0; t<linhasIn; t++)
         CPUinput[t] = block[numBlock].pgmIn[t].gray;
@@ -122,7 +122,7 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
     //Copy the results back to CPU
     cudaMemcpy2D(CPUoutput,widthStep,GPU_output,gpu_image_pitch,width,height,cudaMemcpyDeviceToHost);
 
-    for(int t=0; t<linhasOut; t++)
+    for(int t=0; t<width*width; t++)
         block[numBlock].pgmOut[t].gray = CPUoutput[t];
 
     //Release the texture
