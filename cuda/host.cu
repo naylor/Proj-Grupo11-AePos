@@ -12,30 +12,33 @@
 texture<unsigned char, cudaTextureType2D> tex8u;
 
 //Box Filter Kernel For Gray scale image with 8bit depth
-__global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, const int height, const size_t pitch, const int fWidth, const int fHeight)
+__global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, const int height, const size_t pitch, const int lf, const int li)
 {
 
-    int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
-    int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
+    // OFFSET DA COLUNA*LINHA
+    unsigned int offset = blockIdx.x * blockDim.x + threadIdx.x;
+    unsigned int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
 
-    const int filter_offset_x = fWidth/2;
-    const int filter_offset_y = fHeight/2;
+    int c = offset % coluna; // COLUNA
+    int l = (offset-c)/coluna; // LINHA
 
+    // TIRANDO A BORDA DO PROCESSAMENTO
+    if ( l > lf-li || c < 2 || c > coluna-2 || (li == 0 && l < 2) || (lf==linha-1 && l > (lf-li)-2) )
+        return;
+
+    // APLICANDO O SMOOTH NO BLOCO
     float output_value = 0.0f;
     int cont = 0;
-    //Make sure the current thread is inside the image bounds
-    if(xIndex<width && yIndex<height)
-    {
-        //Sum the window pixels
-        for(int i= -filter_offset_x; i<=filter_offset_x; i++)
-        {
-            for(int j=-filter_offset_y; j<=filter_offset_y; j++)
-            {
-                //No need to worry about Out-Of-Range access. tex2D automatically handles it.
-                output_value += tex2D(tex8u,xIndex + i,yIndex + j);
+
+    for(int l2 = -2; l2 <= 2; ++l2) {
+        for(int c2 = -2; c2 <= 2; ++c2) {
+            if((c+l2) >= 2 && (c+l2) < coluna-2 && (l+c2) >= -2 && (l+c2) <= lf-li+4) {
+
+                sumg += tex2D(tex8u,xIndex + l2,offset + c2);
                 cont++;
             }
         }
+    }
 
         //Average the output value
         output_value = output_value/cont;
@@ -45,7 +48,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
         int index = yIndex * pitch + xIndex;
 
         output[index] = static_cast<unsigned char>(output_value);
-    }
+
 }
 
 
@@ -80,7 +83,7 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
     unsigned char *GPU_input, *GPU_output;
 
     //Allocate 2D memory on GPU. Also known as Pitch Linear Memory
-    size_t gpu_image_pitch = height+2;
+    size_t gpu_image_pitch = 0;
     cudaMallocPitch<unsigned char>(&GPU_input,&gpu_image_pitch,width,height);
     cudaMallocPitch<unsigned char>(&GPU_output,&gpu_image_pitch,width,height);
 
@@ -118,7 +121,7 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
     grid_size.y = (height + block_size.y - 1)/block_size.y; /*< Greater than or equal to image height */
 
     //Launch the kernel
-    box_filter_kernel_8u_c1<<<grid_size,block_size>>>(GPU_output,width,height,gpu_image_pitch,filterWidth,filterHeight);
+    box_filter_kernel_8u_c1<<<grid_size,block_size>>>(GPU_output,width,height,gpu_image_pitch,block[numBlock].lf,block[numBlock].li);
 
     //Copy the results back to CPU
     cudaMemcpy2D(CPUoutput,widthStep,GPU_output,gpu_image_pitch,width,height,cudaMemcpyDeviceToHost);
