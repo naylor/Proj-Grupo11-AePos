@@ -74,14 +74,8 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     unsigned int shX = threadIdx.x + 2;
 
     // POPULANDO O BLOCO 20X20 (4X4 BORDA)
-    if (threadIdx.x==0 && threadIdx.y==0 ){
-    for(int l = -2; l <= BLOCK_DIM+2; ++l) {
-        for(int c = -2; c <= BLOCK_DIM+2; ++c) {
-            const int p = (l+offset)+c;
-            sharedMem[shY+l][shX+c] = kInput[p];
-        }
-    }
-    }
+    sharedMem[shY][shX] = inputImage[offset];
+
     // SINCRONIZANDO AS THREADS
     __syncthreads();
 
@@ -92,17 +86,17 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
 
     for(int i = -2; i <= 2; ++i) {
         for(int j = -2; j <= 2; ++j) {
-            blue += sharedMem[shY+i][shX+j].blue/25;
-            green += sharedMem[shY+i][shX+j].green/25;
-            red += sharedMem[shY+i][shX+j].red/25;
+            blue += sharedMem[shY+i][shX+j].blue;
+            green += sharedMem[shY+i][shX+j].green;
+            red += sharedMem[shY+i][shX+j].red;
         }
     }
 
     // GRAVANDO O RESULTADO
     // NA IMAGEM DE SAIDA
-    kOutput[offset].blue = blue;
-    kOutput[offset].green = green;
-    kOutput[offset].red = red;
+    kOutput[offset].blue = blue/25;
+    kOutput[offset].green = green/25;
+    kOutput[offset].red = red/25;
 
 }
 
