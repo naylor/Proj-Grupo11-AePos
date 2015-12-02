@@ -37,7 +37,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
             for(int j=-2; j<=2; j++)
             {
                 //No need to worry about Out-Of-Range access. tex2D automatically handles it.
-                output_value += tex2D(tex8u, yIndex+ i,xIndex + j);
+                output_value += tex2D(tex8u,xIndex + i,yIndex + j);
                 cont++;
             }
         }
@@ -49,7 +49,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
         //Transform 2D index to 1D index, because image is actually in linear memory
         int index = yIndex * pitch + xIndex;
 
-        output[index] = static_cast<unsigned char>(output_value);
+        output[xIndex] = static_cast<unsigned char>(output_value);
 
 }
 
