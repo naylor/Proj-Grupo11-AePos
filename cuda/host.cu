@@ -16,37 +16,9 @@ texture<unsigned char, cudaTextureType2D> tex8u;
 __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, const int height, const size_t pitch, const int fWidth, const int fHeight)
 {
     int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
-    int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
 
-    const int filter_offset_x = fWidth/2;
-    const int filter_offset_y = fHeight/2;
-
-    float output_value = 0.0f;
                         printf("Apply Smooth[%d] ", xIndex );
 
-    //Make sure the current thread is inside the image bounds
-    if(xIndex<width && yIndex<height)
-    {
-        //Sum the window pixels
-        for(int i= -filter_offset_x; i<=filter_offset_x; i++)
-        {
-            for(int j=-filter_offset_y; j<=filter_offset_y; j++)
-            {
-                //No need to worry about Out-Of-Range access. tex2D automatically handles it.
-                output_value += tex2D(tex8u,xIndex + i,yIndex + j);
-
-            }
-        }
-
-        //Average the output value
-        output_value /= (fWidth * fHeight);
-
-        //Write the averaged value to the output.
-        //Transform 2D index to 1D index, because image is actually in linear memory
-        int index = yIndex * pitch + xIndex;
-
-        output[index] = static_cast<unsigned char>(output_value);
-    }
 }
 
 void box_filter_8u_c1(PPMImageParams* imageParams, PPMBlock* block, int numBlock)
