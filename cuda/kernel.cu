@@ -85,17 +85,23 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
         threadIdx.y == 0 || threadIdx.y == 36 - 1)
         return;
 
-    float value = 0;
+    int sumr = 0;
+    int sumb = 0;
+    int sumg = 0;
 
     for (int dx = -1, mx = 1; dx < 2; dx++, mx--)
     {
         for (int dy = -1, my = 1; dy < 2; dy++, my--)
         {
-            value += sharedMem[threadIdx.y + dy][threadIdx.x + dx].blue;
+            sumr += sharedMem[threadIdx.y + dy][threadIdx.x + dx].red;
+            sumb += sharedMem[threadIdx.y + dy][threadIdx.x + dx].blue;
+            sumg += sharedMem[threadIdx.y + dy][threadIdx.x + dx].green;
         }
     }
 
-    kOutput[idx].blue = value;
+    kOutput[idx].red = sumr;
+    kOutput[idx].blue = sumb;
+    kOutput[idx].green = sumg;
 
 }
 
