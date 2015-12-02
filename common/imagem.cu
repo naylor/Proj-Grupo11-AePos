@@ -225,7 +225,7 @@ int getImageBlocks(initialParams* ct, PPMImageParams* imageParams, PPMBlock* blo
     // LE O ARQUIVO
     int ret;
     if (strcmp(imageParams->tipo, "P6")==0)
-        ret = fread_unlocked(block[numBlock].ppmIn, 3*imageParams->coluna, linhas, fp);
+        ret = fread_unlocked(block[numBlock].ppmIn, 4*imageParams->coluna, linhas, fp);
     else
         ret = fread_unlocked(block[numBlock].pgmIn, imageParams->coluna, linhas, fp);
 
