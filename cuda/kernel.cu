@@ -60,8 +60,8 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     __shared__ PPMPixel sharedMem[BLOCK_DIM+4][BLOCK_DIM+4];
 
 
-    int x = 32*blockIdx.x + threadIdx.x - 1;
-    int y = 32*blockIdx.y + threadIdx.y - 1;
+    int x = __umul24(blockIdx.x, BLOCK_DIM) + threadIdx.x;
+    int y = __umul24(blockIdx.y, BLOCK_DIM) + threadIdx.y;
     int idx = y*coluna + x;
 
 
