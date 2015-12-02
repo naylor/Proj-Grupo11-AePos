@@ -22,8 +22,8 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     float output_value = 0.0f;
     int cont = 0;
 
-    int c = offset % width; // COLUNA
-    int l = (offset-c)/width; // LINHA
+    int c = xIndex % width; // COLUNA
+    int l = (xIndex-c)/width; // LINHA
 
     // TIRANDO A BORDA DO PROCESSAMENTO
     if ( l > lf-li || c < 2 || c > width-2 || (li == 0 && l < 2) || (lf==height-1 && l > (lf-li)-2) )
