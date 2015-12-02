@@ -9,6 +9,44 @@
 #define BLOCK_DEFAULT 512
 
 texture<unsigned char, cudaTextureType2D> tex8u;
+
+
+// FUNCAO PARA APLICAR SMOOTH
+// COM SHARED MEMORY EM IMAGENS PPM
+__global__ void smoothPPM_SH(PPMPixel* kInput, unsigned char* output, int coluna, int linha, int li, int lf) {
+    int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
+    int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
+
+    const int filter_offset_x = coluna/2;
+    const int filter_offset_y = linha/2;
+
+    float output_value = 0.0f;
+
+    //Make sure the current thread is inside the image bounds
+    if(xIndex<coluna && yIndex<linha)
+    {
+        //Sum the window pixels
+        for(int i= -filter_offset_x; i<=filter_offset_x; i++)
+        {
+            for(int j=-filter_offset_y; j<=filter_offset_y; j++)
+            {
+                //No need to worry about Out-Of-Range access. tex2D automatically handles it.
+                output_value += tex2D(tex8u,xIndex + i,yIndex + j);
+            }
+        }
+
+        //Average the output value
+        output_value /= (coluna * linha);
+
+        //Write the averaged value to the output.
+        //Transform 2D index to 1D index, because image is actually in linear memory
+        int index = yIndex * coluna+2 + xIndex;
+
+        output[index] = static_cast<unsigned char>(output_value);
+    }
+
+}
+
 // FUNCAO __HOST__
 // DEFINICAO DOS PARAMETROS DE CHAMADA DO KERNEL
 void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block, int numBlock, cudaStream_t* streamSmooth) {
@@ -74,12 +112,12 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // CHAMA A FUNCAO smoothPPM_SH
         if (ct->async == 1) {
             if (ct->sharedMemory == 1)
-                smoothPPM_SH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
+                smoothPPM_noSH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
             else
                 smoothPPM_noSH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
         } else {
             if (ct->sharedMemory == 1)
-                smoothPPM_SH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
+                smoothPPM_SH<<<gridDims, blockDims>>>(kInput, GPU_output, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
             else
                 smoothPPM_noSH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
         }
