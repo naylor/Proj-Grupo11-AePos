@@ -32,18 +32,18 @@ void box_filter_8u_c1(PPMImageParams* imageParams, PPMBlock* block, int numBlock
         const int filterHeight=5;
 
         const int width = imageParams->coluna;
-        const int height = imageParams->linha;
+        const int height = block[numBlock].lf-block[numBlock].li;
         printf("Apply Smooth[%d] ", height );
 
         //CPUinput = (unsigned char *)malloc(imageParams->coluna * imageParams->linha * sizeof(unsigned char));
         //CPUoutput = (unsigned char *)malloc(imageParams->coluna * imageParams->linha * sizeof(unsigned char));
 
-        unsigned char CPUinput[imageParams->coluna * imageParams->linha];
-        unsigned char CPUoutput[imageParams->coluna * imageParams->linha];
+        unsigned char CPUinput[imageParams->coluna * (block[numBlock].lf-block[numBlock].li)];
+        unsigned char CPUoutput[imageParams->coluna * (block[numBlock].lf-block[numBlock].li)];
 
 
 
-        for(int t=0; t<imageParams->coluna*imageParams->linha; t++) {
+        for(int t=0; t<imageParams->coluna*(block[numBlock].lf-block[numBlock].li); t++) {
                 CPUinput[t] =  block[numBlock].pgmIn[t].gray;
         }
 
@@ -104,7 +104,7 @@ void box_filter_8u_c1(PPMImageParams* imageParams, PPMBlock* block, int numBlock
     //Copy the results back to CPU
     cudaMemcpy2D(CPUoutput,widthStep,GPU_output,gpu_image_pitch,width,height,cudaMemcpyDeviceToHost);
 
-            for(int t=0; t<imageParams->coluna*imageParams->linha; t++)
+            for(int t=0; t<imageParams->coluna*(block[numBlock].lf-block[numBlock].li); t++)
                    block[numBlock].pgmIn[t].gray = CPUoutput[t];
 
     //Release the texture
