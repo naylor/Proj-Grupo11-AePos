@@ -64,7 +64,9 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     int c = offset % coluna; // COLUNA
     int l = (offset-c)/coluna; // LINHA
 
-
+    // TIRANDO A BORDA DO PROCESSAMENTO
+    if ( l > lf-li || c < 2 || c > coluna-2 || (li == 0 && l < 2) || (lf==linha-1 && l > (lf-li)-2) )
+        return;
 
     // DEFININDO THREAD+2
     // PARA COMECAR EM -2 (BORDA)
@@ -72,7 +74,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     unsigned int shX = threadIdx.x + 2;
 
     // POPULANDO O BLOCO 20X20 (4X4 BORDA)
-    if (shY==2 && shX==2 ){
+    if (threadIdx.x==0 && threadIdx.y==0 ){
     for(int l = -2; l <= BLOCK_DIM+2; ++l) {
         for(int c = -2; c <= BLOCK_DIM+2; ++c) {
             const int p = (l+offset)+c;
