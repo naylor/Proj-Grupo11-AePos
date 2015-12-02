@@ -68,21 +68,21 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     // POPULANDO O BLOCO 20X20 (4X4 BORDA)
  if (x < 0 || y < 0 || x >= coluna || y >= linha)
     {
-        sharedMem[shY][shX].blue = 0; // zeroed border
-        sharedMem[shY][shX].red = 0; // zeroed border
-        sharedMem[shY][shX].green = 0; // zeroed border
+        sharedMem[threadIdx.y][threadIdx.x].blue = 0; // zeroed border
+        sharedMem[threadIdx.y][threadIdx.x].red = 0; // zeroed border
+        sharedMem[threadIdx.y][threadIdx.x].green = 0; // zeroed border
     }
     else
     {
-        sharedMem[shY][shX] = kInput[idx];
+        sharedMem[threadIdx.y][threadIdx.x] = kInput[idx];
     }
     // SINCRONIZANDO AS THREADS
     __syncthreads();
 
 
-    if (x < 0 || y < 0 || x >= width || y >= height ||
-        threadIdx.x == 0 || threadIdx.x == TILE_WIDTH - 1 ||
-        threadIdx.y == 0 || threadIdx.y == TILE_WIDTH - 1)
+    if (x < 0 || y < 0 || x >= coluna || y >= linha ||
+        threadIdx.x == 0 || threadIdx.x == 36 - 1 ||
+        threadIdx.y == 0 || threadIdx.y == 36 - 1)
         return;
 
     float value = 0;
@@ -91,7 +91,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     {
         for (int dy = -1, my = 1; dy < 2; dy++, my--)
         {
-            value += sharedMem[threadIdx.y + dy][threadIdx.x + dx] * mask[(my+1)*3 + (mx+1)];
+            value += sharedMem[threadIdx.y + dy][threadIdx.x + dx];
         }
     }
 
