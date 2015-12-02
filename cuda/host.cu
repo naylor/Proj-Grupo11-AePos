@@ -51,8 +51,8 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
 void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block, int numBlock, cudaStream_t* streamSmooth)
 {
 
-    double linhasIn = block[numBlock].linhasIn;
-    double linhasOut = block[numBlock].linhasOut;
+    int linhasIn = block[numBlock].linhasIn;
+    int linhasOut = block[numBlock].linhasOut;
 
     const int width = imageParams->coluna;
     const int height = linhasIn;
