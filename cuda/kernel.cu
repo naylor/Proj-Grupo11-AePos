@@ -88,8 +88,8 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     float green;
     float red;
 
-    for(int i = -2; i <= 2; ++i) {
-        for(int j = -2; j <= 2; ++j) {
+    for(int i = 0; i <= 5; ++i) {
+        for(int j = 0; j <= 5; ++j) {
             blue += sharedMem[shY+i][shX+j].blue;
             green += sharedMem[shY+i][shX+j].green;
             red += sharedMem[shY+i][shX+j].red;
