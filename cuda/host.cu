@@ -12,7 +12,7 @@
 texture<unsigned char, cudaTextureType2D> tex8u;
 
 //Box Filter Kernel For Gray scale image with 8bit depth
-__global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, const int height, const size_t pitch, const int fWidth, const int fHeight)
+__global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, const int height, const size_t pitch, const int lf, const int li)
 {
 
     int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
@@ -21,6 +21,14 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
 
     float output_value = 0.0f;
     int cont = 0;
+
+    int c = offset % coluna; // COLUNA
+    int l = (offset-c)/coluna; // LINHA
+
+    // TIRANDO A BORDA DO PROCESSAMENTO
+    if ( l > lf-li || c < 2 || c > coluna-2 || (li == 0 && l < 2) || (lf==linha-1 && l > (lf-li)-2) )
+        return;
+
     //Make sure the current thread is inside the image bounds
     if(xIndex<width && yIndex<height)
     {
@@ -116,7 +124,7 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
     grid_size.y = (height + block_size.y - 1)/block_size.y; /*< Greater than or equal to image height */
 
     //Launch the kernel
-    box_filter_kernel_8u_c1<<<grid_size,block_size>>>(GPU_output,width,height,gpu_image_pitch,filterWidth,filterHeight);
+    box_filter_kernel_8u_c1<<<grid_size,block_size>>>(GPU_output,width,height,gpu_image_pitch,block[numBlock].lf,block[numBlock].li);
 
     //Copy the results back to CPU
     cudaMemcpy2D(CPUoutput,widthStep,GPU_output,gpu_image_pitch,width,height,cudaMemcpyDeviceToHost);
