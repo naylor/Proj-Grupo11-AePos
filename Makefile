@@ -7,7 +7,7 @@ SRCCUDA=cuda/
 SRCCOM=common/
 SRCPAR=paralelo/
 cuda=PPMcuda
-LIB=-arch=sm_35
+LIB=-arch=sm_30
 
 SOURCES=$(wildcard $(SRCPAR)*.cu $(SRCCOM)*.cu $(SRCCUDA)*.cu)
 
