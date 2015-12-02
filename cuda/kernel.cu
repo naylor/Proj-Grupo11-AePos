@@ -4,7 +4,7 @@
 
 #include "kernel.cuh"
 
-#define BLOCK_DIM 16
+#define BLOCK_DIM 32
 
 // FUNCAO PARA APLICAR SMOOTH
 // COM SHARED MEMORY EM IMAGENS PGM
@@ -16,7 +16,8 @@ __global__ void smoothPGM_SH(PGMPixel* kInput, PGMPixel* kOutput, int coluna, in
     __shared__ PGMPixel sharedMem[BLOCK_DIM+4][BLOCK_DIM+4];
 
     // OFFSET DA COLUNA*LINHA
-    unsigned int offset = blockIdx.x * BLOCK_DIM + threadIdx.x;
+    int offset = __umul24(blockIdx.x, BLOCK_DIM) + threadIdx.x;
+
     int c = offset % coluna; // COLUNA
     int l = (offset-c)/coluna; // LINHA
 
@@ -60,48 +61,35 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     __shared__ PPMPixel sharedMem[BLOCK_DIM+4][BLOCK_DIM+4];
 
 
-    int x = __umul24(blockIdx.x, BLOCK_DIM) + threadIdx.x;
-    int y = __umul24(blockIdx.y, BLOCK_DIM) + threadIdx.y;
-    int idx = y*coluna + x;
+    // OFFSET DA COLUNA*LINHA
+    int offset = __umul24(blockIdx.x, BLOCK_DIM) + threadIdx.x;
 
+    int c = offset % coluna; // COLUNA
+    int l = (offset-c)/coluna; // LINHA
 
-    // POPULANDO O BLOCO 20X20 (4X4 BORDA)
- if (x < 0 || y < 0 || x >= coluna || y >= linha)
-    {
-        sharedMem[threadIdx.y][threadIdx.x].blue = 0; // zeroed border
-        sharedMem[threadIdx.y][threadIdx.x].red = 0; // zeroed border
-        sharedMem[threadIdx.y][threadIdx.x].green = 0; // zeroed border
-    }
-    else
-    {
-        sharedMem[threadIdx.y][threadIdx.x] = kInput[idx];
-    }
+    // TIRANDO A BORDA DO PROCESSAMENTO
+    if ( l > lf-li || c < 2 || c > coluna-2 || (li == 0 && l < 2) || (lf==linha-1 && l > (lf-li)-2) )
+        return;
+
+    sharedMem[shY][shX] = kInput[p];
+
+    // DEFININDO THREAD+2
+    // PARA COMECAR EM -2 (BORDA)
+    unsigned int shY = threadIdx.y + 2;
+    unsigned int shX = threadIdx.x + 2;
+
     // SINCRONIZANDO AS THREADS
     __syncthreads();
 
+    // APLICANDO O SMOOTH NO BLOCO
+    float sumg;
+    for(int i = -2; i <= 2; ++i)
+        for(int j = -2; j <= 2; ++j)
+            sumg += sharedMem[shY+i][shX+j].sumg;
 
-    if (x < 0 || y < 0 || x >= coluna || y >= linha ||
-        threadIdx.x == 0 || threadIdx.x == 20 - 1 ||
-        threadIdx.y == 0 || threadIdx.y == 20 - 1)
-        return;
-
-    int sumr = 0;
-    int sumb = 0;
-    int sumg = 0;
-
-    for (int dx = -1, mx = 1; dx < 2; dx++, mx--)
-    {
-        for (int dy = -1, my = 1; dy < 2; dy++, my--)
-        {
-            sumr += sharedMem[threadIdx.y + dy][threadIdx.x + dx].red;
-            sumb += sharedMem[threadIdx.y + dy][threadIdx.x + dx].blue;
-            sumg += sharedMem[threadIdx.y + dy][threadIdx.x + dx].green;
-        }
-    }
-
-    kOutput[idx].red = sumr;
-    kOutput[idx].blue = sumb;
-    kOutput[idx].green = sumg;
+    // GRAVANDO O RESULTADO
+    // NA IMAGEM DE SAIDA
+    kOutput[offset].green = sumg/25;
 
 }
 
