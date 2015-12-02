@@ -70,8 +70,8 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
 
     // DEFININDO THREAD+2
     // PARA COMECAR EM -2 (BORDA)
-    unsigned int shY = threadIdx.y + 2;
-    unsigned int shX = threadIdx.x + 2;
+    unsigned int shY = threadIdx.y ;
+    unsigned int shX = threadIdx.x ;
 
 
         sharedMem[shY][shX] = kInput[offset];
