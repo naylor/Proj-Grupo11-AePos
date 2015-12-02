@@ -8,7 +8,7 @@
 #define BLOCK_DIM 32
 #define BLOCK_DEFAULT 512
 
-texture <uchar4, cudaTextureType1D, cudaReadModeNormalizedFloat> mytex;
+texture <unsigned char, 2, cudaReadModeElementType> mytex;
 
 
 // FUNCAO __HOST__

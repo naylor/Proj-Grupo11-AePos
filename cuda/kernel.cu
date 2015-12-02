@@ -6,7 +6,7 @@
 
 #define BLOCK_DIM 32
 
-texture <uchar4, cudaTextureType1D, cudaReadModeNormalizedFloat> mytex;
+texture <unsigned char, 2, cudaReadModeElementType> mytex;
 
 // FUNCAO PARA APLICAR SMOOTH
 // COM SHARED MEMORY EM IMAGENS PGM
