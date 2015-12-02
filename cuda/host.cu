@@ -63,6 +63,11 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
     unsigned char CPUinput[width*height];
     unsigned char CPUoutput[width*linhasOut];
 
+    printf("Apply Smooth[%d][%s] - li:%d, lf:%d\n",
+               numBlock, imageParams->tipo, block[numBlock].li, block[numBlock].lf);
+
+    exit(1);
+
     for(int t=0; t<width*height; t++)
         CPUinput[t] = block[numBlock].pgmIn[t].gray;
 
