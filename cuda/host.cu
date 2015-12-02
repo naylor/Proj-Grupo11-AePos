@@ -17,13 +17,12 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, unsigned char* output, int coluna
     int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
     int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
 
-    const int filter_offset_x = coluna/2;
-    const int filter_offset_y = linha/2;
-
-    float output_value = 0.0f;
+  if(xIndex<coluna && yIndex<linha)
+    {
 
 
     output[xIndex] = tex2D(tex8u,xIndex,yIndex);
+    }
 
 
 }
