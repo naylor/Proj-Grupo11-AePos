@@ -27,6 +27,8 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
 
 
         kOutput[offset].blue = tex2D(tex8u,offset,yIndex);
+        kOutput[offset].red = tex2D(tex8u,offset+1,yIndex+1);
+        kOutput[offset].green = tex2D(tex8u,offset+2,yIndex+2);
 
 
 
