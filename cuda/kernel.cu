@@ -67,11 +67,16 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     int c = offset % coluna; // COLUNA
     int l = (offset-c)/coluna; // LINHA
 
+    // DEFININDO THREAD+2
+    // PARA COMECAR EM -2 (BORDA)
+    unsigned int shY = threadIdx.y + 2;
+    unsigned int shX = threadIdx.x + 2;
+
     // TIRANDO A BORDA DO PROCESSAMENTO
     if ( l > lf-li || c < 2 || c > coluna-2 || (li == 0 && l < 2) || (lf==linha-1 && l > (lf-li)-2) )
         return;
 
-    sharedMem[shY][shX] = kInput[p];
+    sharedMem[shY][shX] = kInput[offiset];
 
     // DEFININDO THREAD+2
     // PARA COMECAR EM -2 (BORDA)
