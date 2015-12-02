@@ -78,10 +78,6 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
 
     sharedMem[shY][shX] = kInput[offiset];
 
-    // DEFININDO THREAD+2
-    // PARA COMECAR EM -2 (BORDA)
-    unsigned int shY = threadIdx.y + 2;
-    unsigned int shX = threadIdx.x + 2;
 
     // SINCRONIZANDO AS THREADS
     __syncthreads();
@@ -90,7 +86,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     float sumg;
     for(int i = -2; i <= 2; ++i)
         for(int j = -2; j <= 2; ++j)
-            sumg += sharedMem[shY+i][shX+j].sumg;
+            sumg += sharedMem[shY+i][shX+j].green;
 
     // GRAVANDO O RESULTADO
     // NA IMAGEM DE SAIDA
