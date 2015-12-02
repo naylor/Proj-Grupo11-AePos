@@ -22,21 +22,9 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, unsigned char* output, int coluna
 
     float output_value = 0.0f;
 
-    //Make sure the current thread is inside the image bounds
-    if(xIndex<coluna && yIndex<linha)
-    {
-        //Sum the window pixels
-        for(int i= -filter_offset_x; i<=filter_offset_x; i++)
-        {
-            for(int j=-filter_offset_y; j<=filter_offset_y; j++)
-            {
-                //No need to worry about Out-Of-Range access. tex2D automatically handles it.
-                output_value += tex2D(tex8u,xIndex + i,yIndex + j);
-            }
-        }
 
+    output[index] = tex2D(tex8u,xIndex,yIndex);
 
-    }
 
 }
 
