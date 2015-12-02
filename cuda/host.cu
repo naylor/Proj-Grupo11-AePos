@@ -26,7 +26,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     int l = (xIndex-c)/width; // LINHA
 
     // TIRANDO A BORDA DO PROCESSAMENTO
-    if ( l > lf-li || c < 2 || c > height-2 || (li == 0 && l < 2) || (lf==width-1 && l > (lf-li)-2) )
+    if ( l > lf-li || c < 2 || c > width-2 || (li == 0 && l < 2) || (lf==height-1 && l > (lf-li)-2) )
         return;
 
     //Make sure the current thread is inside the image bounds
@@ -37,7 +37,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
             for(int j=-2; j<=2; j++)
             {
                 //No need to worry about Out-Of-Range access. tex2D automatically handles it.
-                output_value += tex2D(tex8u,xIndex + i,yIndex + j);
+                output_value += tex2D(tex8u,xIndex + j,yIndex + i);
                 cont++;
             }
         }
