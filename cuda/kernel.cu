@@ -76,7 +76,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     if ( l > lf-li || c < 2 || c > coluna-2 || (li == 0 && l < 2) || (lf==linha-1 && l > (lf-li)-2) )
         return;
 
-    sharedMem[shY][shX] = kInput[offiset];
+    sharedMem[shY][shX] = kInput[offset];
 
 
     // SINCRONIZANDO AS THREADS
