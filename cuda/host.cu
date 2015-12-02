@@ -19,11 +19,11 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     unsigned int offset = blockIdx.x * blockDim.x + threadIdx.x;
     unsigned int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
 
-    int c = offset % coluna; // COLUNA
-    int l = (offset-c)/coluna; // LINHA
+    int c = offset % width; // COLUNA
+    int l = (offset-c)/width; // LINHA
 
     // TIRANDO A BORDA DO PROCESSAMENTO
-    if ( l > lf-li || c < 2 || c > coluna-2 || (li == 0 && l < 2) || (lf==linha-1 && l > (lf-li)-2) )
+    if ( l > lf-li || c < 2 || c > width-2 || (li == 0 && l < 2) || (lf==height-1 && l > (lf-li)-2) )
         return;
 
     // APLICANDO O SMOOTH NO BLOCO
@@ -32,9 +32,9 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
 
     for(int l2 = -2; l2 <= 2; ++l2) {
         for(int c2 = -2; c2 <= 2; ++c2) {
-            if((c+l2) >= 2 && (c+l2) < coluna-2 && (l+c2) >= -2 && (l+c2) <= lf-li+4) {
+            if((c+l2) >= 2 && (c+l2) < width-2 && (l+c2) >= -2 && (l+c2) <= lf-li+4) {
 
-                sumg += tex2D(tex8u,xIndex + l2,offset + c2);
+                output_value += tex2D(tex8u,offset + l2,offset + c2);
                 cont++;
             }
         }
@@ -45,7 +45,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
 
         //Write the averaged value to the output.
         //Transform 2D index to 1D index, because image is actually in linear memory
-        int index = yIndex * pitch + xIndex;
+        int index = yIndex * pitch + offset;
 
         output[index] = static_cast<unsigned char>(output_value);
 
