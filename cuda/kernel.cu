@@ -6,48 +6,15 @@
 
 #define BLOCK_DIM 32
 
+texture <uchar4, cudaTextureType1D, cudaReadModeNormalizedFloat> mytex;
+
 // FUNCAO PARA APLICAR SMOOTH
 // COM SHARED MEMORY EM IMAGENS PGM
-__global__ void smoothPGM_SH(PGMPixel* kInput, PGMPixel* kOutput, int coluna, int linha, int li, int lf) {
+__global__ void smoothPGM_SH(PGMPixel* kOutput) {
 
-    // DEFINICAO DO TAMANHO ODO BLOCO PARA
-    // MEMORIA COMPARTILHADA
-    // RESERVA TECNICA DE 4X4 PARA BORDA
-    __shared__ PGMPixel sharedMem[BLOCK_DIM+4][BLOCK_DIM+4];
-
-    // OFFSET DA COLUNA*LINHA
-    unsigned int offset = blockIdx.x * BLOCK_DIM + threadIdx.x;
-    int c = offset % coluna; // COLUNA
-    int l = (offset-c)/coluna; // LINHA
-
-    // TIRANDO A BORDA DO PROCESSAMENTO
-    if ( l > lf-li || c < 2 || c > coluna-2 || (li == 0 && l < 2) || (lf==linha-1 && l > (lf-li)-2) )
-        return;
-
-    // DEFININDO THREAD+2
-    // PARA COMECAR EM -2 (BORDA)
-    unsigned int shY = threadIdx.y + 2;
-    unsigned int shX = threadIdx.x + 2;
-
-    // POPULANDO O BLOCO 20X20 (4X4 BORDA)
-    for(int l = -2; l <= BLOCK_DIM+2; ++l) {
-        for(int c = -2; c <= BLOCK_DIM+2; ++c) {
-            const int p = (l+offset)+c;
-            sharedMem[shY+l][shX+c] = kInput[p];
-        }
-    }
-    // SINCRONIZANDO AS THREADS
-    __syncthreads();
-
-    // APLICANDO O SMOOTH NO BLOCO
-    float sumg;
-    for(int i = -2; i <= 2; ++i)
-        for(int j = -2; j <= 2; ++j)
-            sumg += sharedMem[shY+i][shX+j].gray;
-
-    // GRAVANDO O RESULTADO
+    unsigned int x = blockIdx.x*blockDim.x + threadIdx.x;
     // NA IMAGEM DE SAIDA
-    kOutput[offset].gray = sumg/25;
+    kOutput[offset].gray = tex1Dfetch(mytex,x);
 
 }
 

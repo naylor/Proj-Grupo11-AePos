@@ -102,6 +102,10 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         else
             cudaMemcpy( kInput, block[numBlock].pgmIn, linhasIn, cudaMemcpyHostToDevice);
 
+        cudaChannelFormatDesc channelDesc;
+        channelDesc = cudaCreateChannelDesc(8,8,8,cudaChannelFormatKindUnsigned);
+        cudaBindTexture(0,mytex,kInput,channelDesc,3*size);
+
         // EXECUTA A FUNCAO SMOOTH NO KERNEL
         // SE A OPCAO DE SHARED MEMORY FOR ATIVADA
         // CHAMA A FUNCAO smoothPPM_SH
