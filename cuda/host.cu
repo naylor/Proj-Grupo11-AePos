@@ -52,10 +52,14 @@ void box_filter_8u_c1(PPMImageParams* imageParams, PPMBlock* block, int numBlock
         const int widthStep=2;
         const int filterWidth=5;
         const int filterHeight=5;
-        unsigned char* CPUinput = block[numBlock].teste;
+        unsigned char* CPUinput;
         unsigned char* CPUoutput ;
         const int width = imageParams->coluna;
         const int height = imageParams->linha;
+
+            for(int t=0; t<imageParams->coluna*imageParams->linha; t++)
+                   CPUinput[t] =  block[numBlock].pgmIn[t].gray;
+
 
     /*
      * 2D memory is allocated as strided linear memory on GPU.
@@ -112,7 +116,8 @@ void box_filter_8u_c1(PPMImageParams* imageParams, PPMBlock* block, int numBlock
     //Copy the results back to CPU
     cudaMemcpy2D(CPUoutput,widthStep,GPU_output,gpu_image_pitch,width,height,cudaMemcpyDeviceToHost);
 
-    block[numBlock].teste2 = CPUoutput;
+            for(int t=0; t<imageParams->coluna*imageParams->linha; t++)
+                   block[numBlock].pgmIn[t].gray = CPUoutput[t];
 
     //Release the texture
     cudaUnbindTexture(tex8u);

@@ -154,7 +154,8 @@ int getImageBlocks(initialParams* ct, PPMImageParams* imageParams, PPMBlock* blo
     // ALOCA MEMORIA PARA A IMAGEM DE SAIDA
     if (strcmp(imageParams->tipo, "P6")==0)
         block[numBlock].ppmOut = (PPMPixel *)malloc(imageParams->coluna * linhas * sizeof(PPMPixel));
-
+    else
+        block[numBlock].pgmOut = (PGMPixel *)malloc(imageParams->coluna * linhas * sizeof(PPMPixel));
 
     block[numBlock].linhasOut = imageParams->coluna * linhas * sizeof(PPMPixel);
 
@@ -205,7 +206,8 @@ int getImageBlocks(initialParams* ct, PPMImageParams* imageParams, PPMBlock* blo
 
     if (strcmp(imageParams->tipo, "P6")==0)
         block[numBlock].ppmIn = (PPMPixel *)malloc(imageParams->coluna * linhas * sizeof(PPMPixel));
-
+    else
+        block[numBlock].pgmIn = (PGMPixel *)malloc(imageParams->coluna * linhas * sizeof(PPMPixel));
 
 
     block[numBlock].linhasIn = imageParams->coluna * linhas * sizeof(PPMPixel);
@@ -225,7 +227,7 @@ int getImageBlocks(initialParams* ct, PPMImageParams* imageParams, PPMBlock* blo
     if (strcmp(imageParams->tipo, "P6")==0)
         ret = fread_unlocked(block[numBlock].ppmIn, 3*imageParams->coluna, linhas, fp);
     else
-        ret = fread_unlocked(block[numBlock].teste, imageParams->coluna, linhas, fp);
+        ret = fread_unlocked(block[numBlock].pgmIn, imageParams->coluna, linhas, fp);
 
     if (ret == 0) {
         printf("Error Read Block[%d] posIniFileIn %d, Offset %d L[%d][%d]\n\n", numBlock,
@@ -288,7 +290,7 @@ void writePPMPixels(initialParams* ct, PPMImageParams *imageParams, PPMBlock* bl
     if (strcmp(imageParams->tipo, "P6")==0)
         ret = fwrite_unlocked(block[numBlock].ppmOut, 3*imageParams->coluna, linhas, fp);
     else
-        ret = fwrite_unlocked(block[numBlock].teste2, imageParams->coluna, linhas, fp);
+        ret = fwrite_unlocked(block[numBlock].pgmOut, imageParams->coluna, linhas, fp);
 
     if (ret == 0) {
         printf("Error Write Block[%d] posIniFileIn %d, Offset %d L[%d][%d]\n\n", numBlock,

@@ -81,7 +81,7 @@ int main(int argc, char** argv) {
 
     // ALOCA MEMORIA PARA A QUANTIDADE
     // DE BLOCOS QUE SERAO GERADOS
-    PPMBlock* block = (PPMBlock *)malloc(sizeof(PPMBlock) * imageParams->coluna * imageParams->linha);
+    PPMBlock* block = (PPMBlock *)malloc(sizeof(PPMBlock) * blocks);
 
     // FAZ A DIVISAO DE LINHAS
     // POR BLOCOS
