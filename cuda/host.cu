@@ -25,7 +25,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, unsigned char* output, int coluna
         return;
 
 
-        output[offset] = 0;
+        //output[offset] = 0;
 
 
 
