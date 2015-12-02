@@ -71,6 +71,11 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
             //Allocate 2D memory on GPU. Also known as Pitch Linear Memory
             size_t gpu_image_pitch = 0;
 
+        dim3 block_size(16,16);
+dim3 grid_size;
+    grid_size.x = (imageParams->coluna + block_size.x - 1)/block_size.x;  /*< Greater than or equal to image width */
+    grid_size.y = (imageParams->linha + block_size.y - 1)/block_size.y; /*< Greater than or equal to image height */
+
         // EXECUTA O CUDAMEMCPY
         // ASSINCRONO OU SINCRONO
         if (ct->async == 1) {
@@ -105,7 +110,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
                 smoothPPM_noSH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
         } else {
             if (ct->sharedMemory == 1)
-                smoothPPM_SH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
+                smoothPPM_SH<<<grid_size, block_size>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
             else
                 smoothPPM_noSH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
         }
