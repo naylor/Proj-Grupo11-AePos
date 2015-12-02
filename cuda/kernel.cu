@@ -96,7 +96,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
 
     // GRAVANDO O RESULTADO
     // NA IMAGEM DE SAIDA
-    kOutput[offset].gray = sumg/25;
+    kOutput[offset].green = sumg/25;
     kOutput[offset].red = sumr/25;
     kOutput[offset].blue = sumb/25;
 
