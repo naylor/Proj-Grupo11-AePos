@@ -79,6 +79,9 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
             for(int c = -2; c < 0; ++c) {
                 const int p = (l+offset)+c;
                 sharedMem[shY+l][shX+c] = kInput[p];
+
+                const int p2 = (l+offset)+c;
+                sharedMem[shY+l+2+BLOCK_DIM][shX+c+2+BLOCK_DIM] = kInput[p2+BLOCK_DIM];
             }
         }
     }
