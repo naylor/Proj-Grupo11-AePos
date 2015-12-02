@@ -95,7 +95,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
         }
     }
 
-    kOutput[idx] = value;
+    kOutput[idx].blue = value;
 
 }
 
