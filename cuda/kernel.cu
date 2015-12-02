@@ -60,9 +60,12 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     __shared__ PPMPixel sharedMem[BLOCK_DIM+4][BLOCK_DIM+4];
 
     // OFFSET DA COLUNA*LINHA
-    unsigned int offset = __umul24(blockIdx.x, BLOCK_DIM) + threadIdx.x;
+    unsigned int offset = blockIdx.x * BLOCK_DIM + threadIdx.x;
     int c = offset % coluna; // COLUNA
     int l = (offset-c)/coluna; // LINHA
+    int x = 32*blockIdx.x + threadIdx.x - 1;
+    int y = 32*blockIdx.y + threadIdx.y - 1;
+    int idx = y*width + x;
 
     // TIRANDO A BORDA DO PROCESSAMENTO
     if ( l > lf-li || c < 2 || c > coluna-2 || (li == 0 && l < 2) || (lf==linha-1 && l > (lf-li)-2) )
@@ -74,11 +77,13 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     unsigned int shX = threadIdx.x + 2;
 
     // POPULANDO O BLOCO 20X20 (4X4 BORDA)
-    for(int l = -2; l <= BLOCK_DIM+2; ++l) {
-        for(int c = -2; c <= BLOCK_DIM+2; ++c) {
-            const int p = (l+offset)+c;
-            sharedMem[shY+l][shX+c] = kInput[p];
-        }
+ if (x < 0 || y < 0 || x >= width || y >= height)
+    {
+        sharedMem[shY][shX] = 0; // zeroed border
+    }
+    else
+    {
+        sharedMem[shY][shX] = kInput[idx];
     }
     // SINCRONIZANDO AS THREADS
     __syncthreads();
