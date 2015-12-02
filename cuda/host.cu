@@ -14,6 +14,7 @@ texture<unsigned char, cudaTextureType2D> tex8u;
 //Box Filter Kernel For Gray scale image with 8bit depth
 __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, const int height, const size_t pitch, const int fWidth, const int fHeight)
 {
+
     int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
     int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -79,7 +80,7 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
     unsigned char *GPU_input, *GPU_output;
 
     //Allocate 2D memory on GPU. Also known as Pitch Linear Memory
-    size_t gpu_image_pitch = 0;
+    size_t gpu_image_pitch = 2;
     cudaMallocPitch<unsigned char>(&GPU_input,&gpu_image_pitch,width,height);
     cudaMallocPitch<unsigned char>(&GPU_output,&gpu_image_pitch,width,height);
 
