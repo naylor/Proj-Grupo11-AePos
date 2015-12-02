@@ -73,12 +73,8 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     unsigned int shY = threadIdx.y + 2;
     unsigned int shX = threadIdx.x + 2;
 
-    // POPULANDO O BLOCO 20X20 (4X4 BORDA)
-    if (l >= 2 && l < 4) {
-        sharedMem[shY-2][shX-2] = kInput[offset];
-    }
-    else
-        sharedMem[shY][shX] = kInput[offset];
+
+    sharedMem[shY][shX] = kInput[offset];
 
     // SINCRONIZANDO AS THREADS
     __syncthreads();
@@ -88,11 +84,16 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     float green;
     float red;
 
-    for(int i = -2; i <= 2; ++i) {
-        for(int j = -2; j <= 2; ++j) {
-            blue += sharedMem[shY+i][shX+j].blue;
-            green += sharedMem[shY+i][shX+j].green;
-            red += sharedMem[shY+i][shX+j].red;
+    for(int l2 = -2; l2 <= 2; ++l2) {
+        for(int c2 = -2; c2 <= 2; ++c2) {
+            if((c+l2) >= 2 && (c+l2) < coluna-2 && (l+c2) >= -2 && (l+c2) <= lf-li+4) {
+                int p = (offset + 2*coluna)+(l2*coluna)+c2;
+                if (li == 0)
+                    p = offset + 2*coluna;
+                sumr +=sharedMem[shY][shX].red;
+                sumg += sharedMem[shY][shX].green;
+                sumb += sharedMem[shY][shX].blue;
+            }
         }
     }
 
