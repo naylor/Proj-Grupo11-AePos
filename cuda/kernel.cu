@@ -90,9 +90,9 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
 
     for(int i = -2; i <= 2; ++i) {
         for(int j = -2; j <= 2; ++j) {
-            blue += sharedMem[shY][shX].blue;
-            green += sharedMem[shY][shX].green;
-            red += sharedMem[shY][shX].red;
+            blue += sharedMem[shY][shX+j].blue;
+            green += sharedMem[shY][shX+j].green;
+            red += sharedMem[shY][shX+j].red;
         }
     }
 
