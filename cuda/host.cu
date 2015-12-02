@@ -55,8 +55,8 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // SE A OPCAO DE SHARED MEMORY
         // FOR ATIVADA, DEFINE O TAMANHO
         // DO BLOCO PARA 32
-        if (ct->sharedMemory == 1)
-            blockDims.x = BLOCK_DIM;
+        //if (ct->sharedMemory == 1)
+        //    blockDims.x = BLOCK_DIM;
         dim3 gridDims((unsigned int) ceil((double)(linhasIn/blockDims.x)), 1, 1 );
 
             //Declare GPU pointer
@@ -72,7 +72,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
             cudaMallocPitch<unsigned char>(&GPU_output,&gpu_image_pitch,imageParams->coluna,imageParams->linha);
 
             //Copy data from host to device.
-            cudaMemcpy2D(GPU_input,gpu_image_pitch,block[numBlock].ppmIn,imageParams->coluna+2,imageParams->coluna,imageParams->linha,cudaMemcpyHostToDevice);
+            cudaMemcpy2D(GPU_input,gpu_image_pitch,block[numBlock].ppmIn,imageParams->coluna,imageParams->coluna,imageParams->linha,cudaMemcpyHostToDevice);
 
             //Bind the image to the texture. Now the kernel will read the input image through the texture cache.
             //Use tex2D function to read the image
@@ -108,7 +108,7 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // GRAVACAO NO ARQUIVO
         if (ct->async == 1) {
             //Copy the results back to CPU
-            cudaMemcpy2D(block[numBlock].ppmOut,imageParams->coluna+2,GPU_output,gpu_image_pitch,imageParams->coluna,imageParams->linha,cudaMemcpyDeviceToHost);
+            cudaMemcpy2D(block[numBlock].ppmOut,imageParams->coluna,GPU_output,gpu_image_pitch,imageParams->coluna,imageParams->linha,cudaMemcpyDeviceToHost);
 
             //Release the texture
             cudaUnbindTexture(tex8u);
