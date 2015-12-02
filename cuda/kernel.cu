@@ -70,10 +70,14 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
 
     // DEFININDO THREAD+2
     // PARA COMECAR EM -2 (BORDA)
-    unsigned int shY = threadIdx.y ;
-    unsigned int shX = threadIdx.x ;
+    unsigned int shY = threadIdx.y + 2;
+    unsigned int shX = threadIdx.x + 2;
 
-
+    // POPULANDO O BLOCO 20X20 (4X4 BORDA)
+    if (threadIdx.x==0 || threadIdx.x==BLOCK_DIM-1 || threadIdx.y==0 || threadIdx.y==BLOCK_DIM-1){
+        //sharedMem[shY][shX] = kInput[offset];
+    }
+    else
         sharedMem[shY][shX] = kInput[offset];
 
     // SINCRONIZANDO AS THREADS
