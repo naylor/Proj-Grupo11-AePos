@@ -13,6 +13,8 @@ typedef struct {
     PPMPixel *ppmIn;
     PPMPixel *ppmOut;
     PGMPixel *pgmIn;
+    unsigned char* teste;
+    unsigned char* teste2;
     PGMPixel *pgmOut;
     int li, lf;
     int linhasIn;

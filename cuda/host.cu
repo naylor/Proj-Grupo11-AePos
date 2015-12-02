@@ -13,26 +13,111 @@ texture<unsigned char, cudaTextureType2D> tex8u;
 
 // FUNCAO PARA APLICAR SMOOTH
 // COM SHARED MEMORY EM IMAGENS PPM
-__global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, int linha, int li, int lf) {
-    // OFFSET DA COLUNA*LINHA
-    unsigned int offset = blockIdx.x * blockDim.x + threadIdx.x;
-    unsigned int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
+__global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, const int height, const size_t pitch, const int fWidth, const int fHeight)
+{
+    int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
+    int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
 
-    int c = offset % coluna; // COLUNA
-    int l = (offset-c)/coluna; // LINHA
+    const int filter_offset_x = fWidth/2;
+    const int filter_offset_y = fHeight/2;
 
-    // TIRANDO A BORDA DO PROCESSAMENTO
-    if ( l > lf-li || c < 2 || c > coluna-2 || (li == 0 && l < 2) || (lf==linha-1 && l > (lf-li)-2) )
-        return;
+    float output_value = 0.0f;
 
+    //Make sure the current thread is inside the image bounds
+    if(xIndex<width && yIndex<height)
+    {
+        //Sum the window pixels
+        for(int i= -filter_offset_x; i<=filter_offset_x; i++)
+        {
+            for(int j=-filter_offset_y; j<=filter_offset_y; j++)
+            {
+                //No need to worry about Out-Of-Range access. tex2D automatically handles it.
+                output_value += tex2D(tex8u,xIndex + i,yIndex + j);
+            }
+        }
 
-        kOutput[offset].blue = tex2D(tex8u,offset,yIndex);
-        kOutput[offset].red = tex2D(tex8u,offset+1,yIndex+1);
-        kOutput[offset].green = tex2D(tex8u,offset+2,yIndex+2);
+        //Average the output value
+        output_value /= (fWidth * fHeight);
 
+        //Write the averaged value to the output.
+        //Transform 2D index to 1D index, because image is actually in linear memory
+        int index = yIndex * pitch + xIndex;
 
+        output[index] = static_cast<unsigned char>(output_value);
+    }
+}
 
+void box_filter_8u_c1(PPMImageParams* imageParams, PPMBlock* block, int numBlock)
+{
+        const int widthStep=2;
+        const int filterWidth=5;
+        const int filterHeight=5;
+        unsigned char* CPUinput = block[numBlock].teste;
+        unsigned char* CPUoutput = block[numBlock].teste2;
+        const int width = imageParams->coluna;
+        const int height = imageParams->linha;
 
+    /*
+     * 2D memory is allocated as strided linear memory on GPU.
+     * The terminologies "Pitch", "WidthStep", and "Stride" are exactly the same thing.
+     * It is the size of a row in bytes.
+     * It is not necessary that width = widthStep.
+     * Total bytes occupied by the image = widthStep x height.
+     */
+
+    //Declare GPU pointer
+    unsigned char *GPU_input, *GPU_output;
+
+    //Allocate 2D memory on GPU. Also known as Pitch Linear Memory
+    size_t gpu_image_pitch = 0;
+    cudaMallocPitch<unsigned char>(&GPU_input,&gpu_image_pitch,width,height);
+    cudaMallocPitch<unsigned char>(&GPU_output,&gpu_image_pitch,width,height);
+
+    //Copy data from host to device.
+    cudaMemcpy2D(GPU_input,gpu_image_pitch,CPUinput,widthStep,width,height,cudaMemcpyHostToDevice);
+
+    //Bind the image to the texture. Now the kernel will read the input image through the texture cache.
+    //Use tex2D function to read the image
+    cudaBindTexture2D(NULL,tex8u,GPU_input,width,height,gpu_image_pitch);
+
+    /*
+     * Set the behavior of tex2D for out-of-range image reads.
+     * cudaAddressModeBorder = Read Zero
+     * cudaAddressModeClamp  = Read the nearest border pixel
+     * We can skip this step. The default mode is Clamp.
+     */
+    tex8u.addressMode[0] = tex8u.addressMode[1] = cudaAddressModeBorder;
+
+    /*
+     * Specify a block size. 256 threads per block are sufficient.
+     * It can be increased, but keep in mind the limitations of the GPU.
+     * Older GPUs allow maximum 512 threads per block.
+     * Current GPUs allow maximum 1024 threads per block
+     */
+
+    dim3 block_size(16,16);
+
+    /*
+     * Specify the grid size for the GPU.
+     * Make it generalized, so that the size of grid changes according to the input image size
+     */
+
+    dim3 grid_size;
+    grid_size.x = (width + block_size.x - 1)/block_size.x;  /*< Greater than or equal to image width */
+    grid_size.y = (height + block_size.y - 1)/block_size.y; /*< Greater than or equal to image height */
+
+    //Launch the kernel
+    box_filter_kernel_8u_c1<<<grid_size,block_size>>>(GPU_output,width,height,gpu_image_pitch,filterWidth,filterHeight);
+
+    //Copy the results back to CPU
+    cudaMemcpy2D(CPUoutput,widthStep,GPU_output,gpu_image_pitch,width,height,cudaMemcpyDeviceToHost);
+
+    //Release the texture
+    cudaUnbindTexture(tex8u);
+
+    //Free GPU memory
+    cudaFree(GPU_input);
+    cudaFree(GPU_output);
 }
 
 // FUNCAO __HOST__
@@ -110,7 +195,7 @@ dim3 grid_size;
                 smoothPPM_noSH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
         } else {
             if (ct->sharedMemory == 1)
-                smoothPPM_SH<<<grid_size, block_size>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
+                smoothPPM_noSH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
             else
                 smoothPPM_noSH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
         }

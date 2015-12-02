@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "main.cuh"
 #include "../common/imagem.cuh"
 #include "../common/timer.cuh"
 #include "../common/funcao.cuh"
 #include "../cuda/host.cuh"
+#include "main.cuh"
 
 
 int main(int argc, char** argv) {
@@ -100,7 +100,8 @@ int main(int argc, char** argv) {
         getImageBlocks(ct, imageParams, block,  t);
         stop_timer(tempoR);
 
-        applySmooth(ct, imageParams, block, t, streamSmooth);
+        //applySmooth(ct, imageParams, block, t, streamSmooth);
+        box_filter_8u_c1(imageParams, block, t);
 
         // FAZ A GRAVACAO
         start_timer(tempoW); //INICIA O RELOGIO
