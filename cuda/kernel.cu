@@ -79,7 +79,9 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     // POPULANDO O BLOCO 20X20 (4X4 BORDA)
  if (x < 0 || y < 0 || x >= coluna || y >= linha)
     {
-        sharedMem[shY][shX] = 0; // zeroed border
+        sharedMem[shY][shX].blue = 0; // zeroed border
+        sharedMem[shY][shX].red = 0; // zeroed border
+        sharedMem[shY][shX].green = 0; // zeroed border
     }
     else
     {
