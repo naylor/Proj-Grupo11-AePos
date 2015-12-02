@@ -155,7 +155,7 @@ int getImageBlocks(initialParams* ct, PPMImageParams* imageParams, PPMBlock* blo
     if (strcmp(imageParams->tipo, "P6")==0)
         block[numBlock].ppmOut = (PPMPixel *)malloc(imageParams->coluna * linhas * sizeof(PPMPixel));
     else
-        block[numBlock].teste2 = (PGMPixel *)malloc(imageParams->coluna * linhas * sizeof(PPMPixel));
+        block[numBlock].teste2 = (PGMPixel *)malloc(imageParams->coluna * linhas * sizeof(unsigned char));
 
     block[numBlock].linhasOut = imageParams->coluna * linhas * sizeof(PPMPixel);
 
@@ -207,7 +207,7 @@ int getImageBlocks(initialParams* ct, PPMImageParams* imageParams, PPMBlock* blo
     if (strcmp(imageParams->tipo, "P6")==0)
         block[numBlock].ppmIn = (PPMPixel *)malloc(imageParams->coluna * linhas * sizeof(PPMPixel));
     else
-        block[numBlock].teste = (PGMPixel *)malloc(imageParams->coluna * linhas * sizeof(PPMPixel));
+        block[numBlock].teste = (PGMPixel *)malloc(imageParams->coluna * linhas * sizeof(unsigned char));
 
 
     block[numBlock].linhasIn = imageParams->coluna * linhas * sizeof(PPMPixel);
