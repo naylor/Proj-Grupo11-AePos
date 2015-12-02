@@ -4,7 +4,7 @@
 
 #include "kernel.cuh"
 
-#define BLOCK_DIM 16
+#define BLOCK_DIM 32
 
 // FUNCAO PARA APLICAR SMOOTH
 // COM SHARED MEMORY EM IMAGENS PGM
@@ -74,8 +74,8 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     unsigned int shX = threadIdx.x + 2;
 
     // POPULANDO O BLOCO 20X20 (4X4 BORDA)
-    if (threadIdx.x==0 || threadIdx.x==BLOCK_DIM-1 || threadIdx.y==0 || threadIdx.y==BLOCK_DIM-1){
-        sharedMem[shY][shX] = kInput[offset];
+    if (threadIdx.x >= 0 && threadIdx.x < 2) {
+        sharedMem[threadIdx.y][threadIdx.x+c] = kInput[offset];
     }
     else
         sharedMem[shY][shX] = kInput[offset];
@@ -88,8 +88,8 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     float green;
     float red;
 
-    for(int i = 0; i <= 5; ++i) {
-        for(int j = 0; j <= 5; ++j) {
+    for(int i = -2; i <= 2; ++i) {
+        for(int j = -2; j <= 2; ++j) {
             blue += sharedMem[shY+i][shX+j].blue;
             green += sharedMem[shY+i][shX+j].green;
             red += sharedMem[shY+i][shX+j].red;
