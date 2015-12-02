@@ -14,7 +14,7 @@ __global__ void smoothPGM_SH(PGMPixel* kOutput) {
 
     unsigned int x = blockIdx.x*blockDim.x + threadIdx.x;
     // NA IMAGEM DE SAIDA
-    kOutput[offset].gray = tex1Dfetch(mytex,x);
+    kOutput[x].gray = tex1Dfetch(mytex,x);
 
 }
 
