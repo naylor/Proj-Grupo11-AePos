@@ -91,7 +91,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     {
         for (int dy = -1, my = 1; dy < 2; dy++, my--)
         {
-            value += sharedMem[threadIdx.y + dy][threadIdx.x + dx];
+            value += 0.04 * sharedMem[threadIdx.y + dy][threadIdx.x + dx].blue;
         }
     }
 
