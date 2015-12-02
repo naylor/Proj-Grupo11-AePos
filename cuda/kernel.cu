@@ -59,22 +59,11 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     // RESERVA TECNICA DE 4X4 PARA BORDA
     __shared__ PPMPixel sharedMem[BLOCK_DIM+4][BLOCK_DIM+4];
 
-    // OFFSET DA COLUNA*LINHA
-    unsigned int offset = blockIdx.x * BLOCK_DIM + threadIdx.x;
-    int c = offset % coluna; // COLUNA
-    int l = (offset-c)/coluna; // LINHA
+
     int x = 32*blockIdx.x + threadIdx.x - 1;
     int y = 32*blockIdx.y + threadIdx.y - 1;
     int idx = y*coluna + x;
 
-    // TIRANDO A BORDA DO PROCESSAMENTO
-    if ( l > lf-li || c < 2 || c > coluna-2 || (li == 0 && l < 2) || (lf==linha-1 && l > (lf-li)-2) )
-        return;
-
-    // DEFININDO THREAD+2
-    // PARA COMECAR EM -2 (BORDA)
-    unsigned int shY = threadIdx.y + 2;
-    unsigned int shX = threadIdx.x + 2;
 
     // POPULANDO O BLOCO 20X20 (4X4 BORDA)
  if (x < 0 || y < 0 || x >= coluna || y >= linha)
@@ -90,24 +79,23 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     // SINCRONIZANDO AS THREADS
     __syncthreads();
 
-    // APLICANDO O SMOOTH NO BLOCO
-    float blue;
-    float green;
-    float red;
 
-    for(int i = -2; i <= 2; ++i) {
-        for(int j = -2; j <= 2; ++j) {
-            blue += sharedMem[shY+i][shX+j].blue;
-            green += sharedMem[shY+i][shX+j].green;
-            red += sharedMem[shY+i][shX+j].red;
+    if (x < 0 || y < 0 || x >= width || y >= height ||
+        threadIdx.x == 0 || threadIdx.x == TILE_WIDTH - 1 ||
+        threadIdx.y == 0 || threadIdx.y == TILE_WIDTH - 1)
+        return;
+
+    float value = 0;
+
+    for (int dx = -1, mx = 1; dx < 2; dx++, mx--)
+    {
+        for (int dy = -1, my = 1; dy < 2; dy++, my--)
+        {
+            value += sharedMem[threadIdx.y + dy][threadIdx.x + dx] * mask[(my+1)*3 + (mx+1)];
         }
     }
 
-    // GRAVANDO O RESULTADO
-    // NA IMAGEM DE SAIDA
-    kOutput[offset].blue = blue/25;
-    kOutput[offset].green = green/25;
-    kOutput[offset].red = red/25;
+    kOutput[idx] = value;
 
 }
 
