@@ -13,7 +13,7 @@ texture<unsigned char, cudaTextureType2D> tex8u;
 
 // FUNCAO PARA APLICAR SMOOTH
 // COM SHARED MEMORY EM IMAGENS PPM
-__global__ void smoothPPM_SH(PPMPixel* kInput, unsigned char* output, int coluna, int linha, int li, int lf) {
+__global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kInput, int coluna, int linha, int li, int lf) {
     // OFFSET DA COLUNA*LINHA
     unsigned int offset = blockIdx.x * blockDim.x + threadIdx.x;
 
@@ -25,7 +25,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, unsigned char* output, int coluna
         return;
 
 
-        //output[offset] = 0;
+        kInput[offset].blue = 0;
 
 
 
