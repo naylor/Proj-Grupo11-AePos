@@ -22,6 +22,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     const int filter_offset_y = fHeight/2;
 
     float output_value = 0.0f;
+                        printf("Apply Smooth[%d] ", xIndex );
 
     //Make sure the current thread is inside the image bounds
     if(xIndex<width && yIndex<height)
@@ -33,7 +34,6 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
             {
                 //No need to worry about Out-Of-Range access. tex2D automatically handles it.
                 output_value += tex2D(tex8u,xIndex + i,yIndex + j);
-                        printf("Apply Smooth[%d] ", output_value );
 
             }
         }
