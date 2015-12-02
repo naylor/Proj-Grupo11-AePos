@@ -93,22 +93,22 @@ int main(int argc, char** argv) {
         i++;
     }
 
-    //for(int t=0; t<i; t++) {
+    for(int t=0; t<i; t++) {
         // FAZ A LEITURA DA PARTE DA IMAGEM
         // NO DISCO
         start_timer(tempoR); //INICIA O RELOGIO
-        getImageBlocks(ct, imageParams, block,  0);
+        getImageBlocks(ct, imageParams, block,  t);
         stop_timer(tempoR);
 
         //applySmooth(ct, imageParams, block, t, streamSmooth);
-        box_filter_8u_c1(imageParams, block, 0);
+        box_filter_8u_c1(imageParams, block, t);
 
 
         // FAZ A GRAVACAO
         start_timer(tempoW); //INICIA O RELOGIO
-        writePPMPixels(ct, imageParams, block, 0);
+        writePPMPixels(ct, imageParams, block, t);
         stop_timer(tempoW);
-   // }
+    }
 
     //PARA O RELOGIO
     show_timer(tempoR, "READ");
