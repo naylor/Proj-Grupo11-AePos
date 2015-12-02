@@ -30,8 +30,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
         return;
 
     //Make sure the current thread is inside the image bounds
-    if(xIndex<width && yIndex<height)
-    {
+
         //Sum the window pixels
         for(int i= -2; i<=2; i++)
         {
@@ -51,7 +50,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
         int index = yIndex * pitch + xIndex;
 
         output[index] = static_cast<unsigned char>(output_value);
-    }
+
 }
 
 
