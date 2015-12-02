@@ -75,7 +75,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
 
     // POPULANDO O BLOCO 20X20 (4X4 BORDA)
     if (threadIdx.y >= 0 && threadIdx.y < 2) {
-        sharedMem[shY][shX] = kInput[offset];
+        sharedMem[shY-2][shX-2] = kInput[offset];
     }
     else
         sharedMem[shY][shX] = kInput[offset];
