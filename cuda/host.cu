@@ -25,7 +25,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     int c = xIndex % width; // COLUNA
     int l = (xIndex-c)/width; // LINHA
 
-    if ( l > lf-li || c < 2 || c > coluna-2 || (li == 0 && l < 2) || (lf==height-1 && l > (lf-li)-2) )
+    if ( l > lf-li || c < 2 || c > width-2 || (li == 0 && l < 2) || (lf==height-1 && l > (lf-li)-2) )
         return;
 
 
@@ -34,7 +34,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
         {
             for(int c2=-2; c2<=2; c2++)
             {
-            if((c+l2) >= 2 && (c+l2) < coluna-2 && (l+c2) >= -2 && (l+c2) <= lf-li+4) {
+            if((c+l2) >= 2 && (c+l2) < width-2 && (l+c2) >= -2 && (l+c2) <= lf-li+4) {
 
                 int p = c2+10;
                 if (li == 0)
