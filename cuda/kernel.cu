@@ -16,8 +16,7 @@ __global__ void smoothPGM_SH(PGMPixel* kInput, PGMPixel* kOutput, int coluna, in
     __shared__ PGMPixel sharedMem[BLOCK_DIM+4][BLOCK_DIM+4];
 
     // OFFSET DA COLUNA*LINHA
-    int offset = __umul24(blockIdx.x, BLOCK_DIM) + threadIdx.x;
-
+    unsigned int offset = blockIdx.x * BLOCK_DIM + threadIdx.x;
     int c = offset % coluna; // COLUNA
     int l = (offset-c)/coluna; // LINHA
 
@@ -60,21 +59,19 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     // RESERVA TECNICA DE 4X4 PARA BORDA
     __shared__ PPMPixel sharedMem[BLOCK_DIM+4][BLOCK_DIM+4];
 
-
     // OFFSET DA COLUNA*LINHA
-    int offset = __umul24(blockIdx.x, BLOCK_DIM) + threadIdx.x;
-
+    unsigned int offset = blockIdx.x * BLOCK_DIM + threadIdx.x;
     int c = offset % coluna; // COLUNA
     int l = (offset-c)/coluna; // LINHA
+
+    // TIRANDO A BORDA DO PROCESSAMENTO
+    if ( l > lf-li || c < 2 || c > coluna-2 || (li == 0 && l < 2) || (lf==linha-1 && l > (lf-li)-2) )
+        return;
 
     // DEFININDO THREAD+2
     // PARA COMECAR EM -2 (BORDA)
     unsigned int shY = threadIdx.y + 2;
     unsigned int shX = threadIdx.x + 2;
-
-    // TIRANDO A BORDA DO PROCESSAMENTO
-    if ( l > lf-li || c < 2 || c > coluna-2 || (li == 0 && l < 2) || (lf==linha-1 && l > (lf-li)-2) )
-        return;
 
     // POPULANDO O BLOCO 20X20 (4X4 BORDA)
     for(int l = -2; l <= BLOCK_DIM+2; ++l) {
@@ -83,15 +80,13 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
             sharedMem[shY+l][shX+c] = kInput[p];
         }
     }
-
     // SINCRONIZANDO AS THREADS
     __syncthreads();
 
     // APLICANDO O SMOOTH NO BLOCO
-    int sumr = 0;
-    int sumb = 0;
-    int sumg = 0;
-
+    float sumg;
+    float sumr;
+    float sumb;
     for(int i = -2; i <= 2; ++i)
         for(int j = -2; j <= 2; ++j) {
             sumg += sharedMem[shY+i][shX+j].green;
@@ -101,7 +96,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
 
     // GRAVANDO O RESULTADO
     // NA IMAGEM DE SAIDA
-    kOutput[offset].green = sumg/25;
+    kOutput[offset].gray = sumg/25;
     kOutput[offset].red = sumr/25;
     kOutput[offset].blue = sumb/25;
 
