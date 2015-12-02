@@ -80,7 +80,10 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     __syncthreads();
 
 
-
+    if (x < 0 || y < 0 || x >= coluna || y >= linha ||
+        threadIdx.x == 0 || threadIdx.x == 20 - 1 ||
+        threadIdx.y == 0 || threadIdx.y == 20 - 1)
+        return;
 
     int sumr = 0;
     int sumb = 0;
