@@ -77,7 +77,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     for(int l = -2; l <= BLOCK_DIM+2; ++l) {
         for(int c = -2; c <= BLOCK_DIM+2; ++c) {
             const int p = (l+offset)+c;
-            sharedMem[shY][shX] = kInput[p];
+            sharedMem[shY+1][shX+1] = kInput[p];
         }
     }
     // SINCRONIZANDO AS THREADS
