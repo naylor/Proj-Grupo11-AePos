@@ -22,15 +22,14 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     float output_value = 0.0f;
     int cont = 0;
 
-    int c = xIndex % width; // COLUNA
-    int l = (xIndex-c)/width; // LINHA
+    int c = offset % coluna; // COLUNA
+    int l = (offset-c)/coluna; // LINHA
 
-    // TIRANDO A BORDA DO PROCESSAMENTO
-    if ( l > lf-li || c < 2 || c > width-2 || (li == 0 && l < 2) || (lf==height-1 && l > (lf-li)-2) )
-        return;
+
 
     //Make sure the current thread is inside the image bounds
-
+    if(xIndex<width && yIndex<height)
+    {
         //Sum the window pixels
         for(int i= -2; i<=2; i++)
         {
@@ -49,8 +48,8 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
         //Transform 2D index to 1D index, because image is actually in linear memory
         int index = yIndex * pitch + xIndex;
 
-        output[xIndex] = static_cast<unsigned char>(output_value);
-
+        output[index] = static_cast<unsigned char>(output_value);
+    }
 }
 
 
