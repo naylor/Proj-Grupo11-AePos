@@ -16,7 +16,7 @@ __global__ void smoothPGM_SH(PGMPixel* kInput, PGMPixel* kOutput, int coluna, in
     __shared__ PGMPixel sharedMem[BLOCK_DIM+4][BLOCK_DIM+4];
 
     // OFFSET DA COLUNA*LINHA
-    unsigned int offset = blockIdx.x * BLOCK_DIM + threadIdx.x;
+    unsigned int offset = __umul24(blockIdx.x, BLOCK_DIM) + threadIdx.x;
     int c = offset % coluna; // COLUNA
     int l = (offset-c)/coluna; // LINHA
 
@@ -60,7 +60,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     __shared__ PPMPixel sharedMem[BLOCK_DIM+4][BLOCK_DIM+4];
 
     // OFFSET DA COLUNA*LINHA
-    unsigned int offset = blockIdx.x * BLOCK_DIM + threadIdx.x;
+    unsigned int offset = __umul24(blockIdx.x, BLOCK_DIM) + threadIdx.x;
     int c = offset % coluna; // COLUNA
     int l = (offset-c)/coluna; // LINHA
 
@@ -89,9 +89,9 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     float sumb;
     for(int i = -2; i <= 2; ++i)
         for(int j = -2; j <= 2; ++j) {
-            sumg += 0.04 * sharedMem[shY+i][shX+j].green;
-            sumr += 0.04 * sharedMem[shY+i][shX+j].red;
-            sumb += 0.04 * sharedMem[shY+i][shX+j].blue;
+            sumg += __umul24(0.04, sharedMem[shY+i][shX+j].green);
+            sumr += __umul24(0.04, sharedMem[shY+i][shX+j].red);
+            sumb += __umul24(0.04, sharedMem[shY+i][shX+j].blue);
         }
 
     // GRAVANDO O RESULTADO
