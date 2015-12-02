@@ -97,16 +97,16 @@ int main(int argc, char** argv) {
         // FAZ A LEITURA DA PARTE DA IMAGEM
         // NO DISCO
         start_timer(tempoR); //INICIA O RELOGIO
-        getImageBlocks(ct, imageParams, block,  t);
+        getImageBlocks(ct, imageParams, block,  0);
         stop_timer(tempoR);
 
         //applySmooth(ct, imageParams, block, t, streamSmooth);
-        box_filter_8u_c1(imageParams, block, t);
+        box_filter_8u_c1(imageParams, block, 0);
 
 
         // FAZ A GRAVACAO
         start_timer(tempoW); //INICIA O RELOGIO
-        writePPMPixels(ct, imageParams, block, t);
+        writePPMPixels(ct, imageParams, block, 0);
         stop_timer(tempoW);
     //}
 
