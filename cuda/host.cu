@@ -57,14 +57,14 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
 
     const int width = imageParams->coluna;
     const int height = linhasIn;
+
+    const int widthStep = imageParams->coluna;
+    const int filterWidth = 5;
+    const int filterHeight = 5;
     printf("Apply Smooth[%d][%s] - li:%d, lf:%d\n",
                numBlock, imageParams->tipo, block[numBlock].li, block[numBlock].lf);
 
     exit(1);
-    const int widthStep = imageParams->coluna;
-    const int filterWidth = 5;
-    const int filterHeight = 5;
-
     unsigned char CPUinput[width*height];
     unsigned char CPUoutput[width*linhasOut];
 
