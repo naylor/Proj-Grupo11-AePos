@@ -17,7 +17,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, unsigned char* output, int coluna
     int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
     int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
 
-  if(xIndex<coluna && yIndex<linha)
+  if(xIndex<coluna-100 && yIndex<linha-100)
     {
 
 
