@@ -40,13 +40,15 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
             blockDims.x = BLOCK_DIM;
         dim3 gridDims((unsigned int) ceil((double)(linhasIn/blockDims.x)), 1, 1 );
 
-        // EXECUTA O CUDAMEMCPY
-        // ASSINCRONO OU SINCRONO
-        if (ct->async == 1) {
             //Declare GPU pointer
             unsigned char *GPU_input, *GPU_output;
             //Allocate 2D memory on GPU. Also known as Pitch Linear Memory
             size_t gpu_image_pitch = 0;
+
+        // EXECUTA O CUDAMEMCPY
+        // ASSINCRONO OU SINCRONO
+        if (ct->async == 1) {
+
             cudaMallocPitch<unsigned char>(&GPU_input,&gpu_image_pitch,imageParams->coluna,imageParams->linha);
             cudaMallocPitch<unsigned char>(&GPU_output,&gpu_image_pitch,imageParams->coluna,imageParams->linha);
 
@@ -85,9 +87,13 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
         // RETORNA A IMAGEM PARA
         // A VARIAVEL DE SAIDA PARA
         // GRAVACAO NO ARQUIVO
-        if (ct->async == 1)
-            cudaMemcpyAsync(block[numBlock].ppmOut, kOutput, linhasOut, cudaMemcpyDeviceToHost, streamSmooth[numBlock] );
-        else
+        if (ct->async == 1) {
+            //Copy the results back to CPU
+            cudaMemcpy2D(block[numBlock].ppmOut,imageParams->coluna+2,GPU_output,gpu_image_pitch,imageParams->coluna,imageParams->linha,cudaMemcpyDeviceToHost);
+
+            //Release the texture
+            cudaUnbindTexture(tex8u);
+        } else
             cudaMemcpy(block[numBlock].ppmOut, kOutput, linhasOut, cudaMemcpyDeviceToHost );
 
         // LIBERA A MEMORIA
