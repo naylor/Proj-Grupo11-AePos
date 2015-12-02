@@ -8,6 +8,9 @@
 #define BLOCK_DIM 32
 #define BLOCK_DEFAULT 512
 
+texture <uchar4, cudaTextureType1D, cudaReadModeNormalizedFloat> mytex;
+
+
 // FUNCAO __HOST__
 // DEFINICAO DOS PARAMETROS DE CHAMADA DO KERNEL
 void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block, int numBlock, cudaStream_t* streamSmooth) {
@@ -103,8 +106,8 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
             cudaMemcpy( kInput, block[numBlock].pgmIn, linhasIn, cudaMemcpyHostToDevice);
 
         cudaChannelFormatDesc channelDesc;
-        channelDesc = cudaCreateChannelDesc(8,8,8,cudaChannelFormatKindUnsigned);
-        cudaBindTexture(0,mytex,kInput,channelDesc,3*size);
+        channelDesc = cudaCreateChannelDesc(8,8,8,8,cudaChannelFormatKindUnsigned);
+        cudaBindTexture(0,mytex,kInput,channelDesc,linhas);
 
         // EXECUTA A FUNCAO SMOOTH NO KERNEL
         // SE A OPCAO DE SHARED MEMORY FOR ATIVADA
