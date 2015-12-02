@@ -8,6 +8,7 @@
 #define BLOCK_DIM 32
 #define BLOCK_DEFAULT 512
 
+texture<unsigned char, cudaTextureType2D> tex8u;
 // FUNCAO __HOST__
 // DEFINICAO DOS PARAMETROS DE CHAMADA DO KERNEL
 void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block, int numBlock, cudaStream_t* streamSmooth) {
@@ -41,9 +42,29 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block
 
         // EXECUTA O CUDAMEMCPY
         // ASSINCRONO OU SINCRONO
-        if (ct->async == 1)
-            cudaMemcpyAsync( kInput, block[numBlock].ppmIn, linhasIn, cudaMemcpyHostToDevice, streamSmooth[numBlock] );
-        else
+        if (ct->async == 1) {
+            //Declare GPU pointer
+            unsigned char *GPU_input, *GPU_output;
+            //Allocate 2D memory on GPU. Also known as Pitch Linear Memory
+            size_t gpu_image_pitch = 0;
+            cudaMallocPitch<unsigned char>(&GPU_input,&gpu_image_pitch,imageParams->coluna,imageParams->linha);
+            cudaMallocPitch<unsigned char>(&GPU_output,&gpu_image_pitch,imageParams->coluna,imageParams->linha);
+
+            //Copy data from host to device.
+            cudaMemcpy2D(GPU_input,gpu_image_pitch,block[numBlock].ppmIn,imageParams->coluna+2,imageParams->coluna,imageParams->linha,cudaMemcpyHostToDevice);
+
+            //Bind the image to the texture. Now the kernel will read the input image through the texture cache.
+            //Use tex2D function to read the image
+            cudaBindTexture2D(NULL,tex8u,GPU_input,imageParams->coluna,imageParams->linha,gpu_image_pitch);
+
+            /*
+             * Set the behavior of tex2D for out-of-range image reads.
+             * cudaAddressModeBorder = Read Zero
+             * cudaAddressModeClamp  = Read the nearest border pixel
+             * We can skip this step. The default mode is Clamp.
+             */
+            tex8u.addressMode[0] = tex8u.addressMode[1] = cudaAddressModeBorder;
+        } else
             cudaMemcpy( kInput, block[numBlock].ppmIn, linhasIn, cudaMemcpyHostToDevice);
 
         // EXECUTA A FUNCAO SMOOTH NO KERNEL
