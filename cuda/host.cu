@@ -18,6 +18,8 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
     int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
 
+    const int filter_offset_x = fWidth/2;
+    const int filter_offset_y = fHeight/2;
 
     float output_value = 0.0f;
     int cont = 0;
@@ -25,9 +27,9 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     if(xIndex<width && yIndex<height)
     {
         //Sum the window pixels
-        for(int i= -2; i<=2; i++)
+        for(int i= -filter_offset_x; i<=filter_offset_x; i++)
         {
-            for(int j=-2; j<=2; j++)
+            for(int j=-filter_offset_y; j<=filter_offset_y; j++)
             {
                 //No need to worry about Out-Of-Range access. tex2D automatically handles it.
                 output_value += tex2D(tex8u,xIndex + i,yIndex + j);
@@ -40,7 +42,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
 
         //Write the averaged value to the output.
         //Transform 2D index to 1D index, because image is actually in linear memory
-        int index = yIndex + xIndex;
+        int index = yIndex * pitch + xIndex;
 
         output[index] = static_cast<unsigned char>(output_value);
     }
