@@ -93,7 +93,7 @@ int main(int argc, char** argv) {
         i++;
     }
 
-    for(int t=0; t<i; t++) {
+    //for(int t=0; t<i; t++) {
         // FAZ A LEITURA DA PARTE DA IMAGEM
         // NO DISCO
         start_timer(tempoR); //INICIA O RELOGIO
@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
         start_timer(tempoW); //INICIA O RELOGIO
         writePPMPixels(ct, imageParams, block, t);
         stop_timer(tempoW);
-    }
+    //}
 
     //PARA O RELOGIO
     show_timer(tempoR, "READ");
