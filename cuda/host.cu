@@ -115,7 +115,7 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
      * Current GPUs allow maximum 1024 threads per block
      */
 
-    dim3 block_size(16,16);
+    dim3 block_size(32,32);
 
     /*
      * Specify the grid size for the GPU.
