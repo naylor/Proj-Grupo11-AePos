@@ -103,6 +103,7 @@ int main(int argc, char** argv) {
         //applySmooth(ct, imageParams, block, t, streamSmooth);
         box_filter_8u_c1(imageParams, block, t);
 
+
         // FAZ A GRAVACAO
         start_timer(tempoW); //INICIA O RELOGIO
         writePPMPixels(ct, imageParams, block, t);
