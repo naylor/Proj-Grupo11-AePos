@@ -60,6 +60,8 @@ void box_filter_8u_c1(PPMImageParams* imageParams, PPMBlock* block, int numBlock
             for(int t=0; t<imageParams->coluna*imageParams->linha; t++)
                    CPUinput[t] =  block[numBlock].pgmIn[t].gray;
 
+        printf("Apply Smooth[%d][%s] - li:%d, lf:%d\n",
+               numBlock, imageParams->tipo, block[numBlock].li, block[numBlock].lf);
 
     /*
      * 2D memory is allocated as strided linear memory on GPU.
