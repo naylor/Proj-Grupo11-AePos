@@ -62,9 +62,6 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
     const int filterWidth = 5;
     const int filterHeight = 5;
 
-    printf("Apply Smooth[%d][%d]%d -\n",
-               width, linhasIn, linhasOut);
-
 
 
     unsigned char CPUinput[width*height];
