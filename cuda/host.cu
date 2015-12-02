@@ -55,8 +55,8 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
     const int width = imageParams->coluna;
     const int height = block[numBlock].lf-block[numBlock].li;
     const int widthStep = imageParams->coluna;
-    const int filterWidth = 4;
-    const int filterHeight = 4;
+    const int filterWidth = 5;
+    const int filterHeight = 5;
 
     unsigned char CPUinput[width*width];
     unsigned char CPUoutput[width*width];
