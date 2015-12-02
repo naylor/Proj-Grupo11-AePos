@@ -87,9 +87,9 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     for(int l2 = -2; l2 <= 2; ++l2) {
         for(int c2 = -2; c2 <= 2; ++c2) {
             if((c+l2) >= 2 && (c+l2) < coluna-2 && (l+c2) >= -2 && (l+c2) <= lf-li+4) {
-                int p = (offset + 2*coluna)+(l2*coluna)+c2;
+                int p = (offset + 2*BLOCK_DIM)+(l2*BLOCK_DIM)+c2;
                 if (li == 0)
-                    p = offset + 2*coluna;
+                    p = offset + 2*BLOCK_DIM;
                 red += sharedMem[shY][shX].red;
                 green += sharedMem[shY][shX].green;
                 blue += sharedMem[shY][shX].blue;
