@@ -52,7 +52,7 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
 {
 
     int linhasIn = block[numBlock].linhasIn;
-    double linhasOut = block[numBlock].linhasOut;
+    int linhasOut = block[numBlock].linhasOut;
 
     const int width = imageParams->coluna;
     const int height = block[numBlock].lf-block[numBlock].li;
