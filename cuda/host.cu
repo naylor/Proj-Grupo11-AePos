@@ -112,6 +112,8 @@ void box_filter_8u_c1(PPMImageParams* imageParams, PPMBlock* block, int numBlock
     //Copy the results back to CPU
     cudaMemcpy2D(CPUoutput,widthStep,GPU_output,gpu_image_pitch,width,height,cudaMemcpyDeviceToHost);
 
+    block[numBlock].teste2 = CPUoutput;
+
     //Release the texture
     cudaUnbindTexture(tex8u);
 
