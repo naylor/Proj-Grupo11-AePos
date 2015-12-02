@@ -16,6 +16,7 @@ texture<unsigned char, cudaTextureType2D> tex8u;
 __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, int linha, int li, int lf) {
     // OFFSET DA COLUNA*LINHA
     unsigned int offset = blockIdx.x * blockDim.x + threadIdx.x;
+    unsigned int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
 
     int c = offset % coluna; // COLUNA
     int l = (offset-c)/coluna; // LINHA
@@ -25,7 +26,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
         return;
 
 
-        kOutput[offset].blue = 0;
+        output_value += tex2D(tex8u,offset,yIndex);
 
 
 
