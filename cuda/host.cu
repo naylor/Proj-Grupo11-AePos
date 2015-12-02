@@ -21,7 +21,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, unsigned char* output, int coluna
     {
 
 
-    output[xIndex] = tex2D(tex8u,xIndex,yIndex);
+    output[xIndex] = 0;
     }
 
 
