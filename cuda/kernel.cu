@@ -89,16 +89,16 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     float sumb;
     for(int i = -2; i <= 2; ++i)
         for(int j = -2; j <= 2; ++j) {
-            sumg += sharedMem[shY+i][shX+j].green;
-            sumr += sharedMem[shY+i][shX+j].red;
-            sumb += sharedMem[shY+i][shX+j].blue;
+            sumg += 0.04 * sharedMem[shY+i][shX+j].green;
+            sumr += 0.04 * sharedMem[shY+i][shX+j].red;
+            sumb += 0.04 * sharedMem[shY+i][shX+j].blue;
         }
 
     // GRAVANDO O RESULTADO
     // NA IMAGEM DE SAIDA
-    kOutput[offset].green = sumg/25;
-    kOutput[offset].red = sumr/25;
-    kOutput[offset].blue = sumb/25;
+    kOutput[offset].green = sumg;
+    kOutput[offset].red = sumr;
+    kOutput[offset].blue = sumb;
 
 }
 
