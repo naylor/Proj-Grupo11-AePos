@@ -26,7 +26,7 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
         return;
 
 
-        output_value += tex2D(tex8u,offset,yIndex);
+        kOutput[offset] = tex2D(tex8u,offset,yIndex);
 
 
 
