@@ -25,8 +25,6 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     int c = xIndex % width; // COLUNA
     int l = (xIndex-c)/width; // LINHA
 
-
-
     //Make sure the current thread is inside the image bounds
     if(xIndex<width && yIndex<height)
     {
@@ -35,9 +33,12 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
         {
             for(int j=-2; j<=2; j++)
             {
+                            if((c+l2) >= 2 && (c+l2) < width-2 && (l+c2) >= -2 && (l+c2) <= lf-li+4) {
+
                 //No need to worry about Out-Of-Range access. tex2D automatically handles it.
                 output_value += tex2D(tex8u,xIndex + i,yIndex + j);
                 cont++;
+                            }
             }
         }
 
