@@ -65,7 +65,7 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
 
 
     unsigned char CPUinput[width*height];
-    unsigned char CPUoutput[width*linhasOut];
+    unsigned char CPUoutput[width*height];
 
 
 
