@@ -74,11 +74,13 @@ __global__ void smoothPPM_SH(PPMPixel* kInput, PPMPixel* kOutput, int coluna, in
     unsigned int shX = threadIdx.x + 2;
 
     // POPULANDO O BLOCO 20X20 (4X4 BORDA)
+    if (threadIdx.x==0 || threadIdx.x==BLOCK_DIM-1 || threadIdx.y==0 || threadIdx.y==BLOCK_DIM-1){
     for(int l = -2; l <= BLOCK_DIM+2; ++l) {
         for(int c = -2; c <= BLOCK_DIM+2; ++c) {
             const int p = (l+offset)+c;
-            sharedMem[shY+BLOCK_DIM+l][shX+BLOCK_DIM+c] = kInput[p];
+            sharedMem[shY+l][shX+c] = kInput[p];
         }
+    }
     }
     // SINCRONIZANDO AS THREADS
     __syncthreads();
