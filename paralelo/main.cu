@@ -62,6 +62,7 @@ int main(int argc, char** argv) {
     printf("\nMemoria Compartilhada: %s", ct->sharedMemory==1?"Ativado":"Desativado");
     printf("\nMemoria Assincrona: %s\n", ct->async==1?"Ativado":"Desativado");
 
+    tempo* relogio = (tempo* )malloc(sizeof(tempo) * 2);
     timer* tempoA = (timer* )malloc(sizeof(timer)); // RELOGIO APLICACAO
     timer* tempoR = (timer* )malloc(sizeof(timer)); // RELOGIO LEITURA
     timer* tempoW = (timer* )malloc(sizeof(timer)); // RELOGIO WRITE
@@ -94,8 +95,6 @@ int main(int argc, char** argv) {
         i++;
     }
 
-    float time;
-
     for(int t=0; t<i; t++) {
         // FAZ A LEITURA DA PARTE DA IMAGEM
         // NO DISCO
@@ -104,7 +103,8 @@ int main(int argc, char** argv) {
         stop_timer(tempoR);
 
         //applySmooth(ct, imageParams, block, t, streamSmooth);
-        time += box_filter_8u_c1(ct, imageParams, block, t, streamSmooth);
+        relogio[1].tempoS.timeval_diff += box_filter_8u_c1(ct, imageParams, block, t, streamSmooth);
+
         // FAZ A GRAVACAO
         start_timer(tempoW); //INICIA O RELOGIO
         writePPMPixels(ct, imageParams, block, t);
@@ -113,14 +113,15 @@ int main(int argc, char** argv) {
 
     }
 
-    tempoS.timeval_diff = (double)time;
-
 
     //PARA O RELOGIO
-    show_timer(tempoR, "READ");
-    show_timer(tempoW, "WRITE");
     stop_timer(tempoA);
-    show_timer(tempoA, "TOTAL");
+
+    relogio[1].tempoR = total_timer(tempoR);
+    relogio[1].tempoW = total_timer(tempoW);
+    relogio[0].tempoA = total_timer(tempoA);
+
+    show_timer(relogio, 1);
 
     // DESTROI O CUDA STREAM
     if (ct->async == 1)
