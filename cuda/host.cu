@@ -15,8 +15,8 @@ texture<unsigned char, cudaTextureType2D> tex8u;
 __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, const int height, const size_t pitch, const int lf, const int li)
 {
 
-    int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
-    int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
+    int yIndex = blockIdx.x * blockDim.x + threadIdx.x;
+    int  xIndex= blockIdx.y * blockDim.y + threadIdx.y;
 
 
     float output_value = 0.0f;
