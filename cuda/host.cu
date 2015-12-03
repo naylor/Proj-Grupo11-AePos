@@ -15,8 +15,8 @@ texture<unsigned char, cudaTextureType2D> tex8u;
 __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, const int height, const size_t pitch, const int lf, const int li)
 {
 
-    int yIndex = blockIdx.x * blockDim.x + threadIdx.x;
-    int  xIndex= blockIdx.y * blockDim.y + threadIdx.y;
+    int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
+    int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
 
 
     float output_value = 0.0f;
@@ -34,13 +34,13 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
         {
             for(int c2=-2; c2<=2; c2++)
             {
-            if((xIndex+l2) >= 2 && (xIndex+l2) < width-2 && (yIndex+c2) >= -2 && (yIndex+c2) <= lf-li+4) {
+            if((yIndex+l2) >= 2 && (yIndex+l2) < width-2 && (xIndex+c2) >= -2 && (xIndex+c2) <= lf-li+4) {
 
-                int p = (xIndex + 2*xIndex)+(l2*xIndex)+c2;
+                int p = l2-;
                 if (li == 0)
-                    p = xIndex + 2*xIndex;
+                    p = l2;
                 //No need to worry about Out-Of-Range access. tex2D automatically handles it.
-                output_value += tex2D(tex8u,xIndex + l2,yIndex + c2);
+                output_value += tex2D(tex8u,xIndex + p,yIndex + c2);
                 cont++;
             }
             }
