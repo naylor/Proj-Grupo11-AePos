@@ -6,12 +6,12 @@
 #define TIMER_H_
 
 #ifdef __linux__ // || _unix_ || _unix
-	typedef struct timer_t {
+	typedef struct {
 		struct timeval timeval_start, timeval_end;
 		double timeval_diff, timeval_diff_s, timeval_diff_u;
 	} timer;
 #else
-	typedef struct timer_t {
+	typedef struct {
 		struct timeval timeval_start, timeval_end;
 		double timeval_diff, timeval_diff_s, timeval_diff_u;
 	} timer;

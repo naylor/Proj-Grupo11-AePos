@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
         stop_timer(tempoR);
 
         //applySmooth(ct, imageParams, block, t, streamSmooth);
-        tempoF.timeval_diff += box_filter_8u_c1(ct, imageParams, block, t, streamSmooth);
+        tempoF->timeval_diff += box_filter_8u_c1(ct, imageParams, block, t, streamSmooth);
 
         // FAZ A GRAVACAO
         start_timer(tempoW); //INICIA O RELOGIO
@@ -117,7 +117,7 @@ int main(int argc, char** argv) {
     //PARA O RELOGIO
     stop_timer(tempoA);
 
-    relogio[1].tempoF = tempoF.timeval_diff;
+    relogio[1].tempoF = tempoF->timeval_diff;
     relogio[1].tempoR = total_timer(tempoR);
     relogio[1].tempoW = total_timer(tempoW);
     relogio[0].tempoA = total_timer(tempoA);

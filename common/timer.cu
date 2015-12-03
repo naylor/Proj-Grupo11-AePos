@@ -4,7 +4,7 @@
 #include <time.h>
 #include <stdbool.h>
 
-#include "timer.h"
+#include "timer.cuh"
 
 void start_timer(timer* t) {
     gettimeofday(&t->timeval_start, NULL);
