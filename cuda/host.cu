@@ -58,7 +58,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
 }
 
 
-void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block, int numBlock, cudaStream_t* streamSmooth)
+float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block, int numBlock, cudaStream_t* streamSmooth)
 {
 
     cudaEvent_t start, stop;
@@ -139,8 +139,7 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
     cudaFree(GPU_output);
 
     cudaEventElapsedTime(&time, start, stop);
-    printf ("Time for the kernel: %f ms\n", time);
-
+    return time;
 }
 
 // FUNCAO __HOST__

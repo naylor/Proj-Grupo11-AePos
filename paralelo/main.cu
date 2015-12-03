@@ -93,6 +93,8 @@ int main(int argc, char** argv) {
         i++;
     }
 
+    float time;
+
     for(int t=0; t<i; t++) {
         // FAZ A LEITURA DA PARTE DA IMAGEM
         // NO DISCO
@@ -101,11 +103,14 @@ int main(int argc, char** argv) {
         stop_timer(tempoR);
 
         //applySmooth(ct, imageParams, block, t, streamSmooth);
-        box_filter_8u_c1(ct, imageParams, block, t, streamSmooth);
+        time = box_filter_8u_c1(ct, imageParams, block, t, streamSmooth);
         // FAZ A GRAVACAO
         start_timer(tempoW); //INICIA O RELOGIO
         writePPMPixels(ct, imageParams, block, t);
         stop_timer(tempoW);
+
+        printf ("Time for the kernel: %f ms\n", time);
+
     }
 
     //PARA O RELOGIO
