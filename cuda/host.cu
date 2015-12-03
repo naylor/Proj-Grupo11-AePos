@@ -31,17 +31,15 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
 
 
         //Sum the window pixels
-        for(int l2= -2; l2<=2; l2++)
+        for(int l2= -2+xIndex; l2<=2+xIndex; l2++)
         {
             for(int c2=-2; c2<=2; c2++)
             {
-            if((xIndex+l2) >= 2 && (xIndex+l2) < width-2 && (yIndex+c2) >= -2 && (yIndex+c2) <= lf-li+4) {
+            if(l2 > 0) {
 
-                int p = l2-2;
-                if (li == 0)
-                    p = l2;
+
                 //No need to worry about Out-Of-Range access. tex2D automatically handles it.
-                output_value += tex2D(tex8u,xIndex + p,yIndex + c2);
+                output_value += tex2D(tex8u,xIndex + l2,yIndex + c2);
                 cont++;
             }
             }
