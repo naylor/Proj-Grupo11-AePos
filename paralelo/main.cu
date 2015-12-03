@@ -104,7 +104,7 @@ int main(int argc, char** argv) {
         stop_timer(tempoR);
 
         //applySmooth(ct, imageParams, block, t, streamSmooth);
-        time = box_filter_8u_c1(ct, imageParams, block, t, streamSmooth);
+        time += box_filter_8u_c1(ct, imageParams, block, t, streamSmooth);
 
         // FAZ A GRAVACAO
         start_timer(tempoW); //INICIA O RELOGIO
