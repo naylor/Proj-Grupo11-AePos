@@ -29,9 +29,12 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     if ( l > lf-li || c < 2 || c > width-2 || (li == 0 && yIndex < 2) || (lf==height-1 && yIndex > (lf-li)-2) )
         return;
 
+    int inicio = xIndex;
+    if (li != 0)
+        inicio = xIndex+2;
 
         //Sum the window pixels
-        for(int l2= -2+xIndex; l2<=2+xIndex; l2++)
+        for(int l2= -2+inicio; l2<=2+inicio; l2++)
         {
             for(int c2=-2; c2<=2; c2++)
             {
