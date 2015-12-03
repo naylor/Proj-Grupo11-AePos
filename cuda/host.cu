@@ -139,7 +139,6 @@ double box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock
     cudaFree(GPU_output);
 
     cudaEventElapsedTime(&time, start, stop);
-        printf ("Time for the kernel: %f ms\n", static_cast<double>(time));
 
     return static_cast<double>(time);
 }

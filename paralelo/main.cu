@@ -104,6 +104,7 @@ int main(int argc, char** argv) {
 
         //applySmooth(ct, imageParams, block, t, streamSmooth);
         tempoF->timeval_diff += box_filter_8u_c1(ct, imageParams, block, t, streamSmooth);
+        printf ("Time for the kernel: %f ms\n", tempoF->timeval_diff);
 
         // FAZ A GRAVACAO
         start_timer(tempoW); //INICIA O RELOGIO
