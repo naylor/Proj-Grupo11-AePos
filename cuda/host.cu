@@ -67,23 +67,12 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
     const int width = imageParams->coluna;
     const int height = (block[numBlock].lf-block[numBlock].li)+1;
     const int widthStep = imageParams->coluna;
-    const int filterWidth = 5;
-    const int filterHeight = 5;
 
     unsigned char CPUinput[linhasIn];
     unsigned char CPUoutput[width*height];
 
     for(int t=0; t<linhasIn; t++)
         CPUinput[t] = block[numBlock].pgmIn[t].gray;
-
-
-    /*
-     * 2D memory is allocated as strided linear memory on GPU.
-     * The terminologies "Pitch", "WidthStep", and "Stride" are exactly the same thing.
-     * It is the size of a row in bytes.
-     * It is not necessary that width = widthStep.
-     * Total bytes occupied by the image = widthStep x height.
-     */
 
     //Declare GPU pointer
     unsigned char *GPU_input, *GPU_output;
@@ -106,7 +95,7 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
      * cudaAddressModeClamp  = Read the nearest border pixel
      * We can skip this step. The default mode is Clamp.
      */
-    tex8u.addressMode[0] = tex8u.addressMode[1] = cudaAddressModeBorder;
+    //tex8u.addressMode[0] = tex8u.addressMode[1] = cudaAddressModeBorder;
 
     /*
      * Specify a block size. 256 threads per block are sufficient.
