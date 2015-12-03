@@ -61,6 +61,11 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
 void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block, int numBlock, cudaStream_t* streamSmooth)
 {
 
+    cudaEvent_t start, stop;
+    float time;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+
     int linhasIn = block[numBlock].linhasIn;
     double linhasOut = block[numBlock].linhasOut;
 
@@ -115,8 +120,10 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
     grid_size.x = (width + block_size.x - 1)/block_size.x;  /*< Greater than or equal to image width */
     grid_size.y = (height + block_size.y - 1)/block_size.y; /*< Greater than or equal to image height */
 
-    //Launch the kernel
+    cudaEventRecord(start, 0);
     box_filter_kernel_8u_c1<<<grid_size,block_size, 0, streamSmooth[numBlock]>>>(GPU_output,width,imageParams->linha,gpu_image_pitch,block[numBlock].lf,block[numBlock].li);
+    cudaEventRecord(stop, 0);
+    cudaEventSynchronize(stop);
 
     //Copy the results back to CPU
     cudaMemcpy2DAsync(CPUoutput,widthStep,GPU_output,gpu_image_pitch,width,height,cudaMemcpyDeviceToHost, streamSmooth[numBlock]);
@@ -130,6 +137,10 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
     //Free GPU memory
     cudaFree(GPU_input);
     cudaFree(GPU_output);
+
+    cudaEventElapsedTime(&time, start, stop);
+    printf ("Time for the kernel: %f ms\n", time);
+
 }
 
 // FUNCAO __HOST__
