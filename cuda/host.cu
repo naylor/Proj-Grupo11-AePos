@@ -48,10 +48,11 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
             }
         }
 
+        //Average the output value
+        output_value = output_value/cont;
 
 
-
-        output[yIndex * xIndex] = output_value/cont;
+        output[yIndex * xIndex] = static_cast<unsigned char>(output_value);
 
 }
 
