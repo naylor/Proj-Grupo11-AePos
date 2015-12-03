@@ -97,7 +97,7 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
 
     //Copy data from host to device.
     cudaMemcpy2D(GPU_input,gpu_image_pitch,CPUinput,widthStep,width,block[numBlock].linhas,cudaMemcpyHostToDevice);
-
+cudaDeviceSynchronize();
     //Bind the image to the texture. Now the kernel will read the input image through the texture cache.
     //Use tex2D function to read the image
     cudaBindTexture2D(NULL,tex8u,GPU_input,width,block[numBlock].linhas,gpu_image_pitch);
