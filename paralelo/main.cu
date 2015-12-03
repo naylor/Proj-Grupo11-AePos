@@ -113,7 +113,7 @@ int main(int argc, char** argv) {
 
     }
 
-    tempoS.timeval_diff = time;
+    tempoS.timeval_diff = (double)time;
 
 
     //PARA O RELOGIO
