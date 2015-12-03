@@ -39,7 +39,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
 
 
                 //No need to worry about Out-Of-Range access. tex2D automatically handles it.
-                output_value += tex2D(tex8u,xIndex + l2,yIndex + c2);
+                output_value += tex2D(tex8u, l2,yIndex + c2);
                 cont++;
             }
             }
