@@ -7,17 +7,23 @@ SRCCUDA=cuda/
 SRCCOM=common/
 SRCPAR=paralelo/
 cuda=PPMcuda
-LIB=-arch=sm_30 -Xptxas -dlcm=ca
+common=common
+LIBCU=-arch=sm_30 -Xptxas -dlcm=ca
 
-SOURCES=$(wildcard $(SRCPAR)*.cu $(SRCCOM)*.cu $(SRCCUDA)*.cu)
+SOURCES_CU=$(wildcard $(SRCCUDA)*.cu)
+SOURCES=$(wildcard $(SRCCOM)*.c $(SRCPAR)*.c)
 
-all: $(cuda)
+all: $(common) $(cuda)
 
-$(cuda): $(SOURCES:.cu=.o)
-	nvcc -o $@ $^ $(LIB)
+$(cuda): $(SOURCES:.c=.o) $(SOURCES_CU:.cu=.o)
+	nvcc -o $@ $^ $(LIBCU)
+
+
+%.o: %.c
+	nvcc -x cu -I. -dc $< -o $@
 
 %.o: %.cu 
-	nvcc -c $< -o $@ $(LIB)
+	nvcc -c $< -o $@ 
 
 clean:
 	rm -f $(SRCCUDA)*.o $(SRCCOM)*.o $(SRCPAR)*.o
