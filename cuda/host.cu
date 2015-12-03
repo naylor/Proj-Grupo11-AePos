@@ -132,7 +132,7 @@ cudaDeviceSynchronize();
     box_filter_kernel_8u_c1<<<grid_size,block_size>>>(GPU_output,width,imageParams->linha,gpu_image_pitch,block[numBlock].lf,block[numBlock].li);
 
     //Copy the results back to CPU
-    cudaMemcpy2D(CPUoutput,widthStep,GPU_output,gpu_image_pitch,width,height,cudaMemcpyDeviceToHost);
+    //cudaMemcpy2D(CPUoutput,widthStep,GPU_output,gpu_image_pitch,width,height,cudaMemcpyDeviceToHost);
 
     for(int t=0; t<width*height; t++)
         block[numBlock].pgmOut[t].gray = CPUoutput[t];
