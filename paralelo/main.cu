@@ -65,6 +65,7 @@ int main(int argc, char** argv) {
     timer* tempoA = (timer* )malloc(sizeof(timer)); // RELOGIO APLICACAO
     timer* tempoR = (timer* )malloc(sizeof(timer)); // RELOGIO LEITURA
     timer* tempoW = (timer* )malloc(sizeof(timer)); // RELOGIO WRITE
+    timer* tempoS = (timer* )malloc(sizeof(timer)); // RELOGIO FILTRO
 
     start_timer(tempoA); // INICIA O RELOGIO DA APLICACAO
 
@@ -112,7 +113,7 @@ int main(int argc, char** argv) {
 
     }
 
-        printf ("Time for the kernel: %f ms\n", time);
+    tempoS.timeval_diff = time;
 
 
     //PARA O RELOGIO
