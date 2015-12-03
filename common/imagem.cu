@@ -149,7 +149,7 @@ int getDivisionBlocks(initialParams* ct, PPMImageParams *imageParams, PPMBlock *
 int getImageBlocks(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block, int numBlock)
 {
 
-    int linhas = (block[numBlock].lf-block[numBlock].li)+1;
+    int64_t linhas = (block[numBlock].lf-block[numBlock].li)+1;
 
     // ALOCA MEMORIA PARA A IMAGEM DE SAIDA
     if (strcmp(imageParams->tipo, "P6")==0)
@@ -168,7 +168,7 @@ int getImageBlocks(initialParams* ct, PPMImageParams* imageParams, PPMBlock* blo
     }
 
     // DEFININDO A POSICAO DE LEITURA NO ARQUIVO
-    int offset;
+    int64_t offset;
 
     // SE FOR LINHA INICIAL 0 E A FINAL 0, DEFINE O OFFSET COMO 0
     if (block[numBlock].li == 0 && block[numBlock].lf == imageParams->linha-1)
