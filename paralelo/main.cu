@@ -95,6 +95,7 @@ int main(int argc, char** argv) {
         i++;
     }
 
+    float time;
     for(int t=0; t<i; t++) {
         // FAZ A LEITURA DA PARTE DA IMAGEM
         // NO DISCO
@@ -103,8 +104,7 @@ int main(int argc, char** argv) {
         stop_timer(tempoR);
 
         //applySmooth(ct, imageParams, block, t, streamSmooth);
-        tempoF->timeval_diff = box_filter_8u_c1(ct, imageParams, block, t, streamSmooth);
-        printf ("Time for the kernel: %f ms\n", tempoF->timeval_diff);
+        time = box_filter_8u_c1(ct, imageParams, block, t, streamSmooth);
 
         // FAZ A GRAVACAO
         start_timer(tempoW); //INICIA O RELOGIO
@@ -114,6 +114,7 @@ int main(int argc, char** argv) {
 
     }
 
+        printf ("Time for the kernel: %f ms\n", time);
 
     //PARA O RELOGIO
     stop_timer(tempoA);
