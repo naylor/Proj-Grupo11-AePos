@@ -67,7 +67,7 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
     double linhasOut = block[numBlock].linhasOut;
 
     const int width = imageParams->coluna;
-    const int height = block[numBlock].lf-block[numBlock].li;
+    const int height = block[numBlock].linhas;
     const int widthStep = imageParams->coluna;
     const int filterWidth = 5;
     const int filterHeight = 5;
@@ -96,7 +96,7 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
     cudaMallocPitch<unsigned char>(&GPU_output,&gpu_image_pitch,width,height);
 
     //Copy data from host to device.
-    cudaMemcpy2D(GPU_input,gpu_image_pitch,CPUinput,widthStep+4,width,height,cudaMemcpyHostToDevice);
+    cudaMemcpy2D(GPU_input,gpu_image_pitch,CPUinput,widthStep,width,height,cudaMemcpyHostToDevice);
 
     //Bind the image to the texture. Now the kernel will read the input image through the texture cache.
     //Use tex2D function to read the image
