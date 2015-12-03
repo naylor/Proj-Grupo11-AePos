@@ -114,12 +114,10 @@ int main(int argc, char** argv) {
 
     }
 
-        printf ("Time for the kernel: %f ms\n", time);
-
     //PARA O RELOGIO
     stop_timer(tempoA);
 
-    relogio[1].tempoF = tempoF->timeval_diff;
+    relogio[1].tempoF = time;
     relogio[1].tempoR = total_timer(tempoR);
     relogio[1].tempoW = total_timer(tempoW);
     relogio[0].tempoA = total_timer(tempoA);
