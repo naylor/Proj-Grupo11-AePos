@@ -66,7 +66,7 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
 
     const int width = imageParams->coluna;
     const int height = (block[numBlock].lf-block[numBlock].li)+1;
-    const int widthStep = imageParams->coluna;
+    const int widthStep = 0;
 
     unsigned char CPUinput[linhasIn];
     unsigned char CPUoutput[width*height];
@@ -104,7 +104,7 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
      * Current GPUs allow maximum 1024 threads per block
      */
 
-    dim3 block_size(32,32);
+    dim3 block_size(16,16);
 
     /*
      * Specify the grid size for the GPU.
