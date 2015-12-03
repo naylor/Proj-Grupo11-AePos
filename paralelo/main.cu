@@ -113,7 +113,6 @@ int main(int argc, char** argv) {
 
     }
 
-        printf ("Time for the kernel: %f ms\n", tempoF->timeval_diff);
 
     //PARA O RELOGIO
     stop_timer(tempoA);
