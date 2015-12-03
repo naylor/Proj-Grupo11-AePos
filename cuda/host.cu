@@ -35,7 +35,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
         {
             for(int c2=-2; c2<=2; c2++)
             {
-            if(l2 > 0) {
+            if(l2 >= 0 && c2 >= 0) {
 
 
                 //No need to worry about Out-Of-Range access. tex2D automatically handles it.
