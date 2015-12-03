@@ -129,7 +129,7 @@ void box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* 
     grid_size.y = (height + block_size.y - 1)/block_size.y; /*< Greater than or equal to image height */
 
     //Launch the kernel
-    box_filter_kernel_8u_c1<<<grid_size,block_size>>>(GPU_output,width,imageParams->linha,gpu_image_pitch,block[numBlock].lf,block[numBlock].li);
+    box_filter_kernel_8u_c1<<<grid_size,block_size>>>(GPU_output,width,height,gpu_image_pitch,block[numBlock].lf,block[numBlock].li);
 
     //Copy the results back to CPU
     cudaMemcpy2D(CPUoutput,widthStep,GPU_output,gpu_image_pitch,width,height,cudaMemcpyDeviceToHost);
