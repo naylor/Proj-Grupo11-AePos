@@ -26,8 +26,6 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     int l = (xIndex-c)/width; // LINHA
 
 
-    if ( l > lf-li || c < 2 || c > width-2 || (li == 0 && yIndex < 2) || (lf==height-1 && yIndex > (lf-li)-2) )
-        return;
 
     int inicio = 0;
     if (li != 0)
