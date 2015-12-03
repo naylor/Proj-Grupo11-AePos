@@ -36,9 +36,9 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
             {
             if((xIndex+l2) >= 2 && (xIndex+l2) < width-2 && (yIndex+c2) >= -2 && (yIndex+c2) <= lf-li+4) {
 
-                int p = l2+yIndex;
+                int p = (xIndex + 2*xIndex)+(l2*xIndex)+c2;
                 if (li == 0)
-                    p = l2;
+                    p = xIndex + 2*xIndex;
                 //No need to worry about Out-Of-Range access. tex2D automatically handles it.
                 output_value += tex2D(tex8u,xIndex + p,yIndex + c2);
                 cont++;
