@@ -211,7 +211,6 @@ int getImageBlocks(initialParams* ct, PPMImageParams* imageParams, PPMBlock* blo
 
 
     block[numBlock].linhasIn = imageParams->coluna * linhas * sizeof(PPMPixel);
-    //block[numBlock].linhas = linhas;
 
     // SETA O PONTEIRO NO ARQUIVO + O CABECALHO
     // PARA A LEITURA DE CADA THREAD
