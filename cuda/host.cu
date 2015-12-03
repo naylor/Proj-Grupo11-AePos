@@ -48,7 +48,10 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
             }
         }
 
-        output[yIndex * xIndex] = output_value/25;
+
+
+
+        output[yIndex * xIndex] = output_value/cont;
 
 }
 
