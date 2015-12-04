@@ -27,7 +27,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
     int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
 
-    __shared__ float sum[blockIdx.x * blockDim.x + threadIdx.x];
+    __shared__ float sum[width*height];
 
 
     //float output_value = 0.0f;
