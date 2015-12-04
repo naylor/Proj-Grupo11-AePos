@@ -89,7 +89,17 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     unsigned char CPUinput[linhasIn];
     unsigned char CPUoutput[width*height];
 
-
+    if (strcmp(imageParams->tipo, "P6")==0) {
+        if (filtro == 1)
+            for(int t=0; t<linhasIn; t++)
+                CPUinput[t] = thread[numThread].ppmIn[t].red;
+        if (filtro == 2)
+            for(int t=0; t<linhasIn; t++)
+                CPUinput[t] = thread[numThread].ppmIn[t].green;
+        if (filtro == 3)
+            for(int t=0; t<linhasIn; t++)
+                CPUinput[t] = thread[numThread].ppmIn[t].blue;
+    }
 
     if (strcmp(imageParams->tipo, "P5")==0) {
         for(int t=0; t<linhasIn; t++)
@@ -145,24 +155,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     cudaEventSynchronize(stop);
 
     //Copy the results back to CPU
-    cudaMemcpy2DAsync(CPUoutput,widthStep,GPU_output,gpu_image_pitch,width,height,cudaMemcpyDeviceToHost, streamSmooth[numThread]);
 
-    if (strcmp(imageParams->tipo, "P6")==0) {
-        if (filtro == 1)
-            for(int t=0; t<width*height; t++)
-                thread[numThread].ppmOut[t].red = CPUoutput[t];
-        if (filtro == 2)
-            for(int t=0; t<width*height; t++)
-                thread[numThread].ppmOut[t].green = CPUoutput[t];
-        if (filtro == 3)
-            for(int t=0; t<width*height; t++)
-                thread[numThread].ppmOut[t].blue = CPUoutput[t];
-    }
-
-    if (strcmp(imageParams->tipo, "P5")==0) {
-        for(int t=0; t<width*height; t++)
-            thread[numThread].pgmOut[t].gray = CPUoutput[t];
-    }
 
     //Release the texture
     cudaUnbindTexture(tex8u);
