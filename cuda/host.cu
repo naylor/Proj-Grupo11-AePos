@@ -121,7 +121,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMThread
     grid_size.y = (height + block_size.y - 1)/block_size.y; /*< Greater than or equal to image height */
 
     cudaEventRecord(start, 0);
-    box_filter_kernel_8u_c1<<<grid_size,block_size, 0, streamSmooth[numThread]>>>(GPU_output,width,imageParams->linha,gpu_image_pitch,block[numThread].lf,block[numThread].li);
+    box_filter_kernel_8u_c1<<<grid_size,block_size, 0, streamSmooth[numThread]>>>(GPU_output,width,imageParams->linha,gpu_image_pitch,thread[numThread].lf,thread[numThread].li);
     cudaEventRecord(stop, 0);
     cudaEventSynchronize(stop);
 
