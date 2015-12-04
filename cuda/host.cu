@@ -36,6 +36,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     // TIRANDO A BORDA DO PROCESSAMENTO
     if ( yIndex > lf-li || xIndex < 2 || xIndex > width-2 || (li == 0 && yIndex < 2) || (lf==height-1 && yIndex > (lf-li)-2) )
         return;
+        int index = yIndex * pitch + xIndex;
 
     int inicio = 0;
     if (li != 0)
@@ -46,7 +47,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
             for(int c2=-2; c2<=2; c2++)
             {
             if(l2 >= 0 && c2 >= 0) {
-                sum[xIndex*yIndex] += tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2);
+                sum[index] += tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2);
                 cont++;
             }
             }
@@ -60,7 +61,6 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
 
         //Write the averaged value to the output.
         //Transform 2D index to 1D index, because image is actually in linear memory
-        int index = yIndex * pitch + xIndex;
         //printf("Smooth index:%d, xIndex:%d yIndex %d lf-li %d\n",index, xIndex, yIndex, lf-li);
 
         //output[index] = sum[index]/25;
