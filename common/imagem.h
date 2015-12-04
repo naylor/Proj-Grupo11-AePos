@@ -18,6 +18,7 @@ typedef struct {
     int linhasIn;
     int linhas;
     int linhasOut;
+    int finalizado;
 } PPMThread;
 
 typedef struct {
