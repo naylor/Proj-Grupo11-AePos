@@ -89,6 +89,7 @@ int main (int argc, char **argv){
     // FAZ A DIVISAO DE LINHAS
     // POR BLOCOS
     int endOfNodes = getDivisionNodes(ct, imageParams, node, numNodes, 0, numMaxLinhas);
+    printf("\nCarga de Trabalho: %d", endOfNodes);
 
     int t,n;
     float times;
