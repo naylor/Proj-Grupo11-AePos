@@ -206,6 +206,12 @@ int getImageThreads(initialParams* ct, PPMImageParams* imageParams, PPMThread* t
 
     int linhas = (thread[numThread].lf-thread[numThread].li)+1;
 
+    // ALOCA MEMORIA PARA A IMAGEM DE SAIDA
+    if (strcmp(imageParams->tipo, "P6")==0)
+        thread[numThread].ppmOut = (PPMPixel *)malloc(imageParams->coluna * linhas * sizeof(PPMPixel));
+    else
+        thread[numThread].pgmOut = (PGMPixel *)malloc(imageParams->coluna * linhas * sizeof(PGMPixel));
+
     thread[numThread].linhasOut = imageParams->coluna * linhas * sizeof(PPMPixel);
 
     FILE *fp;
@@ -356,12 +362,6 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thre
                thread[numThread].li, thread[numThread].lf);
 
     int k=0;
-
-    // ALOCA MEMORIA PARA A IMAGEM DE SAIDA
-    if (strcmp(imageParams->tipo, "P6")==0)
-        thread[numThread].ppmOut = (PPMPixel *)malloc(imageParams->coluna * linhas * sizeof(PPMPixel));
-    else
-        thread[numThread].pgmOut = (PGMPixel *)malloc(imageParams->coluna * linhas * sizeof(PGMPixel));
 
     // DEFININDO O INICIO DE LEITURA
     // PARA APLICACAO DO SMOOTH
