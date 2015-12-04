@@ -89,9 +89,8 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     unsigned char CPUinput[linhasIn];
     unsigned char CPUoutput[width*height];
 
-        printf("Apply Smooth[%d]\n", numThread);
 
-    exit(1);
+
     if (strcmp(imageParams->tipo, "P6")==0) {
         if (filtro == 1)
             for(int t=0; t<linhasIn; t++)
@@ -108,6 +107,8 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
         for(int t=0; t<linhasIn; t++)
             CPUinput[t] = thread[numThread].pgmIn[t].gray;
     }
+            printf("Apply Smooth[%d]\n", numThread);
+        exit(1);
     //Declare GPU pointer
     unsigned char *GPU_input, *GPU_output;
 
