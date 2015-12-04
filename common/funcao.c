@@ -48,14 +48,16 @@ void getCommandLineOptions(initialParams* ct, files* f, int argc, char *argv[]) 
         //E O NUMERO MAIS DE LINHAS
         if (argv[i] && strcmp(argv[i], "-a")==0) {
             if (argv[i+1]) sscanf (argv[i+1],"%d",&ct->async);
-        } else
-            ct->async = 0;
         if (argv[i] && strcmp(argv[i], "-s")==0) {
             if (argv[i+1]) sscanf (argv[i+1],"%d",&ct->sharedMemory);
-        } else
-            ct->sharedMemory = 0;
         if (argv[i] && strcmp(argv[i], "-c")==0)
             if (argv[i+1]) sscanf (argv[i+1],"%d",&ct->numMaxLinhas);
+        if (argv[i] && strcmp(argv[i], "-t")==0)
+            if (argv[i+1]) sscanf (argv[i+1],"%d",&ct->numThreads);
+        if (argv[i] && strcmp(argv[i], "-r")==0)
+            if (argv[i+1]) sscanf (argv[i+1],"%d",&ct->cargaAleatoria);
+        if (argv[i] && strcmp(argv[i], "-l")==0)
+            sscanf (argv[i+1],"%d",&ct->leituraIndividual);
         if (argv[i] && strcmp(argv[i], "-d")==0)
             if (argv[i+1]) sscanf (argv[i+1],"%d",&ct->debug);
     }
