@@ -95,15 +95,6 @@ int main (int argc, char **argv){
         // ALOCA MEMORIA PARA A THREAD
         PPMThread* thread = getDivisionThreads(ct, imageParams, node, n);
 
-    #pragma omp parallel num_threads(ct->numThreads) shared(c, ct, imageParams, thread, n)
-    {
-        #pragma omp for
-        for(int c=0; c<ct->numThreads; c++) {
-            while (thread[c].finalizado != 1);
-            writePPMPixels(ct, imageParams, thread, c, n);
-        }
-    }
-
         for(t=0; t<ct->numThreads; t++) {
             // FAZ A LEITURA DA PARTE DA IMAGEM
             // NO DISCO
@@ -119,8 +110,20 @@ int main (int argc, char **argv){
             } else
                 relogio[1].tempoF += box_filter_8u_c1(ct, imageParams, thread, t, streamSmooth, 1);
 
-            thread[t].finalizado = 1;
+            if (cont == 5) {
+                for(int c=0; c<=cont; c++) {
+                    // FAZ A GRAVACAO
+                    start_timer(tempoW); //INICIA O RELOGIO
+                    writePPMPixels(ct, imageParams, thread, t-c, n);
+                    stop_timer(tempoW);
+                }
+                cont = -1;
+            }
+            cont++;
+
         }
+
+
         free(thread);
     }
 
