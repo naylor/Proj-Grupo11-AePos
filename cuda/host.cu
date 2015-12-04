@@ -77,7 +77,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMThread
     int linhasIn = thread[numThread].linhasIn;
     double linhasOut = thread[numThread].linhasOut;
 
-    const int width = 3*imageParams->coluna;
+    const int width = imageParams->coluna;
     const int height = (thread[numThread].lf-thread[numThread].li)+1;
     const int widthStep = imageParams->coluna;
 
