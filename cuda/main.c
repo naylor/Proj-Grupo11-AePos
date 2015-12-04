@@ -86,7 +86,7 @@ int main (int argc, char **argv){
     // DE BLOCOS QUE SERAO GERADOS
     PPMNode* node = (PPMNode *)malloc(sizeof(PPMNode) * numNodes);
 
-    int t,n,cont=0;
+    int t,n;
     for(n=0; n<numNodes; n++) {
         // FAZ A DIVISAO DE LINHAS
         // POR BLOCOS
