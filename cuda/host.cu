@@ -114,16 +114,16 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     unsigned char *GPU_input, *GPU_output;
 
     //Allocate 2D memory on GPU. Also known as Pitch Linear Memory
-    size_t gpu_image_pitch = 1000;
-    gpuErrchk( cudaMallocPitch<unsigned char>(&GPU_input,&gpu_image_pitch,width,thread[numThread].linhas) );
+    size_t gpu_image_pitch = 0;
+    gpuErrchk( cudaMallocPitch<unsigned char>(&GPU_input,&gpu_image_pitch,width,thread[numThread].linhas-1) );
     gpuErrchk( cudaMallocPitch<unsigned char>(&GPU_output,&gpu_image_pitch,width,height) );
 
     //Copy data from host to device.
-    gpuErrchk( cudaMemcpy2DAsync(GPU_input,gpu_image_pitch,CPUinput,widthStep,width,thread[numThread].linhas,cudaMemcpyHostToDevice, streamSmooth[numThread]) );
+    gpuErrchk( cudaMemcpy2DAsync(GPU_input,gpu_image_pitch,CPUinput,widthStep,width,thread[numThread].linhas-1,cudaMemcpyHostToDevice, streamSmooth[numThread]) );
 
     //Bind the image to the texture. Now the kernel will read the input image through the texture cache.
     //Use tex2D function to read the image
-   gpuErrchk( cudaBindTexture2D(NULL,tex8u,GPU_input,width,thread[numThread].linhas,gpu_image_pitch) );
+   gpuErrchk( cudaBindTexture2D(NULL,tex8u,GPU_input,width,thread[numThread].linhas-1,gpu_image_pitch) );
 
     /*
      * Set the behavior of tex2D for out-of-range image reads.
