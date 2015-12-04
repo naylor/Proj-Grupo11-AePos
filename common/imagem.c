@@ -207,12 +207,13 @@ int getImageThreads(initialParams* ct, PPMImageParams* imageParams, PPMThread* t
     int linhas = (thread[numThread].lf-thread[numThread].li)+1;
 
     // ALOCA MEMORIA PARA A IMAGEM DE SAIDA
-    if (strcmp(imageParams->tipo, "P6")==0)
+    if (strcmp(imageParams->tipo, "P6")==0) {
         thread[numThread].ppmOut = (PPMPixel *)malloc(imageParams->coluna * linhas * sizeof(PPMPixel));
-    else
+        thread[numThread].linhasOut = imageParams->coluna * linhas * sizeof(PPMPixel);
+    } else {
         thread[numThread].pgmOut = (PGMPixel *)malloc(imageParams->coluna * linhas * sizeof(PGMPixel));
-
-    thread[numThread].linhasOut = imageParams->coluna * linhas * sizeof(PPMPixel);
+        thread[numThread].linhasOut = imageParams->coluna * linhas * sizeof(PGMPixel);
+    }
 
     FILE *fp;
     fp = fopen(imageParams->fileIn, "rb");
@@ -259,7 +260,11 @@ int getImageThreads(initialParams* ct, PPMImageParams* imageParams, PPMThread* t
         linhas += 2;
     }
 
-    thread[numThread].linhasIn = imageParams->coluna * linhas * sizeof(PPMPixel);
+    if (strcmp(imageParams->tipo, "P6")==0)
+        thread[numThread].linhasIn = imageParams->coluna * linhas * sizeof(PPMPixel);
+    else
+        thread[numThread].linhasIn = imageParams->coluna * linhas * sizeof(PGMPixel);
+
     thread[numThread].linhas = linhas;
 
     // SETA O PONTEIRO NO ARQUIVO + O CABECALHO
