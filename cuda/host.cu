@@ -45,17 +45,13 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
             for(int c2=-2; c2<=2; c2++)
             {
             if(l2 >= 0 && c2 >= 0) {
-
-
-                //No need to worry about Out-Of-Range access. tex2D automatically handles it.
                 output_value += tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2);
-                cont++;
             }
             }
         }
 
         //Average the output value
-        output_value = output_value/cont;
+        output_value = output_value/25;
 
         //Write the averaged value to the output.
         //Transform 2D index to 1D index, because image is actually in linear memory
