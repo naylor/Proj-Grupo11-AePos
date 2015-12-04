@@ -27,10 +27,8 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
     int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
 
-    __shared__ float sum[blockIdx.x * blockDim.x + threadIdx.x];
 
-
-    //float output_value = 0.0f;
+    float output_value = 0.0f;
     int cont = 0;
 
     // TIRANDO A BORDA DO PROCESSAMENTO
@@ -41,6 +39,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     if (li != 0)
         inicio = 2;
 
+        #pragma unroll
         for(int l2= -2; l2<=2; l2++)
         {
             for(int c2=-2; c2<=2; c2++)
@@ -51,9 +50,6 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
             }
             }
         }
-
-        // SINCRONIZANDO AS THREADS
-        __syncthreads();
 
         //Average the output value
         output_value = output_value/cont;
