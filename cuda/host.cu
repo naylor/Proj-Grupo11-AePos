@@ -5,9 +5,6 @@
 #include "host.cuh"
 #include "kernel.cuh"
 
-#define BLOCK_DIM 32
-#define BLOCK_DEFAULT 512
-
 #define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
 inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)
 {
@@ -16,50 +13,6 @@ inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=t
       fprintf(stderr,"GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
       if (abort) exit(code);
    }
-}
-
-texture<unsigned char, cudaTextureType2D> tex8u;
-
-//Box Filter Kernel For Gray scale image with 8bit depth
-__global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, const int height, const size_t pitch, const int lf, const int li)
-{
-
-    int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
-    int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
-
-
-    float output_value = 0.0f;
-    int cont = 0;
-
-    // TIRANDO A BORDA DO PROCESSAMENTO
-    if ( yIndex > lf-li || xIndex < 2 || xIndex > width-2 || (li == 0 && yIndex < 2) || (lf==height-1 && yIndex > (lf-li)-2) )
-        return;
-
-    int inicio = 0;
-    if (li != 0)
-        inicio = 2;
-
-        for(int l2= -2; l2<=2; l2++)
-        {
-            for(int c2=-2; c2<=2; c2++)
-            {
-            if(l2 >= 0 && c2 >= 0) {
-                output_value += tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2);
-                cont++;
-            }
-            }
-        }
-
-        //Average the output value
-        output_value = output_value/cont;
-
-        //Write the averaged value to the output.
-        //Transform 2D index to 1D index, because image is actually in linear memory
-        int index = yIndex * pitch + xIndex;
-        //printf("Smooth index:%d, xIndex:%d yIndex %d lf-li %d\n",index, xIndex, yIndex, lf-li);
-
-        output[index] = static_cast<unsigned char>(output_value);
-
 }
 
 
@@ -73,7 +26,6 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     cudaEventCreate(&stop);
 
     int linhasIn = thread[numThread].linhasIn;
-    int linhasOut = thread[numThread].linhasOut;
 
     const int width = imageParams->coluna;
     const int height = (thread[numThread].lf-thread[numThread].li)+1;
@@ -84,7 +36,6 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     unsigned char* CPUoutput;
     CPUinput = (unsigned char *)malloc(linhasIn * sizeof(unsigned char));
     CPUoutput = (unsigned char *)malloc(width*height * sizeof(unsigned char));
-
 
 
     if (strcmp(imageParams->tipo, "P6")==0) {
@@ -209,43 +160,20 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* bloc
 
         // DEFINICAO DO TAMANHO PADRAO
         // DO BLOCO
-        dim3 blockDims(BLOCK_DEFAULT,1,1);
-        // SE A OPCAO DE SHARED MEMORY
-        // FOR ATIVADA, DEFINE O TAMANHO
-        // DO BLOCO PARA 32
-        if (ct->sharedMemory == 1)
-            blockDims.x = BLOCK_DIM;
+        dim3 blockDims(512,1,1);
         dim3 gridDims((unsigned int) ceil((double)(linhasIn/blockDims.x)), 1, 1 );
 
         // EXECUTA O CUDAMEMCPY
-        // ASSINCRONO OU SINCRONO
-        if (ct->async == 1)
-            cudaMemcpyAsync( kInput, block[numBlock].ppmIn, linhasIn, cudaMemcpyHostToDevice, streamSmooth[numBlock] );
-        else
-            cudaMemcpy( kInput, block[numBlock].ppmIn, linhasIn, cudaMemcpyHostToDevice);
+        // ASSINCRONO
+        cudaMemcpyAsync( kInput, block[numBlock].ppmIn, linhasIn, cudaMemcpyHostToDevice, streamSmooth[numBlock] );
 
         // EXECUTA A FUNCAO SMOOTH NO KERNEL
-        // SE A OPCAO DE SHARED MEMORY FOR ATIVADA
-        // CHAMA A FUNCAO smoothPPM_SH
-        if (ct->async == 1) {
-            if (ct->sharedMemory == 1)
-                smoothPPM_SH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
-            else
-                smoothPPM_noSH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
-        } else {
-            if (ct->sharedMemory == 1)
-                smoothPPM_SH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
-            else
-                smoothPPM_noSH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
-        }
+        smoothPPM_noSH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
 
         // RETORNA A IMAGEM PARA
         // A VARIAVEL DE SAIDA PARA
         // GRAVACAO NO ARQUIVO
-        if (ct->async == 1)
-            cudaMemcpyAsync(block[numBlock].ppmOut, kOutput, linhasOut, cudaMemcpyDeviceToHost, streamSmooth[numBlock] );
-        else
-            cudaMemcpy(block[numBlock].ppmOut, kOutput, linhasOut, cudaMemcpyDeviceToHost );
+        cudaMemcpyAsync(block[numBlock].ppmOut, kOutput, linhasOut, cudaMemcpyDeviceToHost, streamSmooth[numBlock] );
 
         // LIBERA A MEMORIA
         cudaFree(kInput);
@@ -265,43 +193,19 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* bloc
 
         // DEFINICAO DO TAMANHO PADRAO
         // DO BLOCO
-        dim3 blockDims(BLOCK_DEFAULT,1,1);
-        // SE A OPCAO DE SHARED MEMORY
-        // FOR ATIVADA, DEFINE O TAMANHO
-        // DO BLOCO PARA 32
-        if (ct->sharedMemory == 1)
-            blockDims.x = BLOCK_DIM;
+        dim3 blockDims(512,1,1);
         dim3 gridDims((unsigned int) ceil((double)(linhasIn/blockDims.x)), 1, 1 );
 
         // EXECUTA O CUDAMEMCPY
-        // ASSINCRONO OU SINCRONO
-        if (ct->async == 1)
-            cudaMemcpyAsync( kInput, block[numBlock].pgmIn, linhasIn, cudaMemcpyHostToDevice, streamSmooth[numBlock] );
-        else
-            cudaMemcpy( kInput, block[numBlock].pgmIn, linhasIn, cudaMemcpyHostToDevice);
+        cudaMemcpyAsync( kInput, block[numBlock].pgmIn, linhasIn, cudaMemcpyHostToDevice, streamSmooth[numBlock] );
 
         // EXECUTA A FUNCAO SMOOTH NO KERNEL
-        // SE A OPCAO DE SHARED MEMORY FOR ATIVADA
-        // CHAMA A FUNCAO smoothPPM_SH
-        if (ct->async == 1) {
-            if (ct->sharedMemory == 1)
-                smoothPGM_SH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
-            else
-                smoothPGM_noSH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
-        } else {
-            if (ct->sharedMemory == 1)
-                smoothPGM_SH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
-            else
-                smoothPGM_noSH<<<gridDims, blockDims>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
-        }
+        smoothPGM_noSH<<<gridDims, blockDims, 0, streamSmooth[numBlock]>>>(kInput, kOutput, imageParams->coluna, imageParams->linha, block[numBlock].li, block[numBlock].lf);
 
         // RETORNA A IMAGEM PARA
         // A VARIAVEL DE SAIDA PARA
         // GRAVACAO NO ARQUIVO
-        if (ct->async == 1)
-            cudaMemcpyAsync(block[numBlock].pgmOut, kOutput, linhasOut, cudaMemcpyDeviceToHost, streamSmooth[numBlock] );
-        else
-            cudaMemcpy(block[numBlock].pgmOut, kOutput, linhasOut, cudaMemcpyDeviceToHost );
+        cudaMemcpyAsync(block[numBlock].pgmOut, kOutput, linhasOut, cudaMemcpyDeviceToHost, streamSmooth[numBlock] );
 
         // LIBERA A MEMORIA
         cudaFree(kInput);
