@@ -85,11 +85,11 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     const int width = imageParams->coluna;
     const int height = (thread[numThread].lf-thread[numThread].li)+1;
     const int widthStep = imageParams->coluna;
-        printf("Apply Smooth[%d]\n", numThread);
-    exit(1);
+
     unsigned char CPUinput[linhasIn];
     unsigned char CPUoutput[width*height];
-
+        printf("Apply Smooth[%d]\n", numThread);
+    exit(1);
 
     if (strcmp(imageParams->tipo, "P6")==0) {
         if (filtro == 1)
