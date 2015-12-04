@@ -6,54 +6,6 @@
 
 #define BLOCK_DIM 32
 
-texture<unsigned char, cudaTextureType2D> tex8u;
-
-//Box Filter Kernel For Gray scale image with 8bit depth
-__global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, const int height, const size_t pitch, const int lf, const int li)
-{
-
-    int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
-    int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
-
-
-    float output_value = 0.0f;
-    int cont = 0;
-
-    int c = xIndex % width; // COLUNA
-    int l = (xIndex-c)/width; // LINHA
-
-
-
-    int inicio = 0;
-    if (li != 0)
-        inicio = 2;
-
-        //Sum the window pixels
-        for(int l2= -2; l2<=2; l2++)
-        {
-            for(int c2=-2; c2<=2; c2++)
-            {
-            if(l2 >= 0 && c2 >= 0) {
-
-
-                //No need to worry about Out-Of-Range access. tex2D automatically handles it.
-                output_value += tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2);
-                cont++;
-            }
-            }
-        }
-
-        //Average the output value
-        output_value = output_value/cont;
-
-        //Write the averaged value to the output.
-        //Transform 2D index to 1D index, because image is actually in linear memory
-        int index = yIndex * pitch + xIndex;
-
-        output[index] = static_cast<unsigned char>(output_value);
-
-}
-
 // FUNCAO PARA APLICAR SMOOTH
 // COM SHARED MEMORY EM IMAGENS PGM
 __global__ void smoothPGM_SH(PGMPixel* kInput, PGMPixel* kOutput, int coluna, int linha, int li, int lf) {
