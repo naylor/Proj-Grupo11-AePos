@@ -41,6 +41,7 @@ int main (int argc, char **argv){
     // DEFINE A QUANTIDADE DE LINHAS
     // DA IMAGEM PARA LEITURA E SMOOTH
     int numMaxLinhas = imageParams->linha;
+    ct->numThreads = 1;
 
     // SE FOI DEFINIDA A QUANTIDADE DE LINHAS
     // PELO MENU, ALTERAR AQUI
@@ -56,8 +57,7 @@ int main (int argc, char **argv){
     //    exit(0);
     //}
 
-    int numNodes = 1;
-    int numThreads = (imageParams->linha/numMaxLinhas)+1;
+    int numNodes = (imageParams->linha/numMaxLinhas)+1;
 
     printf("\nCarga de Trabalho: %d", numMaxLinhas);
     printf("\nMemoria Compartilhada: %s", ct->sharedMemory==1?"Ativado":"Desativado");
@@ -76,10 +76,10 @@ int main (int argc, char **argv){
     writePPMHeader(ct, imageParams);
 
     // CRIA OS CUDA STREAM PARA ASYNC
-    cudaStream_t streamSmooth[numThreads];
+    cudaStream_t streamSmooth[numNodes];
 
     if (ct->async == 1)
-        for (int i = 0; i < numThreads; ++i)
+        for (int i = 0; i < numNodes; ++i)
             cudaStreamCreate(&streamSmooth[i]);
 
     // ALOCA MEMORIA PARA A QUANTIDADE
@@ -104,13 +104,14 @@ int main (int argc, char **argv){
             stop_timer(tempoR);
 
             //applySmooth(ct, imageParams, thread, t, streamSmooth);
-            box_filter_8u_c1(ct, imageParams, thread, t, streamSmooth);
+            box_filter_8u_c1(ct, imageParams, thread, t, n, streamSmooth);
 
             // FAZ A GRAVACAO
             start_timer(tempoW); //INICIA O RELOGIO
             writePPMPixels(ct, imageParams, thread, t, n);
             stop_timer(tempoW);
         }
+        free(thread);
     }
 
     //PARA O RELOGIO
@@ -125,7 +126,7 @@ int main (int argc, char **argv){
 
     // DESTROI O CUDA STREAM
     if (ct->async == 1)
-        for (int i = 0; i < numThreads; ++i)
+        for (int i = 0; i < numNodes; ++i)
             cudaStreamDestroy(streamSmooth[i]);
 
     //ESCREVE NO ARQUIVO DE LOGS
