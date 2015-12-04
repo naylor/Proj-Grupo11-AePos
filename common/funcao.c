@@ -76,17 +76,28 @@ int in_array(char *array[], int size, char *lookfor)
 }
 
 // LIMPAR MEMORIA
-void cleanMemory(initialParams* ct, PPMImageParams* imageParams, PPMNode* node) {
+void cleanMemory(initialParams* ct, PPMImageParams* imageParams, PPMNode* node,
+                 tempo* relogio, timer* tempoA, timer* tempoR, timer* tempoF, timer* tempoW) {
+    if(ct != NULL)
+        free(ct);
     if(imageParams != NULL)
         free(imageParams);
     if(node != NULL)
         free(node);
-    if(ct != NULL)
-        free(ct);
+    if(relogio != NULL)
+        free(relogio);
+    if(tempoA != NULL)
+        free(tempoA);
+    if(tempoR != NULL)
+        free(tempoR);
+    if(tempoF != NULL)
+        free(tempoF);
+    if(tempoW != NULL)
+        free(tempoW);
 }
 
 // FUNCAO PARA GERAR O ARQUIVO DE LOG
-void writeFile(initialParams* ct, PPMImageParams* imageParams, timer* tr, timer* tw, timer* ta) {
+void writeFile(initialParams* ct, PPMImageParams* imageParams, tempo* t) {
 
 	//filename
 	char filename[200];
@@ -98,16 +109,19 @@ void writeFile(initialParams* ct, PPMImageParams* imageParams, timer* tr, timer*
         printf("\nNao foi possivel gravar o arquivo no diretorio dos resultados: %s\n\n", filename);
 		ct->erro = -101;
 	}
-	fprintf(f, "%c\t%i\t%s\t%s\t%ix%i\t%.2f\t%.2f\t%.2f\n",
+	fprintf(f, "%c\t%i\t%i\t%i\t%s\t%s\t%ix%i\t%.2f\t%.2f\t%.2f\t%.2f\n",
         ct->typeAlg,
-		ct->numMaxLinhas,
-        ct->async?"yes":"no",
-        ct->sharedMemory?"yes":"no",
+		ct->numProcessos,
+		ct->numThreads,
+        ct->numMaxLinhas,
+        ct->leituraIndividual?"yes":"no",
+        ct->cargaAleatoria?"yes":"no",
         imageParams->linha,
         imageParams->coluna,
-		tr->timeval_diff,
-		tw->timeval_diff,
-		ta->timeval_diff);
+		t[0].tempoR,
+		t[0].tempoF,
+		t[0].tempoW,
+		t[0].tempoA);
 
 	fclose(f);
 }

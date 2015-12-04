@@ -58,10 +58,10 @@ int main (int argc, char *argv[]){
 
             // ESCREVENDO OS RESULTADOS
             // NO ARQUIVO /resultados/
-            //writeFile(ct, imageParams, relogio);
+            writeFile(ct, imageParams, relogio);
 
             // LIMPANDO A MEMORIA
-            //cleanMemory(ct, imageParams, relogio);
+            cleanMemory(ct, imageParams, NULL, relogio, tempoA, tempoR, tempoF, tempoW);
 
         } else {
             printf("\nOpcao invalida!\n\n");

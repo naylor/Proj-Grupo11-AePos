@@ -36,6 +36,10 @@ int main (int argc, char **argv){
 
     // RELOGIO PARA CADA NODE
     tempo* relogio = (tempo* )malloc(sizeof(tempo) * size+1);
+    timer* tempoA = (timer *)malloc(sizeof(timer));
+    timer* tempoR = (timer *)malloc(sizeof(timer));
+    timer* tempoF = (timer *)malloc(sizeof(timer));
+    timer* tempoW = (timer *)malloc(sizeof(timer));
 
     char completedIndexes='I';
     int inteiro = 2;
@@ -85,7 +89,6 @@ int main (int argc, char **argv){
         if (ct->filePath != NULL) {
 
             //CARREGA O RELOGIO
-            timer* tempoA = (timer *)malloc(sizeof(timer));
             start_timer(tempoA);
 
             int gravar=0;
@@ -241,7 +244,9 @@ int main (int argc, char **argv){
             show_timer(relogio, ct->numProcessos);
 
             //ESCREVE NO ARQUIVO DE LOGS
-            //writeFile(imageParams, relogio, ct);
+            writeFile(ct, imageParams, relogio);
+
+            free(tempoA);
 
             if (ct->debug >= 1) printf("All Server finalizados: %d\n", rank);
 
@@ -253,9 +258,6 @@ int main (int argc, char **argv){
     //FIM RANK 0
     } else {
     //INICIO DOS NODES
-        timer* tempoR = (timer *)malloc(sizeof(timer));
-        timer* tempoF = (timer *)malloc(sizeof(timer));
-        timer* tempoW = (timer *)malloc(sizeof(timer));
         char hostname[255];
         gethostname(hostname,255);
         int stop = 0;
@@ -338,10 +340,7 @@ int main (int argc, char **argv){
 
     MPI_Barrier(MPI_COMM_WORLD);
 
-    free(node);
-    free(ct);
-    free(imageParams);
-    free(relogio);
+    cleanMemory(ct, imageParams, node, relogio, tempoA, tempoR, tempoF, tempoW);
 
     MPI_Finalize();
 

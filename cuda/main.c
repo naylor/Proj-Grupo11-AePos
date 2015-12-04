@@ -128,13 +128,10 @@ int main (int argc, char **argv){
             cudaStreamDestroy(streamSmooth[i]);
 
     //ESCREVE NO ARQUIVO DE LOGS
-    writeFile(ct, imageParams, tempoR, tempoW, tempoA);
+    writeFile(ct, imageParams, relogio);
 
     // LIMPAR A MEMORIA
-    //cleanMemory(ct, imageParams, block);
-    free(tempoR);
-    free(tempoW);
-    free(tempoA);
+    cleanMemory(ct, imageParams, node, relogio, tempoA, tempoR, tempoF, tempoW);
 
     return 0;
 
