@@ -29,7 +29,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
 
     if (ct->debug >= 1)
         printf("Apply Smooth[%d][%s] - linhas: %d, li:%d, lf:%d\n",
-               numThread, imageParams->tipo, linhas, thread[numThread].li, thread[numThread].lf);
+               numThread, imageParams->tipo, linhasIn, thread[numThread].li, thread[numThread].lf);
 
     const int width = imageParams->coluna;
     const int height = (thread[numThread].lf-thread[numThread].li)+1;
