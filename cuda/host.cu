@@ -39,19 +39,19 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     if (li != 0)
         inicio = 2;
 
-        #pragma unroll
         for(int l2= -2; l2<=2; l2++)
         {
             for(int c2=-2; c2<=2; c2++)
             {
             if(l2 >= 0 && c2 >= 0) {
                 output_value += tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2);
+                cont++;
             }
             }
         }
 
         //Average the output value
-        output_value = output_value/25;
+        output_value = output_value/cont;
 
         //Write the averaged value to the output.
         //Transform 2D index to 1D index, because image is actually in linear memory
