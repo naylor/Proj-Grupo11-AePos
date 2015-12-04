@@ -76,6 +76,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMThread
     unsigned char CPUinput[linhasIn];
     unsigned char CPUoutput[width*height];
 
+    int t;
     if (strcmp(imageParams->tipo, "P6")==0) {
         for(int t=0; t<linhasIn; t++)
             CPUinput[t] = thread[numThread].ppmIn[t].red;
