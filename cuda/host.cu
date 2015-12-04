@@ -5,6 +5,9 @@
 #include "host.cuh"
 #include "kernel.cuh"
 
+#define BLOCK_DIM 32
+#define BLOCK_DEFAULT 512
+
 #define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
 inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)
 {
