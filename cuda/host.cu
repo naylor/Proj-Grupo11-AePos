@@ -78,11 +78,11 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     float time;
     cudaEventCreate(&start);
     cudaEventCreate(&stop);
-        printf("Apply Smooth[%d]\n", numThread);
-    exit(1);
+
     int linhasIn = thread[numThread].linhasIn;
     double linhasOut = thread[numThread].linhasOut;
-
+        printf("Apply Smooth[%d]\n", numThread);
+    exit(1);
     const int width = imageParams->coluna;
     const int height = (thread[numThread].lf-thread[numThread].li)+1;
     const int widthStep = imageParams->coluna;
