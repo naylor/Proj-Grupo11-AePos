@@ -61,7 +61,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
 
         //Write the averaged value to the output.
         //Transform 2D index to 1D index, because image is actually in linear memory
-        int index = yIndex * pitch + xIndex +inicio;
+        int index = pitch + xIndex;
 
         output[index] = static_cast<unsigned char>(output_value);
 
