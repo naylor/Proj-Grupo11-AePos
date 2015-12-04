@@ -78,7 +78,8 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     float time;
     cudaEventCreate(&start);
     cudaEventCreate(&stop);
-
+        printf("Apply Smooth[%d]\n", numThread);
+    exit(1);
     int linhasIn = thread[numThread].linhasIn;
     double linhasOut = thread[numThread].linhasOut;
 
@@ -89,8 +90,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     unsigned char CPUinput[linhasIn];
     unsigned char CPUoutput[width*height];
 
-        printf("Apply Smooth[%d]\n", numThread);
-    exit(1);
+
     if (strcmp(imageParams->tipo, "P6")==0) {
         if (filtro == 1)
             for(int t=0; t<linhasIn; t++)
