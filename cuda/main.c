@@ -91,7 +91,7 @@ int main (int argc, char **argv){
     for(n=0; n<numNodes; n++) {
         // FAZ A DIVISAO DE LINHAS
         // POR BLOCOS
-        int endOfNodes = getDivisionNodes(ct, imageParams, node, numNodes, n, numMaxLinhas);
+        int endOfNodes = getDivisionNodes(ct, imageParams, node, 1, n, numMaxLinhas);
 
         // ALOCA MEMORIA PARA A THREAD
         PPMThread* thread = getDivisionThreads(ct, imageParams, node, n);
