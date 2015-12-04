@@ -87,7 +87,6 @@ int main (int argc, char **argv){
     PPMNode* node = (PPMNode *)malloc(sizeof(PPMNode) * numNodes);
 
     int t,n;
-    float times;
     for(n=0; n<numNodes; n++) {
         // FAZ A DIVISAO DE LINHAS
         // POR BLOCOS
@@ -104,7 +103,7 @@ int main (int argc, char **argv){
             stop_timer(tempoR);
 
             //applySmooth(ct, imageParams, thread, t, streamSmooth);
-            box_filter_8u_c1(ct, imageParams, thread, t, streamSmooth);
+            relogio[1].tempoF += box_filter_8u_c1(ct, imageParams, thread, t, streamSmooth);
 
             // FAZ A GRAVACAO
             start_timer(tempoW); //INICIA O RELOGIO
@@ -117,7 +116,6 @@ int main (int argc, char **argv){
     //PARA O RELOGIO
     stop_timer(tempoA);
 
-    relogio[1].tempoF = times;
     relogio[1].tempoR = total_timer(tempoR);
     relogio[1].tempoW = total_timer(tempoW);
     relogio[0].tempoA = total_timer(tempoA);
