@@ -13,7 +13,7 @@ typedef struct {
     const char* DIRIMGOUT;
     const char* DIRRES;
     int numMaxLinhas;
-    int sharedMemory;
+    int texture;
     int async;
     int debug;
     int erro;

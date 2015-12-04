@@ -48,8 +48,8 @@ void getCommandLineOptions(initialParams* ct, files* f, int argc, char *argv[]) 
         //E O NUMERO MAIS DE LINHAS
         if (argv[i] && strcmp(argv[i], "-a")==0)
             if (argv[i+1]) sscanf (argv[i+1],"%d",&ct->async);
-        if (argv[i] && strcmp(argv[i], "-s")==0)
-            if (argv[i+1]) sscanf (argv[i+1],"%d",&ct->sharedMemory);
+        if (argv[i] && strcmp(argv[i], "-m")==0)
+            if (argv[i+1]) sscanf (argv[i+1],"%d",&ct->texture);
         if (argv[i] && strcmp(argv[i], "-c")==0)
             if (argv[i+1]) sscanf (argv[i+1],"%d",&ct->numMaxLinhas);
         if (argv[i] && strcmp(argv[i], "-t")==0)
