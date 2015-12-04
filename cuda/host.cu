@@ -57,14 +57,17 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
 
 }
 
-__global__ void warmup(unsigned char* input, unsigned char* output)
+__global__ void warmup(PGMPixel* input, unsigned char* output)
 {
 	int i = blockDim.x * blockIdx.x + threadIdx.x;
-	output[i] = input[i];
+	output[i] = input[i].gray;
 }
 
 void matrix(PPMImageParams* imageParams, PPMThread* thread, int numThread,
             unsigned char* CPUinput, int linhasIn, int filtro) {
+
+        PGMPixel* kInput;
+        unsigned char* kOutput;
 
         // ALOCAR MEMORIA
         cudaMalloc( (void**) &kInput, linhasIn);
