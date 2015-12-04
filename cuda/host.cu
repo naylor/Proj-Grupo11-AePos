@@ -66,33 +66,33 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMThread
     cudaEventCreate(&start);
     cudaEventCreate(&stop);
 
-    int linhasIn = block[numBlock].linhasIn;
-    double linhasOut = block[numBlock].linhasOut;
+    int linhasIn = thread[numThread].linhasIn;
+    double linhasOut = thread[numThread].linhasOut;
 
     const int width = imageParams->coluna;
-    const int height = (block[numBlock].lf-block[numBlock].li)+1;
+    const int height = (thread[numThread].lf-thread[numThread].li)+1;
     const int widthStep = imageParams->coluna;
 
     unsigned char CPUinput[linhasIn];
     unsigned char CPUoutput[width*height];
 
     for(int t=0; t<linhasIn; t++)
-        CPUinput[t] = block[numBlock].pgmIn[t].gray;
+        CPUinput[t] = thread[numThread].pgmIn[t].gray;
 
     //Declare GPU pointer
     unsigned char *GPU_input, *GPU_output;
 
     //Allocate 2D memory on GPU. Also known as Pitch Linear Memory
     size_t gpu_image_pitch = 0;
-    cudaMallocPitch<unsigned char>(&GPU_input,&gpu_image_pitch,width,block[numBlock].linhas);
+    cudaMallocPitch<unsigned char>(&GPU_input,&gpu_image_pitch,width,thread[numThread].linhas);
     cudaMallocPitch<unsigned char>(&GPU_output,&gpu_image_pitch,width,height);
 
     //Copy data from host to device.
-    cudaMemcpy2DAsync(GPU_input,gpu_image_pitch,CPUinput,widthStep,width,block[numBlock].linhas,cudaMemcpyHostToDevice, streamSmooth[numBlock]);
+    cudaMemcpy2DAsync(GPU_input,gpu_image_pitch,CPUinput,widthStep,width,thread[numThread].linhas,cudaMemcpyHostToDevice, streamSmooth[numBlock]);
 
     //Bind the image to the texture. Now the kernel will read the input image through the texture cache.
     //Use tex2D function to read the image
-    cudaBindTexture2D(NULL,tex8u,GPU_input,width,block[numBlock].linhas,gpu_image_pitch);
+    cudaBindTexture2D(NULL,tex8u,GPU_input,width,thread[numThread].linhas,gpu_image_pitch);
 
     /*
      * Set the behavior of tex2D for out-of-range image reads.
@@ -121,15 +121,15 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMThread
     grid_size.y = (height + block_size.y - 1)/block_size.y; /*< Greater than or equal to image height */
 
     cudaEventRecord(start, 0);
-    box_filter_kernel_8u_c1<<<grid_size,block_size, 0, streamSmooth[numBlock]>>>(GPU_output,width,imageParams->linha,gpu_image_pitch,block[numBlock].lf,block[numBlock].li);
+    box_filter_kernel_8u_c1<<<grid_size,block_size, 0, streamSmooth[numThread]>>>(GPU_output,width,imageParams->linha,gpu_image_pitch,block[numBlock].lf,block[numBlock].li);
     cudaEventRecord(stop, 0);
     cudaEventSynchronize(stop);
 
     //Copy the results back to CPU
-    cudaMemcpy2DAsync(CPUoutput,widthStep,GPU_output,gpu_image_pitch,width,height,cudaMemcpyDeviceToHost, streamSmooth[numBlock]);
+    cudaMemcpy2DAsync(CPUoutput,widthStep,GPU_output,gpu_image_pitch,width,height,cudaMemcpyDeviceToHost, streamSmooth[numThread]);
 
     for(int t=0; t<width*height; t++)
-        block[numBlock].pgmOut[t].gray = CPUoutput[t];
+        thread[numThread].pgmOut[t].gray = CPUoutput[t];
 
     //Release the texture
     cudaUnbindTexture(tex8u);
