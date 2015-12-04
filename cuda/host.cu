@@ -9,7 +9,7 @@
 #define BLOCK_DEFAULT 512
 
 
-texture<unsigned char, cudaTextureType2D> tex8u;
+texture<float, cudaTextureType2D> tex8u;
 
 //Box Filter Kernel For Gray scale image with 8bit depth
 __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, const int height, const size_t pitch, const int lf, const int li)
