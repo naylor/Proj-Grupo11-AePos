@@ -114,7 +114,7 @@ int main (int argc, char **argv){
                 for(int c=0; c<=cont; c++) {
                     // FAZ A GRAVACAO
                     start_timer(tempoW); //INICIA O RELOGIO
-                    writePPMPixels(ct, imageParams, thread, t-c, n);
+                    //writePPMPixels(ct, imageParams, thread, t-c, n);
                     stop_timer(tempoW);
                 }
                 cont = -1;
