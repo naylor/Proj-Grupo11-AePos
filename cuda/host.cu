@@ -20,16 +20,16 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
                        PPMThread* thread, int numThread, cudaStream_t* streamSmooth, int filtro)
 {
 
-    if (ct->debug >= 1)
-        printf("Apply Smooth[%d][%s] - li:%d, lf:%d\n",
-               numThread, imageParams->tipo, thread[numThread].li, thread[numThread].lf);
-
     cudaEvent_t start, stop;
     float time;
     cudaEventCreate(&start);
     cudaEventCreate(&stop);
 
     int linhasIn = thread[numThread].linhasIn;
+
+    if (ct->debug >= 1)
+        printf("Apply Smooth[%d][%s] - linhas: %d, li:%d, lf:%d\n",
+               numThread, imageParams->tipo, linhas, thread[numThread].li, thread[numThread].lf);
 
     const int width = imageParams->coluna;
     const int height = (thread[numThread].lf-thread[numThread].li)+1;
