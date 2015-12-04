@@ -107,7 +107,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
             CPUinput[t] = thread[numThread].pgmIn[t].gray;
     }
 
-
+        printf("Apply Smooth[%d]\n", numThread);
 
     //Declare GPU pointer
     unsigned char *GPU_input, *GPU_output;
