@@ -69,41 +69,6 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
 
 }
 
-__global__ void warmup(PGMPixel* input, unsigned char* output)
-{
-	int i = blockDim.x * blockIdx.x + threadIdx.x;
-	output[i] = input[i].gray;
-}
-
-void matrix(PPMImageParams* imageParams, PPMThread* thread, int numThread,
-            unsigned char* CPUinput, int linhasIn, int filtro) {
-
-        PGMPixel* kInput;
-        unsigned char* kOutput;
-
-        // ALOCAR MEMORIA
-        cudaMalloc( (void**) &kInput, linhasIn);
-        cudaMalloc( (void**) &kOutput, linhasIn);
-
-        dim3 blockDims(BLOCK_DEFAULT,1,1);
-
-        dim3 gridDims((unsigned int) ceil((double)(linhasIn/blockDims.x)), 1, 1 );
-
-        cudaMemcpy( kInput, thread[numThread].pgmIn, linhasIn, cudaMemcpyHostToDevice);
-
-        warmup<<<gridDims, blockDims>>>(kInput, kOutput);
-
-        cudaMemcpy(CPUinput, kOutput, linhasIn, cudaMemcpyDeviceToHost );
-
-        // LIBERA A MEMORIA
-        cudaFree(kInput);
-        cudaFree(kOutput);
-
-    cudaDeviceSynchronize();
-
-
-}
-
 
 float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
                        PPMThread* thread, int numThread, cudaStream_t* streamSmooth, int filtro)
@@ -118,14 +83,28 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     double linhasOut = thread[numThread].linhasOut;
 
     const int width = imageParams->coluna;
-    const int height = (thread[numThread].lf-thread[numThread].li);
+    const int height = (thread[numThread].lf-thread[numThread].li)+1;
     const int widthStep = imageParams->coluna;
 
     unsigned char CPUinput[linhasIn];
     unsigned char CPUoutput[width*height];
 
-    matrix(imageParams, thread, numThread, CPUinput, linhasIn, filtro);
+    if (strcmp(imageParams->tipo, "P6")==0) {
+        if (filtro == 1)
+            for(int t=0; t<linhasIn; t++)
+                CPUinput[t] = thread[numThread].ppmIn[t].red;
+        if (filtro == 2)
+            for(int t=0; t<linhasIn; t++)
+                CPUinput[t] = thread[numThread].ppmIn[t].green;
+        if (filtro == 3)
+            for(int t=0; t<linhasIn; t++)
+                CPUinput[t] = thread[numThread].ppmIn[t].blue;
+    }
 
+    if (strcmp(imageParams->tipo, "P5")==0) {
+        for(int t=0; t<linhasIn; t++)
+            CPUinput[t] = thread[numThread].pgmIn[t].gray;
+    }
     //Declare GPU pointer
     unsigned char *GPU_input, *GPU_output;
 
