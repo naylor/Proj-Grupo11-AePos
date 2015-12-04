@@ -34,7 +34,8 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     int c = xIndex % width; // COLUNA
     int l = (xIndex-c)/width; // LINHA
 
-
+    if (c > coluna-1 || l > linha-1)
+        return;
 
 
     int inicio = 0;
@@ -148,8 +149,8 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
      */
 
     dim3 grid_size;
-    grid_size.x = (width + block_size.x + 1)/block_size.x;  /*< Greater than or equal to image width */
-    grid_size.y = (height + block_size.y + 1)/block_size.y; /*< Greater than or equal to image height */
+    grid_size.x = (width + block_size.x - 1)/block_size.x;  /*< Greater than or equal to image width */
+    grid_size.y = (height + block_size.y - 1)/block_size.y; /*< Greater than or equal to image height */
 
     cudaEventRecord(start, 0);
     box_filter_kernel_8u_c1<<<grid_size,block_size, 0, streamSmooth[numThread]>>>(GPU_output,width,imageParams->linha,gpu_image_pitch,thread[numThread].lf,thread[numThread].li);
