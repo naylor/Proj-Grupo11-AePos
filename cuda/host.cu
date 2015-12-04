@@ -35,7 +35,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     int l = (xIndex-c)/width; // LINHA
 
 
-
+    if (l > 50) return;
 
     int inicio = 0;
     if (li != 0)
@@ -81,7 +81,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     int linhasOut = thread[numThread].linhasOut;
 
     const int width = imageParams->coluna;
-    const int height = (thread[numThread].lf-thread[numThread].li);
+    const int height = (thread[numThread].lf-thread[numThread].li)+1;
     const int widthStep = imageParams->coluna;
 
 
