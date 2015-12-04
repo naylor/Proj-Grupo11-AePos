@@ -88,12 +88,12 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
 
 
     unsigned char* CPUinput;
+    unsigned char* CPUoutput;
     CPUinput = (unsigned char *)malloc(linhasIn * sizeof(unsigned char));
+    CPUoutput = (unsigned char *)malloc(width*height * sizeof(unsigned char));
 
-    unsigned char CPUoutput[width*height];
 
-        printf("Apply Smooth[%d]\n", linhasIn);
-    exit(1);
+
     if (strcmp(imageParams->tipo, "P6")==0) {
         if (filtro == 1)
             for(int t=0; t<linhasIn; t++)
