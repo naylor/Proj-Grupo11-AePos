@@ -88,7 +88,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMThread
     cudaMallocPitch<unsigned char>(&GPU_output,&gpu_image_pitch,width,height);
 
     //Copy data from host to device.
-    cudaMemcpy2DAsync(GPU_input,gpu_image_pitch,CPUinput,widthStep,width,thread[numThread].linhas,cudaMemcpyHostToDevice, streamSmooth[numBlock]);
+    cudaMemcpy2DAsync(GPU_input,gpu_image_pitch,CPUinput,widthStep,width,thread[numThread].linhas,cudaMemcpyHostToDevice, streamSmooth[numThread]);
 
     //Bind the image to the texture. Now the kernel will read the input image through the texture cache.
     //Use tex2D function to read the image
@@ -121,7 +121,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMThread
     grid_size.y = (height + block_size.y - 1)/block_size.y; /*< Greater than or equal to image height */
 
     cudaEventRecord(start, 0);
-    box_filter_kernel_8u_c1<<<grid_size,block_size, 0, streamSmooth[numThread]>>>(GPU_output,width,imageParams->linha,gpu_image_pitch,block[numBlock].lf,block[numBlock].li);
+    box_filter_kernel_8u_c1<<<grid_size,block_size, 0, streamSmooth[numThread]>>>(GPU_output,width,imageParams->linha,gpu_image_pitch,block[numThread].lf,block[numThread].li);
     cudaEventRecord(stop, 0);
     cudaEventSynchronize(stop);
 
