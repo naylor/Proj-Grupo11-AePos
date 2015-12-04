@@ -21,7 +21,7 @@ int main (int argc, char **argv){
     ct->DIRIMGIN = "images_in/";  //DIRETORIO DAS IMAGEMS
     ct->DIRIMGOUT = "images_out/"; //DIRETORIO DE SAIDA
     ct->DIRRES = "resultados/"; //GUARDAR OS LOGS
-    ct->typeAlg = 'C'; //TIPO DE ALGORITMO, P: PARALELO
+    ct->typeAlg = 'C'; //TIPO DE ALGORITMO, C: CUDA
 
     // CARREGA AS OPCOES DO USUARIO
     menu(ct, argc, argv);

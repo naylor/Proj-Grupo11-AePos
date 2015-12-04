@@ -26,7 +26,7 @@ int main (int argc, char *argv[]){
         ct->DIRIMGIN = "images_in/";
         ct->DIRIMGOUT = "images_out/";
         ct->DIRRES = "resultados/";
-        ct->typeAlg = 'S';
+        ct->typeAlg = 'S'; // SEQUENCIAL
         menu(ct, argc, argv);
 
         sprintf((char*) &imageParams->fileOut, "%s%s", ct->DIRIMGOUT, ct->filePath);

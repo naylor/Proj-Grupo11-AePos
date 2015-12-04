@@ -19,7 +19,7 @@ int main (int argc, char **argv){
     ct->DIRIMGIN = "images_in/";  //DIRETORIO DAS IMAGEMS
     ct->DIRIMGOUT = "images_out/"; //DIRETORIO DE SAIDA
     ct->DIRRES = "resultados/"; //GUARDAR OS LOGS
-    ct->typeAlg = 'P'; //TIPO DE ALGORITMO, P: PARALELO
+    ct->typeAlg = 'M'; //TIPO DE ALGORITMO, M: MPI
 
     //INICIANDO MPI
     MPI_Status status;
