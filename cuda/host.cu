@@ -84,7 +84,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMThread
     }
       if (strcmp(imageParams->tipo, "P5")==0) {
         for(int t=0; t<linhasIn; t++)
-            CPUinput[t] = thread[numThread].pgmIn[t].red;
+            CPUinput[t] = thread[numThread].pgmIn[t].gray;
     }
 
     //Declare GPU pointer
