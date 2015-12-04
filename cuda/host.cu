@@ -34,7 +34,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     int c = xIndex % width; // COLUNA
     int l = (xIndex-c)/width; // LINHA
 
-    if (c > coluna-1 || l > linha-1)
+    if (c > width-1 || l > (lf-li)-1)
         return;
 
 
