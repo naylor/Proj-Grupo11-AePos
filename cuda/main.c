@@ -110,15 +110,11 @@ int main (int argc, char **argv){
             } else
                 relogio[1].tempoF += box_filter_8u_c1(ct, imageParams, thread, t, streamSmooth, 1);
 
-                    // FAZ A GRAVACAO
-                    start_timer(tempoW); //INICIA O RELOGIO
-                    //writePPMPixels(ct, imageParams, thread, t-c, n);
-                    stop_timer(tempoW);
-
-
+            // FAZ A GRAVACAO
+            start_timer(tempoW); //INICIA O RELOGIO
+            writePPMPixels(ct, imageParams, thread, t, n);
+            stop_timer(tempoW);
         }
-
-
         free(thread);
     }
 
