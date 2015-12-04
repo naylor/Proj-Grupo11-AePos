@@ -35,9 +35,10 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     unsigned char* CPUinput;
     unsigned char* CPUoutput;
     CPUinput = (unsigned char *)malloc(linhasIn * sizeof(unsigned char));
+        exit(1);
+
     CPUoutput = (unsigned char *)malloc(width*height * sizeof(unsigned char));
 
-    exit(1);
 
     if (strcmp(imageParams->tipo, "P6")==0) {
         if (filtro == 1)
