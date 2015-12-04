@@ -86,13 +86,13 @@ int main (int argc, char **argv){
     // DE BLOCOS QUE SERAO GERADOS
     PPMNode* node = (PPMNode *)malloc(sizeof(PPMNode) * numNodes);
 
-    // FAZ A DIVISAO DE LINHAS
-    // POR BLOCOS
-    int endOfNodes = getDivisionNodes(ct, imageParams, node, numNodes, 0, numMaxLinhas);
-
     int t,n;
     float times;
-    for(n=0; n<endOfNodes; n++) {
+    for(n=0; n<numNodes; n++) {
+        // FAZ A DIVISAO DE LINHAS
+        // POR BLOCOS
+        int endOfNodes = getDivisionNodes(ct, imageParams, node, numNodes, n, numMaxLinhas);
+
         // ALOCA MEMORIA PARA A THREAD
         PPMThread* thread = getDivisionThreads(ct, imageParams, node, n);
 
