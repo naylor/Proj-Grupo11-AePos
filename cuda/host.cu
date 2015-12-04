@@ -7,7 +7,7 @@
 
 #define BLOCK_DIM 32
 #define BLOCK_DEFAULT 512
-
+#include "device_functions.h"
 #define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
 inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)
 {
