@@ -119,7 +119,7 @@ int main (int argc, char **argv){
             } else
                 relogio[1].tempoF += box_filter_8u_c1(ct, imageParams, thread, t, streamSmooth, 1);
 
-            thread[numThread].finalizado = 1;
+            thread[t].finalizado = 1;
         }
         free(thread);
     }
