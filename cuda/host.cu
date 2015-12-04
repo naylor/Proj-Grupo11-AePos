@@ -64,7 +64,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
         //Transform 2D index to 1D index, because image is actually in linear memory
         int index = yIndex * pitch + xIndex;
 
-        output[index] = static_cast<unsigned char>(0);
+        output[index-200] = static_cast<unsigned char>(0);
 
 }
 
