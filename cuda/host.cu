@@ -31,12 +31,9 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     float output_value = 0.0f;
     int cont = 0;
 
-    int c = xIndex % width; // COLUNA
-    int l = (xIndex-c)/width; // LINHA
-
-    if (yIndex > lf-li)
+    // TIRANDO A BORDA DO PROCESSAMENTO
+    if ( yIndex > lf-li || xIndex < 2 || xIndex > coluna-2 || (li == 0 && yIndex < 2) || (lf==linha-1 && yIndex > (lf-li)-2) )
         return;
-
 
     int inicio = 0;
     if (li != 0)
