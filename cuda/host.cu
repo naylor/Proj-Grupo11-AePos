@@ -80,8 +80,8 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMThread
     if (strcmp(imageParams->tipo, "P6")==0) {
         for(t=0; t<linhasIn; t++)
             CPUinput[t] = thread[numThread].ppmIn[t].red;
-            CPUinput[t+1] = thread[numThread].ppmIn[t].green;
-            CPUinput[t+2] = thread[numThread].ppmIn[t].blue;
+            //CPUinput[t+1] = thread[numThread].ppmIn[t].green;
+            //CPUinput[t+2] = thread[numThread].ppmIn[t].blue;
     }
       if (strcmp(imageParams->tipo, "P5")==0) {
         for(t=0; t<linhasIn; t++)
@@ -140,8 +140,8 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMThread
     if (strcmp(imageParams->tipo, "P6")==0) {
         for(t=0; t<width*height; t++)
             thread[numThread].ppmOut[t].red = CPUoutput[t];
-            thread[numThread].ppmOut[t].green = CPUoutput[t+1];
-            thread[numThread].ppmOut[t].blue = CPUoutput[t+2];
+            //thread[numThread].ppmOut[t].green = CPUoutput[t+1];
+            //thread[numThread].ppmOut[t].blue = CPUoutput[t+2];
     }
 
     if (strcmp(imageParams->tipo, "P5")==0) {
