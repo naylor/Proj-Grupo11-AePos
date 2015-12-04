@@ -9,7 +9,7 @@
 #define BLOCK_DEFAULT 512
 
 
-texture<float, cudaTextureType2D> tex8u;
+texture<unsigned char, cudaTextureType2D> tex8u;
 
 //Box Filter Kernel For Gray scale image with 8bit depth
 __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, const int height, const size_t pitch, const int lf, const int li)
@@ -19,9 +19,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
 
 
-    float red = 0.0f;
-    float green = 0.0f;
-    float blue = 0.0f;
+    float output_value = 0.0f;
     int cont = 0;
 
     int c = xIndex % width; // COLUNA
@@ -36,38 +34,32 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
         //Sum the window pixels
         for(int l2= -2; l2<=2; l2++)
         {
-            for(int c2=-2; c2<=2; c2+=3)
+            for(int c2=-2; c2<=2; c2++)
             {
             if(l2 >= 0 && c2 >= 0) {
 
-                if (tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2) > 0)
-                printf("Smooth %f\n", tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2) );
+
                 //No need to worry about Out-Of-Range access. tex2D automatically handles it.
-                red += tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2);
-                green += tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2+1);
-                blue += tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2+2);
+                output_value += tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2);
                 cont++;
             }
             }
         }
 
         //Average the output value
-        red = red/cont;
-        green = red/cont;
-        blue = blue/cont;
+        output_value = output_value/cont;
 
         //Write the averaged value to the output.
         //Transform 2D index to 1D index, because image is actually in linear memory
         int index = yIndex * pitch + xIndex;
 
-        output[index] = static_cast<unsigned char>(red);
-        output[index+1] = static_cast<unsigned char>(green);
-        output[index+2] = static_cast<unsigned char>(blue);
+        output[index] = static_cast<unsigned char>(output_value);
 
 }
 
 
-float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMThread* thread, int numThread, cudaStream_t* streamSmooth)
+float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
+                       PPMThread* thread, int numThread, cudaStream_t* streamSmooth, int filtro)
 {
 
     cudaEvent_t start, stop;
@@ -82,28 +74,31 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMThread
     const int height = (thread[numThread].lf-thread[numThread].li)+1;
     const int widthStep = imageParams->coluna;
 
-    float CPUinput[linhasIn];
+    unsigned char CPUinput[linhasIn];
     unsigned char CPUoutput[width*height];
 
-    int t;
     if (strcmp(imageParams->tipo, "P6")==0) {
-        for(t=0; t<linhasIn; t++)
-            CPUinput[t] = thread[numThread].ppmIn[t].red;
-            CPUinput[t+1] = thread[numThread].ppmIn[t].green;
-            CPUinput[t+2] = thread[numThread].ppmIn[t].blue;
+        if (filtro == 1)
+            for(int t=0; t<width*height; t++)
+                CPUinput[t] = thread[numThread].ppmIn[t].red;
+        if (filtro == 2)
+            for(int t=0; t<width*height; t++)
+                CPUinput[t] = thread[numThread].ppmIn[t].red;
+        if (filtro == 3)
+            for(int t=0; t<width*height; t++)
+                CPUinput[t] = thread[numThread].ppmIn[t].red;
     }
       if (strcmp(imageParams->tipo, "P5")==0) {
-        for(t=0; t<linhasIn; t++)
-            CPUinput[t] = thread[numThread].pgmIn[t].gray;
+        for(int t=0; t<linhasIn; t++)
+            CPUinput[t] = thread[numThread].pgmIn[t].red;
     }
 
     //Declare GPU pointer
-    unsigned char *GPU_output;
-    float *GPU_input;
+    unsigned char *GPU_input, *GPU_output;
 
     //Allocate 2D memory on GPU. Also known as Pitch Linear Memory
     size_t gpu_image_pitch = 0;
-    cudaMallocPitch<float>(&GPU_input,&gpu_image_pitch,width,thread[numThread].linhas);
+    cudaMallocPitch<unsigned char>(&GPU_input,&gpu_image_pitch,width,thread[numThread].linhas);
     cudaMallocPitch<unsigned char>(&GPU_output,&gpu_image_pitch,width,height);
 
     //Copy data from host to device.
@@ -148,14 +143,19 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMThread
     cudaMemcpy2DAsync(CPUoutput,widthStep,GPU_output,gpu_image_pitch,width,height,cudaMemcpyDeviceToHost, streamSmooth[numThread]);
 
     if (strcmp(imageParams->tipo, "P6")==0) {
-        for(t=0; t<width*height; t++)
-            thread[numThread].ppmOut[t].red = CPUoutput[t];
-            thread[numThread].ppmOut[t].green = CPUoutput[t+1];
-            thread[numThread].ppmOut[t].blue = CPUoutput[t+2];
+        if (filtro == 1)
+            for(int t=0; t<width*height; t++)
+                thread[numThread].ppmOut[t].red = CPUoutput[t];
+        if (filtro == 2)
+            for(int t=0; t<width*height; t++)
+                thread[numThread].ppmOut[t].green = CPUoutput[t];
+        if (filtro == 3)
+            for(int t=0; t<width*height; t++)
+                thread[numThread].ppmOut[t].blue = CPUoutput[t];
     }
 
     if (strcmp(imageParams->tipo, "P5")==0) {
-        for(t=0; t<width*height; t++)
+        for(int t=0; t<width*height; t++)
             thread[numThread].pgmOut[t].gray = CPUoutput[t];
     }
 
