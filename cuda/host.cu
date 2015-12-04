@@ -87,8 +87,8 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     const int widthStep = imageParams->coluna;
 
 
-    unsigned char CPUinput;
-    CPUinput = malloc(linhasIn * sizeof(unsigned char));
+    unsigned char* CPUinput;
+    CPUinput = (unsigned char *)malloc(linhasIn * sizeof(unsigned char));
         printf("Apply Smooth[%d]\n", linhasIn);
     exit(1);
     unsigned char CPUoutput[width*height];
