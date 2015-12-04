@@ -40,7 +40,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
             {
             if(l2 >= 0 && c2 >= 0) {
 
-
+                printf("Smooth %f\n", tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2) );
                 //No need to worry about Out-Of-Range access. tex2D automatically handles it.
                 red += tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2);
                 green += tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2+1);
