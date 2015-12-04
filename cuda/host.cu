@@ -143,7 +143,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMThread
     cudaEventSynchronize(stop);
 
     //Copy the results back to CPU
-    cudaMemcpy2DAsync(CPUoutput,widthStep,GPU_output,gpu_image_pitch,width,height,cudaMemcpyDeviceToHost, streamSmooth[numThread]);
+    cudaMemcpy2DAsync(CPUoutput,widthStep,GPU_output,gpu_image_pitch,3*width,height,cudaMemcpyDeviceToHost, streamSmooth[numThread]);
 
     if (strcmp(imageParams->tipo, "P6")==0) {
         for(t=0; t<width*height; t++)
