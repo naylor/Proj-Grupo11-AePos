@@ -34,6 +34,11 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     int c = xIndex % width; // COLUNA
     int l = (xIndex-c)/width; // LINHA
 
+
+    // TIRANDO A BORDA DO PROCESSAMENTO
+    if ( l > lf-li || c < 2 || c > width-2 || (li == 0 && l < 2) || (lf==height-1 && l > (lf-li)-2) )
+        return;
+
     int inicio = 0;
     if (li != 0)
         inicio = 2;
@@ -47,7 +52,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
 
 
                 //No need to worry about Out-Of-Range access. tex2D automatically handles it.
-                //output_value += tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2);
+                output_value += tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2);
                 cont++;
             }
             }
@@ -60,7 +65,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
         //Transform 2D index to 1D index, because image is actually in linear memory
         int index = yIndex * pitch + xIndex;
 
-        //output[index] = 0;
+        output[index] = static_cast<unsigned char>(output_value);
 
 }
 
@@ -75,7 +80,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     cudaEventCreate(&stop);
 
     int linhasIn = thread[numThread].linhasIn;
-    int linhasOut = thread[numThread].linhasOut;
+    double linhasOut = thread[numThread].linhasOut;
 
     const int width = imageParams->coluna;
     const int height = (thread[numThread].lf-thread[numThread].li)+1;
@@ -87,8 +92,10 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     CPUinput = (unsigned char *)malloc(linhasIn * sizeof(unsigned char));
     CPUoutput = (unsigned char *)malloc(width*height * sizeof(unsigned char));
 
+    unsigned char CPUoutput[width*height];
 
-
+        printf("Apply Smooth[%d]\n", linhasIn);
+    exit(1);
     if (strcmp(imageParams->tipo, "P6")==0) {
         if (filtro == 1)
             for(int t=0; t<linhasIn; t++)
