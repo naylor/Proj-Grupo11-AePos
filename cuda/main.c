@@ -45,7 +45,7 @@ int main (int argc, char **argv){
 
     // SE FOI DEFINIDA A QUANTIDADE DE LINHAS
     // PELO MENU, ALTERAR AQUI
-    int r = 11000000/imageParams->coluna;
+    int r = 517203834/imageParams->coluna;
     numMaxLinhas = r;
 
     // DEFINA A CARGA MAXIMA DELINHAS

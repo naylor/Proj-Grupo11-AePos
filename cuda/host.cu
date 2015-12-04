@@ -39,7 +39,6 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     if (li != 0)
         inicio = 2;
 
-        #pragma unroll
         for(int l2= -2; l2<=2; l2++)
         {
             for(int c2=-2; c2<=2; c2++)
