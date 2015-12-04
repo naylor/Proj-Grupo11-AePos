@@ -57,6 +57,38 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
 
 }
 
+__global__ void warmup(unsigned char* input, unsigned char* output)
+{
+	int i = blockDim.x * blockIdx.x + threadIdx.x;
+	output[i] = input[i];
+}
+
+void matrix(PPMImageParams* imageParams, PPMThread* thread, int numThread,
+            unsigned char* CPUinput, int linhasIn, int filtro) {
+
+        // ALOCAR MEMORIA
+        cudaMalloc( (void**) &kInput, linhasIn);
+        cudaMalloc( (void**) &kOutput, linhasIn);
+
+        dim3 blockDims(BLOCK_DEFAULT,1,1);
+
+        dim3 gridDims((unsigned int) ceil((double)(linhasIn/blockDims.x)), 1, 1 );
+
+        cudaMemcpy( kInput, thread[numThread].pgmIn, linhasIn, cudaMemcpyHostToDevice);
+
+        warmup<<<gridDims, blockDims>>>(kInput, kOutput);
+
+        cudaMemcpy(CPUinput, kOutput, linhasIn, cudaMemcpyDeviceToHost );
+
+        // LIBERA A MEMORIA
+        cudaFree(kInput);
+        cudaFree(kOutput);
+
+    cudaDeviceSynchronize();
+
+
+}
+
 
 float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
                        PPMThread* thread, int numThread, cudaStream_t* streamSmooth, int filtro)
@@ -77,22 +109,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     unsigned char CPUinput[linhasIn];
     unsigned char CPUoutput[width*height];
 
-    if (strcmp(imageParams->tipo, "P6")==0) {
-        if (filtro == 1)
-            for(int t=0; t<linhasIn; t++)
-                CPUinput[t] = thread[numThread].ppmIn[t].red;
-        if (filtro == 2)
-            for(int t=0; t<linhasIn; t++)
-                CPUinput[t] = thread[numThread].ppmIn[t].green;
-        if (filtro == 3)
-            for(int t=0; t<linhasIn; t++)
-                CPUinput[t] = thread[numThread].ppmIn[t].blue;
-    }
-
-    if (strcmp(imageParams->tipo, "P5")==0) {
-        for(int t=0; t<linhasIn; t++)
-            CPUinput[t] = thread[numThread].pgmIn[t].gray;
-    }
+    CPUinput = matrix(imageParams, thread[numThread], numThread, CPUinput, linhasIn, filtro);
 
     //Declare GPU pointer
     unsigned char *GPU_input, *GPU_output;
