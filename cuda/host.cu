@@ -45,18 +45,18 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
 
     if (strcmp(imageParams->tipo, "P6")==0) {
         if (filtro == 1)
-            for(int t=0; t<linhasIn; t++)
+            for(int t=0; t<thread[numThread].linhas*width; t++)
                 CPUinput[t] = thread[numThread].ppmIn[t].red;
         if (filtro == 2)
-            for(int t=0; t<linhasIn; t++)
+            for(int t=0; t<thread[numThread].linhas*width; t++)
                 CPUinput[t] = thread[numThread].ppmIn[t].green;
         if (filtro == 3)
-            for(int t=0; t<linhasIn; t++)
+            for(int t=0; t<thread[numThread].linhas*width; t++)
                 CPUinput[t] = thread[numThread].ppmIn[t].blue;
     }
 
     if (strcmp(imageParams->tipo, "P5")==0) {
-        for(int t=0; t<linhasIn; t++)
+        for(int t=0; t<thread[numThread].linhas*width; t++)
             CPUinput[t] = thread[numThread].pgmIn[t].gray;
     }
 
