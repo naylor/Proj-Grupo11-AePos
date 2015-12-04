@@ -112,7 +112,14 @@ int main (int argc, char **argv){
 
             // FAZ A GRAVACAO
             start_timer(tempoW); //INICIA O RELOGIO
-            //writePPMPixels(ct, imageParams, thread, t, n);
+            writePPMPixels(ct, imageParams, thread, t, n);
+            stop_timer(tempoW);
+        }
+
+        for(t=0; t<ct->numThreads; t++) {
+            // FAZ A GRAVACAO
+            start_timer(tempoW); //INICIA O RELOGIO
+            writePPMPixels(ct, imageParams, thread, t, n);
             stop_timer(tempoW);
         }
         free(thread);
