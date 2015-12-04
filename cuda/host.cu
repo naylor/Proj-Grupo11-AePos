@@ -41,7 +41,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
 
     if (strcmp(imageParams->tipo, "P6")==0) {
         if (filtro == 1)
-            for(int t=0; t<linhasIn; t++)
+            for(int t=0; t<width*height; t++)
                 CPUinput[t] = thread[numThread].ppmIn[t].red;
         if (filtro == 2)
             for(int t=0; t<linhasIn; t++)
@@ -50,7 +50,6 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
             for(int t=0; t<linhasIn; t++)
                 CPUinput[t] = thread[numThread].ppmIn[t].blue;
     }
-        exit(1);
 
     if (strcmp(imageParams->tipo, "P5")==0) {
         for(int t=0; t<linhasIn; t++)
