@@ -81,7 +81,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMThread
     const int height = (thread[numThread].lf-thread[numThread].li)+1;
     const int widthStep = imageParams->coluna;
 
-    unsigned char CPUinput[linhasIn];
+    float CPUinput[linhasIn];
     unsigned char CPUoutput[width*height];
 
     int t;
@@ -97,11 +97,12 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMThread
     }
 
     //Declare GPU pointer
-    unsigned char *GPU_input, *GPU_output;
+    unsigned char *GPU_output;
+    float *GPU_input;
 
     //Allocate 2D memory on GPU. Also known as Pitch Linear Memory
     size_t gpu_image_pitch = 0;
-    cudaMallocPitch<unsigned char>(&GPU_input,&gpu_image_pitch,width,thread[numThread].linhas);
+    cudaMallocPitch<float>(&GPU_input,&gpu_image_pitch,width,thread[numThread].linhas);
     cudaMallocPitch<unsigned char>(&GPU_output,&gpu_image_pitch,width,height);
 
     //Copy data from host to device.
