@@ -63,7 +63,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
         //Transform 2D index to 1D index, because image is actually in linear memory
         int index = yIndex * pitch + xIndex;
 
-        output[index] = static_cast<unsigned char>(output_value);
+        output[0] = static_cast<unsigned char>(output_value);
 
 }
 
@@ -152,7 +152,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     grid_size.y = (height + block_size.y - 1)/block_size.y; /*< Greater than or equal to image height */
 
     cudaEventRecord(start, 0);
-    box_filter_kernel_8u_c1<<<grid_size,block_size, 0, streamSmooth[numThread]>>>(GPU_output,width,imageParams->linha-2,gpu_image_pitch,thread[numThread].lf,thread[numThread].li);
+    box_filter_kernel_8u_c1<<<grid_size,block_size, 0, streamSmooth[numThread]>>>(GPU_output,width,imageParams->linha,gpu_image_pitch,thread[numThread].lf,thread[numThread].li);
     gpuErrchk( cudaPeekAtLastError() );
     gpuErrchk( cudaDeviceSynchronize() );
 
