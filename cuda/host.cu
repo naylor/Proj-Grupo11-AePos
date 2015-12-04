@@ -89,9 +89,6 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     unsigned char CPUinput[linhasIn];
     unsigned char CPUoutput[width*height];
 
-            printf("Apply Smooth[%d]\n", numThread);
-        exit(1);
-
     if (strcmp(imageParams->tipo, "P6")==0) {
         if (filtro == 1)
             for(int t=0; t<linhasIn; t++)
@@ -118,7 +115,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     gpuErrchk( cudaMallocPitch<unsigned char>(&GPU_output,&gpu_image_pitch,width,height) );
 
     //Copy data from host to device.
-    gpuErrchk( cudaMemcpy2DAsync(GPU_input,gpu_image_pitch,CPUinput,widthStep,width,thread[numThread].linhas,cudaMemcpyHostToDevice, streamSmooth[numThread]) );
+    gpuErrchk( cudaMemcpy2D(GPU_input,gpu_image_pitch,CPUinput,widthStep,width,thread[numThread].linhas,cudaMemcpyHostToDevice, streamSmooth[numThread]) );
 
     //Bind the image to the texture. Now the kernel will read the input image through the texture cache.
     //Use tex2D function to read the image
@@ -159,7 +156,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     cudaEventSynchronize(stop);
 
     //Copy the results back to CPU
-    cudaMemcpy2DAsync(CPUoutput,widthStep,GPU_output,gpu_image_pitch,width,height,cudaMemcpyDeviceToHost, streamSmooth[numThread]);
+    cudaMemcpy2D(CPUoutput,widthStep,GPU_output,gpu_image_pitch,width,height,cudaMemcpyDeviceToHost, streamSmooth[numThread]);
 
     if (strcmp(imageParams->tipo, "P6")==0) {
         if (filtro == 1)
