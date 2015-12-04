@@ -58,7 +58,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
 }
 
 
-float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block, int numBlock, cudaStream_t* streamSmooth)
+float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMThread* block, int numBlock, cudaStream_t* streamSmooth)
 {
 
     cudaEvent_t start, stop;
@@ -145,7 +145,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMBlock*
 
 // FUNCAO __HOST__
 // DEFINICAO DOS PARAMETROS DE CHAMADA DO KERNEL
-void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMBlock* block, int numBlock, cudaStream_t* streamSmooth) {
+void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* block, int numBlock, cudaStream_t* streamSmooth) {
 
     // DEFINE A QUANTIDADE DE LINHAS DO
     // BLOCO LIDO E DO BLOCO QUE SERA

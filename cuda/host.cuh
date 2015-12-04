@@ -4,6 +4,6 @@
 #include "../common/imagem.h"
 
 void applySmooth(initialParams* ct, PPMImageParams* imageParams,
-                 PPMBlock* block, int numBlock, cudaStream_t* streamSmooth);
+                 PPMThread* thread, int numBlock, cudaStream_t* streamSmooth);
 
 #endif // HOST_H_INCLUDED
