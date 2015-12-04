@@ -115,15 +115,15 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
 
     //Allocate 2D memory on GPU. Also known as Pitch Linear Memory
     size_t gpu_image_pitch = 0;
-    gpuErrchk( cudaMallocPitch<unsigned char>(&GPU_input,&gpu_image_pitch,width,thread[numThread].linhas-1) );
+    gpuErrchk( cudaMallocPitch<unsigned char>(&GPU_input,&gpu_image_pitch,width,thread[numThread].linhas) );
     gpuErrchk( cudaMallocPitch<unsigned char>(&GPU_output,&gpu_image_pitch,width,height) );
 
     //Copy data from host to device.
-    gpuErrchk( cudaMemcpy2DAsync(GPU_input,gpu_image_pitch,CPUinput,widthStep,width,thread[numThread].linhas-1,cudaMemcpyHostToDevice, streamSmooth[numThread]) );
+    gpuErrchk( cudaMemcpy2DAsync(GPU_input,gpu_image_pitch,CPUinput,widthStep,width,thread[numThread].linhas,cudaMemcpyHostToDevice, streamSmooth[numThread]) );
 
     //Bind the image to the texture. Now the kernel will read the input image through the texture cache.
     //Use tex2D function to read the image
-   gpuErrchk( cudaBindTexture2D(NULL,tex8u,GPU_input,width,thread[numThread].linhas-1,gpu_image_pitch) );
+   gpuErrchk( cudaBindTexture2D(NULL,tex8u,GPU_input,width,thread[numThread].linhas,gpu_image_pitch) );
 
     /*
      * Set the behavior of tex2D for out-of-range image reads.
@@ -152,7 +152,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     grid_size.y = (height + block_size.y - 1)/block_size.y; /*< Greater than or equal to image height */
 
     cudaEventRecord(start, 0);
-    box_filter_kernel_8u_c1<<<grid_size,block_size, 0, streamSmooth[numThread]>>>(GPU_output,width,imageParams->linha-1,gpu_image_pitch,thread[numThread].lf,thread[numThread].li);
+    box_filter_kernel_8u_c1<<<grid_size,block_size, 0, streamSmooth[numThread]>>>(GPU_output,width,imageParams->linha-2,gpu_image_pitch,thread[numThread].lf,thread[numThread].li);
     gpuErrchk( cudaPeekAtLastError() );
     gpuErrchk( cudaDeviceSynchronize() );
 
@@ -160,7 +160,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     cudaEventSynchronize(stop);
 
     //Copy the results back to CPU
-    cudaMemcpy2DAsync(CPUoutput,widthStep,GPU_output,gpu_image_pitch,width,height-1,cudaMemcpyDeviceToHost, streamSmooth[numThread]);
+    cudaMemcpy2DAsync(CPUoutput,widthStep,GPU_output,gpu_image_pitch,width,height,cudaMemcpyDeviceToHost, streamSmooth[numThread]);
 
     if (strcmp(imageParams->tipo, "P6")==0) {
         if (filtro == 1)
