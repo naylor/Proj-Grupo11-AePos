@@ -99,7 +99,7 @@ int main (int argc, char **argv){
     {
         #pragma omp for
         for(int c=0; c<ct->numThreads; c++) {
-            while (thread[numThread].finalizado != 1);
+            while (thread[t].finalizado != 1);
             writePPMPixels(ct, imageParams, thread, t, n);
         }
     }
