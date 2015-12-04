@@ -107,8 +107,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
         for(int t=0; t<linhasIn; t++)
             CPUinput[t] = thread[numThread].pgmIn[t].gray;
     }
-            printf("Apply Smooth[%d]\n", numThread);
-        exit(1);
+
     //Declare GPU pointer
     unsigned char *GPU_input, *GPU_output;
 
@@ -177,7 +176,8 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
         for(int t=0; t<width*height; t++)
             thread[numThread].pgmOut[t].gray = CPUoutput[t];
     }
-
+            printf("Apply Smooth[%d]\n", numThread);
+        exit(1);
     //Release the texture
     cudaUnbindTexture(tex8u);
 
