@@ -246,8 +246,6 @@ int main (int argc, char **argv){
             //ESCREVE NO ARQUIVO DE LOGS
             writeFile(ct, imageParams, relogio);
 
-            free(tempoA);
-
             if (ct->debug >= 1) printf("All Server finalizados: %d\n", rank);
 
         } else {
