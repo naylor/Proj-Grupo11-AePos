@@ -78,13 +78,13 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMThread
 
     int t;
     if (strcmp(imageParams->tipo, "P6")==0) {
-        for(int t=0; t<linhasIn; t++)
+        for(t=0; t<linhasIn; t++)
             CPUinput[t] = thread[numThread].ppmIn[t].red;
             CPUinput[t+1] = thread[numThread].ppmIn[t].green;
             CPUinput[t+2] = thread[numThread].ppmIn[t].blue;
     }
       if (strcmp(imageParams->tipo, "P5")==0) {
-        for(int t=0; t<linhasIn; t++)
+        for(t=0; t<linhasIn; t++)
             CPUinput[t] = thread[numThread].pgmIn[t].gray;
     }
 
@@ -138,14 +138,14 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMThread
     cudaMemcpy2DAsync(CPUoutput,widthStep,GPU_output,gpu_image_pitch,width,height,cudaMemcpyDeviceToHost, streamSmooth[numThread]);
 
     if (strcmp(imageParams->tipo, "P6")==0) {
-        for(int t=0; t<width*height; t++)
+        for(t=0; t<width*height; t++)
             thread[numThread].ppmOut[t].red = CPUoutput[t];
             thread[numThread].ppmOut[t].green = CPUoutput[t+1];
             thread[numThread].ppmOut[t].blue = CPUoutput[t+2];
     }
 
     if (strcmp(imageParams->tipo, "P5")==0) {
-        for(int t=0; t<width*height; t++)
+        for(t=0; t<width*height; t++)
             thread[numThread].pgmOut[t].gray = CPUoutput[t];
     }
 
