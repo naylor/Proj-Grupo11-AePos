@@ -19,7 +19,9 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
     int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
 
 
-    float output_value = 0.0f;
+    float red = 0.0f;
+    float green = 0.0f;
+    float blue = 0.0f;
     int cont = 0;
 
     int c = xIndex % width; // COLUNA
@@ -34,28 +36,32 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
         //Sum the window pixels
         for(int l2= -2; l2<=2; l2++)
         {
-            for(int c2=-2; c2<=2; c2++)
+            for(int c2=-2; c2<=2; c2+=3)
             {
             if(l2 >= 0 && c2 >= 0) {
 
 
                 //No need to worry about Out-Of-Range access. tex2D automatically handles it.
-                output_value += tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2);
-                output_value += tex2D(tex8u,inicio+ xIndex+l2+1,yIndex + c2);
-                output_value += tex2D(tex8u,inicio+ xIndex+l2+2,yIndex + c2);
+                red += tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2);
+                green += tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2+1);
+                blue += tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2+2);
                 cont++;
             }
             }
         }
 
         //Average the output value
-        output_value = output_value/cont;
+        red = red/cont;
+        green = red/cont;
+        blue = blue/cont;
 
         //Write the averaged value to the output.
         //Transform 2D index to 1D index, because image is actually in linear memory
         int index = yIndex * pitch + xIndex;
 
-        output[index] = static_cast<unsigned char>(output_value);
+        output[index] = static_cast<unsigned char>(red);
+        output[index+1] = static_cast<unsigned char>(green);
+        output[index+2] = static_cast<unsigned char>(blue);
 
 }
 
@@ -76,7 +82,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMThread
     const int widthStep = imageParams->coluna;
 
     unsigned char CPUinput[linhasIn];
-    unsigned char CPUoutput[width*height];
+    unsigned char CPUoutput[3*width*height];
 
     int t;
     if (strcmp(imageParams->tipo, "P6")==0) {
@@ -96,7 +102,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams, PPMThread
     //Allocate 2D memory on GPU. Also known as Pitch Linear Memory
     size_t gpu_image_pitch = 0;
     cudaMallocPitch<unsigned char>(&GPU_input,&gpu_image_pitch,width,thread[numThread].linhas);
-    cudaMallocPitch<unsigned char>(&GPU_output,&gpu_image_pitch,width,height);
+    cudaMallocPitch<unsigned char>(&GPU_output,&gpu_image_pitch,3*width,height);
 
     //Copy data from host to device.
     cudaMemcpy2DAsync(GPU_input,gpu_image_pitch,CPUinput,widthStep,width,thread[numThread].linhas,cudaMemcpyHostToDevice, streamSmooth[numThread]);
