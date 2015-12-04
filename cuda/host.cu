@@ -56,14 +56,14 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
         __syncthreads();
 
         //Average the output value
-        output_value = output_value/cont;
+        //output_value = output_value/cont;
 
         //Write the averaged value to the output.
         //Transform 2D index to 1D index, because image is actually in linear memory
         int index = yIndex * pitch + xIndex;
         //printf("Smooth index:%d, xIndex:%d yIndex %d lf-li %d\n",index, xIndex, yIndex, lf-li);
 
-        output[index] = static_cast<unsigned char>sum[index]/25;
+        output[index] = sum[index]/25;
 
 }
 
