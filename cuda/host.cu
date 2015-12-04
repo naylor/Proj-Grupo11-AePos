@@ -119,7 +119,7 @@ float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
     gpuErrchk( cudaMallocPitch<unsigned char>(&GPU_output,&gpu_image_pitch,width,height) );
 
     //Copy data from host to device.
-    gpuErrchk( cudaMemcpy2DAsync(GPU_input,gpu_image_pitch,CPUinput,widthStep,width,thread[numThread].linhas-2,cudaMemcpyHostToDevice, streamSmooth[numThread]) );
+    gpuErrchk( cudaMemcpy2DAsync(GPU_input,gpu_image_pitch,CPUinput,widthStep,width,thread[numThread].linhas-4,cudaMemcpyHostToDevice, streamSmooth[numThread]) );
 
     //Bind the image to the texture. Now the kernel will read the input image through the texture cache.
     //Use tex2D function to read the image
