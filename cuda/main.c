@@ -95,12 +95,12 @@ int main (int argc, char **argv){
         // ALOCA MEMORIA PARA A THREAD
         PPMThread* thread = getDivisionThreads(ct, imageParams, node, n);
 
-    #pragma omp parallel num_threads(ct->numThreads) shared(t, ct, imageParams, tempoR, tempoF, thread, numNode)
+    #pragma omp parallel num_threads(ct->numThreads) shared(c, ct, imageParams, thread, n)
     {
         #pragma omp for
         for(int c=0; c<ct->numThreads; c++) {
-            while (thread[t].finalizado != 1);
-            writePPMPixels(ct, imageParams, thread, t, n);
+            while (thread[c].finalizado != 1);
+            writePPMPixels(ct, imageParams, thread, c, n);
         }
     }
 
