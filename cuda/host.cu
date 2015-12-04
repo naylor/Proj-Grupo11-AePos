@@ -63,7 +63,7 @@ __global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, c
         int index = yIndex * pitch + xIndex;
         //printf("Smooth index:%d, xIndex:%d yIndex %d lf-li %d\n",index, xIndex, yIndex, lf-li);
 
-        output[index] = sum[index]/25;
+        //output[index] = sum[index]/25;
 
 }
 
