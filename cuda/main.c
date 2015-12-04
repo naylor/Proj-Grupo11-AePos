@@ -41,6 +41,7 @@ int main (int argc, char **argv){
     // DEFINE A QUANTIDADE DE LINHAS
     // DA IMAGEM PARA LEITURA E SMOOTH
     int numMaxLinhas = imageParams->linha;
+    ct->numThreads = 1;
 
     // SE FOI DEFINIDA A QUANTIDADE DE LINHAS
     // PELO MENU, ALTERAR AQUI
