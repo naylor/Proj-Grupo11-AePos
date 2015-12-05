@@ -3,7 +3,7 @@
 
 #include "../common/imagem.h"
 
-void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thread,
+float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thread,
                  int numThread, cudaStream_t* streamSmooth, int filtro);
 
 float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,

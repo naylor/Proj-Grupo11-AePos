@@ -102,7 +102,7 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     cudaEventSynchronize(stop);
 
     //Copy the results back to CPU
-    cudaMemcpy2DAsync(cpuOut,widthStep,gpuOut,gpu_image_pitch,imageParams->coluna,linhas,cudaMemcpyDeviceToHost, streamSmooth[numThread]);
+    gpuErrchk( cudaMemcpy2DAsync(cpuOut,widthStep,gpuOut,gpu_image_pitch,imageParams->coluna,linhas,cudaMemcpyDeviceToHost, streamSmooth[numThread]) );
 
     arrayToStruct(imageParams, thread, numThread, cpuOut, filtro);
 
@@ -112,8 +112,12 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     //Free GPU memory
     cudaFree(gpuIn);
     cudaFree(gpuOut);
+    free(cpuIn);
+    free(cpuOut);
 
     cudaEventElapsedTime(&time, start, stop);
+
+    cudaDeviceSynchronize();
 
     if (ct->debug >= 1)
         printf("Apply Smooth[%d][%s] - linhas: %d, li:%d, lf:%d\n",
@@ -124,8 +128,13 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
 
 // FUNCAO __HOST__
 // DEFINICAO DOS PARAMETROS DE CHAMADA DO KERNEL
-void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thread,
+float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thread,
                  int numThread, cudaStream_t* streamSmooth, int filtro) {
+
+    cudaEvent_t start, stop;
+    float time;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
 
     // DEFINE A QUANTIDADE DE LINHAS DO
     // BLOCO LIDO E DO BLOCO QUE SERA
@@ -146,20 +155,34 @@ void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thre
 
     // EXECUTA O CUDAMEMCPY
     // ASSINCRONO
-    cudaMemcpyAsync( gpuIn, cpuIn, thread[numThread].linhasIn, cudaMemcpyHostToDevice, streamSmooth[numThread] );
+    gpuErrchk( cudaMemcpyAsync( gpuIn, cpuIn, thread[numThread].linhasIn, cudaMemcpyHostToDevice, streamSmooth[numThread] ) );
+
+    cudaEventRecord(start, 0);
     kernel<<<gridDims, blockDims, 0, streamSmooth[numThread]>>>(gpuIn, gpuOut, imageParams->coluna, imageParams->linha, thread[numThread].li, thread[numThread].lf);
-    cudaMemcpyAsync(cpuOut, gpuOut, thread[numThread].linhasOut, cudaMemcpyDeviceToHost, streamSmooth[numThread] );
+    gpuErrchk( cudaPeekAtLastError() );
+    gpuErrchk( cudaDeviceSynchronize() );
+
+    cudaEventRecord(stop, 0);
+    cudaEventSynchronize(stop);
+
+    gpuErrchk( cudaMemcpyAsync(cpuOut, gpuOut, thread[numThread].linhasOut, cudaMemcpyDeviceToHost, streamSmooth[numThread] ) );
 
     arrayToStruct(imageParams, thread, numThread, cpuOut, filtro);
 
     // LIBERA A MEMORIA
     cudaFree(gpuIn);
     cudaFree(gpuOut);
+    free(cpuIn);
+    free(cpuOut);
+
+    cudaEventElapsedTime(&time, start, stop);
 
     cudaDeviceSynchronize();
 
     if (ct->debug >= 1)
         printf("Apply Smooth[%d][%s] - li:%d, lf:%d\n",
                numThread, imageParams->tipo, thread[numThread].li, thread[numThread].lf);
+
+    return time;
 
 }

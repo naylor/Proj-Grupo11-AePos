@@ -101,7 +101,7 @@ int main (int argc, char **argv){
             getImageThreads(ct, imageParams, thread,  t, n);
             stop_timer(tempoR);
 
-            if (ct->texture==1) {
+            if (ct->texture == 1) {
                 if (strcmp(imageParams->tipo, "P6")==0) {
                     relogio[1].tempoF += applySmoothTexture(ct, imageParams, thread, t, streamSmooth, 1);
                     relogio[1].tempoF += applySmoothTexture(ct, imageParams, thread, t, streamSmooth, 2);
@@ -110,6 +110,7 @@ int main (int argc, char **argv){
                     relogio[1].tempoF += applySmoothTexture(ct, imageParams, thread, t, streamSmooth, 1);
                 }
             } else {
+                if (strcmp(imageParams->tipo, "P6")==0) {
                     relogio[1].tempoF += applySmooth(ct, imageParams, thread, t, streamSmooth, 1);
                     relogio[1].tempoF += applySmooth(ct, imageParams, thread, t, streamSmooth, 2);
                     relogio[1].tempoF += applySmooth(ct, imageParams, thread, t, streamSmooth, 3);
