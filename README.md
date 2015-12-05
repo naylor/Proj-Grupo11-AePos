@@ -44,7 +44,7 @@ O rank 0 comanda a comunicação. É responsável por enviar o trabalho para os 
   * [NIVEL DEBUG]: permite monitorar os eventos do sistema.
 
 
-1. PPMseq
+2. PPMseq
 
 * Utilizando o PPMsequencial por menu
    usar: ./PPMsequencial
@@ -54,7 +54,8 @@ O rank 0 comanda a comunicação. É responsável por enviar o trabalho para os 
    ou
    usar: ./PPMsequencial -i [IMAGEM] -d [NÍVEL DEBUG]
 
-2. PPMmpi
+
+3. PPMmpi
 
 * Executando o PPMparalelo pelo terminal
    usar: ./PPMparalelo --help
@@ -69,6 +70,7 @@ O rank 0 comanda a comunicação. É responsável por enviar o trabalho para os 
   * [CARGA ALEATÓRIA]: se ativado, as cargas enviadas para os nodes serão aleatórias.
   * [LEITURA INDIVIDUAL]: faz com que cada processo tenha acesso exclusivo a imagem no momento da leitura.
   * [NIVEL DEBUG]: permite monitorar os eventos do sistema, permitido 1: nível do node e 2: nível da imagem.
+
 
 3. Os resultados são gravados na pasta: resultados
 
