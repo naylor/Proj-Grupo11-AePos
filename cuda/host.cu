@@ -99,9 +99,9 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     kernelTexture<<<gridDims,blockDims, 0, streamSmooth[numThread]>>>(gpuOut,imageParams->coluna,imageParams->linha,gpu_image_pitch,thread[numThread].lf,thread[numThread].li);
     gpuErrchk( cudaPeekAtLastError() );
     gpuErrchk( cudaDeviceSynchronize() );
-    exit(1);
     cudaEventRecord(stop, 0);
     cudaEventSynchronize(stop);
+    exit(1);
 
     //Copy the results back to CPU
     gpuErrchk( cudaMemcpy2DAsync(cpuOut,widthStep,gpuOut,gpu_image_pitch,imageParams->coluna,linhas,cudaMemcpyDeviceToHost, streamSmooth[numThread]) );
