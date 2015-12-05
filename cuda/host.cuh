@@ -6,7 +6,7 @@
 float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thread,
                  int numThread, cudaStream_t* streamSmooth, int filtro);
 
-float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
+float box_filter_8u_c1(initialParams* ct, PPMImageParams* imageParams,
                        PPMThread* thread, int numThread, cudaStream_t* streamSmooth, int filtro);
 
 void arrayToStruct(PPMImageParams* imageParams, PPMThread* thread,

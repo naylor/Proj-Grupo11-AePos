@@ -40,12 +40,22 @@ int main (int argc, char **argv){
 
     // DEFINE A QUANTIDADE DE LINHAS
     // DA IMAGEM PARA LEITURA E SMOOTH
-    int numMaxLinhas = imageParams->linha*0.1;
+    int numMaxLinhas = imageParams->linha;
     ct->numThreads = 1;
+
+    // SE FOI DEFINIDA A QUANTIDADE DE LINHAS
+    // PELO MENU, ALTERAR AQUI
+    int r = 517203000/imageParams->coluna;
+    numMaxLinhas = r;
 
     // DEFINA A CARGA MAXIMA DELINHAS
     if (ct->numMaxLinhas > 0)
         numMaxLinhas = ct->numMaxLinhas;
+
+    //if (numMaxLinhas > r) {
+    //    printf("\nCarga de trabalho nao permitido. Maximo para essa imagem: %d\n", r);
+    //    exit(0);
+    //}
 
     int numNodes = (imageParams->linha/numMaxLinhas)+1;
 
@@ -91,23 +101,13 @@ int main (int argc, char **argv){
             getImageThreads(ct, imageParams, thread,  t, n);
             stop_timer(tempoR);
 
-            if (ct->texture == 1) {
-                if (strcmp(imageParams->tipo, "P6")==0) {
-                    relogio[1].tempoF += applySmoothTexture(ct, imageParams, thread, t, streamSmooth, 1);
-                    relogio[1].tempoF += applySmoothTexture(ct, imageParams, thread, t, streamSmooth, 2);
-                    relogio[1].tempoF += applySmoothTexture(ct, imageParams, thread, t, streamSmooth, 3);
-                } else {
-                    relogio[1].tempoF += applySmoothTexture(ct, imageParams, thread, t, streamSmooth, 1);
-                }
-            } else {
-                if (strcmp(imageParams->tipo, "P6")==0) {
-                    relogio[1].tempoF += applySmooth(ct, imageParams, thread, t, streamSmooth, 1);
-                    relogio[1].tempoF += applySmooth(ct, imageParams, thread, t, streamSmooth, 2);
-                    relogio[1].tempoF += applySmooth(ct, imageParams, thread, t, streamSmooth, 3);
-                } else {
-                    relogio[1].tempoF += applySmooth(ct, imageParams, thread, t, streamSmooth, 1);
-                }
-            }
+            //applySmooth(ct, imageParams, thread, t, streamSmooth);
+            if (strcmp(imageParams->tipo, "P6")==0) {
+                relogio[1].tempoF += box_filter_8u_c1(ct, imageParams, thread, t, streamSmooth, 1);
+                relogio[1].tempoF += box_filter_8u_c1(ct, imageParams, thread, t, streamSmooth, 2);
+                relogio[1].tempoF += box_filter_8u_c1(ct, imageParams, thread, t, streamSmooth, 3);
+            } else
+                relogio[1].tempoF += box_filter_8u_c1(ct, imageParams, thread, t, streamSmooth, 1);
 
             // FAZ A GRAVACAO
             start_timer(tempoW); //INICIA O RELOGIO

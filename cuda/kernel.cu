@@ -5,7 +5,7 @@
 #include "kernel.cuh"
 
 //Box Filter Kernel For Gray scale image with 8bit depth
-__global__ void kernelTexture(unsigned char* output,const int width, const int height, const size_t pitch, const int lf, const int li)
+__global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, const int height, const size_t pitch, const int lf, const int li)
 {
 
     int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
@@ -28,7 +28,7 @@ __global__ void kernelTexture(unsigned char* output,const int width, const int h
             for(int c2=-2; c2<=2; c2++)
             {
             if(l2 >= 0 && c2 >= 0) {
-                output_value += tex2D(textureIn,inicio+ xIndex+l2,yIndex + c2);
+                output_value += tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2);
                 cont++;
             }
             }
@@ -44,37 +44,4 @@ __global__ void kernelTexture(unsigned char* output,const int width, const int h
 
         output[index] = static_cast<unsigned char>(output_value);
 
-}
-
-// FUNCAO PARA APLICAR SMOOTH
-// SEM SHARED MEMORY EM IMAGENS PGM
-__global__ void kernel(unsigned char* kInput, unsigned char* kOutput, int coluna, int linha, int li, int lf) {
-
-    // OFFSET DA COLUNA*LINHA
-    unsigned int offset = blockIdx.x * blockDim.x + threadIdx.x;
-
-    int c = offset % coluna; // COLUNA
-    int l = (offset-c)/coluna; // LINHA
-
-    // TIRANDO A BORDA DO PROCESSAMENTO
-    if ( l > lf-li || c < 2 || c > coluna-2 || (li == 0 && l < 2) || (lf==linha-1 && l > (lf-li)-2) )
-        return;
-
-    // APLICANDO O SMOOTH NO BLOCO
-    int sumg = 0;
-
-    for(int l2 = -2; l2 <= 2; ++l2) {
-        for(int c2 = -2; c2 <= 2; ++c2) {
-            if((c+l2) >= 2 && (c+l2) < coluna-2 && (l+c2) >= -2 && (l+c2) <= lf-li+4) {
-                int p = (offset + 2*coluna)+(l2*coluna)+c2;
-                if (li == 0)
-                    p = offset + 2*coluna;
-                sumg += kInput[p];
-            }
-        }
-    }
-
-    // GRAVANDO O RESULTADO
-    // NA IMAGEM DE SAIDA
-    kOutput[offset] = sumg/25;
 }
