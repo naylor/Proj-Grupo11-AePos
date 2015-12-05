@@ -33,12 +33,12 @@ O rank 0 comanda a comunicação e cria 1 thread (OpenMP) para controlar cada pr
 
 ### Executando a aplicação
 **PPMcuda:**
-   ```python
-   ./PPMcuda --help
+  ```python
+  ./PPMcuda --help
   ```
-   ou usar: 
-   ```python
-   ./PPMcuda -i [IMAGEM] -m [MEMORIA TEXTURA] -c [CARGA TRABALHO(Opcional)] -d [NIVEL DEBUG(Opcional)]
+  ou usar: 
+  ```python
+  ./PPMcuda -i [IMAGEM] -m [MEMORIA TEXTURA] -c [CARGA TRABALHO(Opcional)] -d [NIVEL DEBUG(Opcional)]
 
   * [IMAGEM]: colocar apenas o nome do arquivo (ex. model.ppm, omitir o diretório).
   * [MEMÓRIA TEXTURA]: se ativado, a memória de textura é utilizada em blocos de 16x16.
@@ -49,28 +49,28 @@ O rank 0 comanda a comunicação e cria 1 thread (OpenMP) para controlar cada pr
 **PPMseq**
 
 * Utilizando o PPMsequencial por menu
-   ```python
-   `./PPMseq`
+  ```python
+  ./PPMseq
   ```
 
 * Executando o PPMsequencial pelo terminal
-   ```python
-   `./PPMseq --help`
+  ```python
+  ./PPMseq --help
   ```
-   ```python
-   `./PPMseq -i [IMAGEM] -d [NÍVEL DEBUG]`
+  ```python
+  ./PPMseq -i [IMAGEM] -d [NÍVEL DEBUG]
   ```
   
 --
 **PPMmpi**
 
 * Executando o PPMparalelo pelo terminal
-   ```python
-   `./PPMmpi --help
+  ```python
+  ./PPMmpi --help
   ```
-   ou usar: 
-   ```python
-   mpiexec -n [PROCESSOS] -f [NODES] ./PPMmpi -i [IMAGEM] -t [NÚMERO THREADS] -c [CARGA DE TRABALHO] -r [CARGA ALEATÓRIA] -l [LEITURA INDIVIDUAL] -d [NÍVEL DEBUG]
+  ou usar: 
+  ```python
+  mpiexec -n [PROCESSOS] -f [NODES] ./PPMmpi -i [IMAGEM] -t [NÚMERO THREADS] -c [CARGA DE TRABALHO] -r [CARGA ALEATÓRIA] -l [LEITURA INDIVIDUAL] -d [NÍVEL DEBUG]
 
   * [PROCESSOS]: número de processos que serão gerados.
   * [IMAGEM]: colocar apenas o nome do arquivo (ex. model.ppm, omitir o diretório).
