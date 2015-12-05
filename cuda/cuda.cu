@@ -97,18 +97,18 @@ void structToArray(PPMImageParams* imageParams, PPMThread* thread,
 
     if (strcmp(imageParams->tipo, "P6")==0) {
         if (filtro == 1)
-            for(int t=0; t<thread[numThread].linhasIn; t++)
+            for(int t=0; t<thread[numThread].linhasIn * imageParams->coluna; t++)
                 cpuIn[t] = thread[numThread].ppmIn[t].red;
         if (filtro == 2)
-            for(int t=0; t<thread[numThread].linhasIn; t++)
+            for(int t=0; t<thread[numThread].linhasIn * imageParams->coluna; t++)
                 cpuIn[t] = thread[numThread].ppmIn[t].green;
         if (filtro == 3)
-            for(int t=0; t<thread[numThread].linhasIn; t++)
+            for(int t=0; t<thread[numThread].linhasIn * imageParams->coluna; t++)
                 cpuIn[t] = thread[numThread].ppmIn[t].blue;
     }
 
     if (strcmp(imageParams->tipo, "P5")==0) {
-        for(int t=0; t<thread[numThread].linhasIn; t++)
+        for(int t=0; t<thread[numThread].linhasIn * imageParams->coluna; t++)
             cpuIn[t] = thread[numThread].pgmIn[t].gray;
     }
 }
@@ -118,18 +118,18 @@ void arrayToStruct(PPMImageParams* imageParams, PPMThread* thread,
 
     if (strcmp(imageParams->tipo, "P6")==0) {
         if (filtro == 1)
-            for(int t=0; t<thread[numThread].linhasOut; t++)
+            for(int t=0; t<thread[numThread].linhasOut * imageParams->coluna; t++)
                 thread[numThread].ppmOut[t].red = cpuOut[t];
         if (filtro == 2)
-            for(int t=0; t<thread[numThread].linhasOut; t++)
+            for(int t=0; t<thread[numThread].linhasOut * imageParams->coluna; t++)
                 thread[numThread].ppmOut[t].green = cpuOut[t];
         if (filtro == 3)
-            for(int t=0; t<thread[numThread].linhasOut; t++)
+            for(int t=0; t<thread[numThread].linhasOut * imageParams->coluna; t++)
                 thread[numThread].ppmOut[t].blue = cpuOut[t];
     }
 
     if (strcmp(imageParams->tipo, "P5")==0) {
-        for(int t=0; t<thread[numThread].linhasOut; t++)
+        for(int t=0; t<thread[numThread].linhasOut * imageParams->coluna; t++)
             thread[numThread].pgmOut[t].gray = cpuOut[t];
     }
 
