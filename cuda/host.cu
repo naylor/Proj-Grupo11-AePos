@@ -79,18 +79,18 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
 
     //Allocate 2D memory on GPU. Also known as Pitch Linear Memory
     size_t gpu_image_pitch = 0;
-    gpuErrchk( cudaMallocPitch<unsigned char>(&gpuIn,&gpu_image_pitch,imageParams->coluna,thread[numThread].linhasIn) );
-    gpuErrchk( cudaMallocPitch<unsigned char>(&gpuOut,&gpu_image_pitch,imageParams->coluna,thread[numThread].linhasOut) );
+    gpuErrchk( cudaMallocPitch<unsigned char>(&gpuIn,&gpu_image_pitch,imageParams->coluna,thread[numThread].linhas) );
+    gpuErrchk( cudaMallocPitch<unsigned char>(&gpuOut,&gpu_image_pitch,imageParams->coluna,linhas) );
 
 
     //Copy data from host to device.
-    gpuErrchk( cudaMemcpy2DAsync(gpuIn,gpu_image_pitch,cpuIn,widthStep,imageParams->coluna,thread[numThread].linhasIn,cudaMemcpyHostToDevice, streamSmooth[numThread]) );
+    gpuErrchk( cudaMemcpy2DAsync(gpuIn,gpu_image_pitch,cpuIn,widthStep,imageParams->coluna,thread[numThread].linhas,cudaMemcpyHostToDevice, streamSmooth[numThread]) );
 
     //Bind the image to the texture. Now the kernel will read the input image through the texture cache.
     //Use tex2D function to read the image
-    gpuErrchk( cudaBindTexture2D(NULL,textureIn,gpuIn,imageParams->coluna,thread[numThread].linhasIn,gpu_image_pitch) );
+    gpuErrchk( cudaBindTexture2D(NULL,textureIn,gpuIn,imageParams->coluna,thread[numThread].linhas,gpu_image_pitch) );
 
-    dim3 blockDims(32,32);
+    dim3 blockDims(16,16);
     dim3 gridDims;
     gridDims.x = (imageParams->coluna + blockDims.x - 1)/blockDims.x;
     gridDims.y = (linhas + blockDims.y - 1)/blockDims.y;
@@ -104,7 +104,7 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     cudaEventSynchronize(stop);
 
     //Copy the results back to CPU
-    gpuErrchk( cudaMemcpy2DAsync(cpuOut,widthStep,gpuOut,gpu_image_pitch,imageParams->coluna,thread[numThread].linhasIn,cudaMemcpyDeviceToHost, streamSmooth[numThread]) );
+    gpuErrchk( cudaMemcpy2DAsync(cpuOut,widthStep,gpuOut,gpu_image_pitch,imageParams->coluna,linhas,cudaMemcpyDeviceToHost, streamSmooth[numThread]) );
 
     arrayToStruct(imageParams, thread, numThread, cpuOut, filtro);
 
