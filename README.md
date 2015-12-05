@@ -32,7 +32,7 @@ O rank 0 comanda a comunicação. É responsável por enviar o trabalho para os 
 3. Rode o comando "make"
 
 ### Executando a aplicação
-1. PPMcuda:
+PPMcuda:
 
    usar: ./PPMcuda --help
    ou
@@ -44,7 +44,7 @@ O rank 0 comanda a comunicação. É responsável por enviar o trabalho para os 
   * [NIVEL DEBUG]: permite monitorar os eventos do sistema.
 
 --
-2. PPMseq
+PPMseq
 
 * Utilizando o PPMsequencial por menu
    usar: ./PPMsequencial
@@ -55,7 +55,7 @@ O rank 0 comanda a comunicação. É responsável por enviar o trabalho para os 
    usar: ./PPMsequencial -i [IMAGEM] -d [NÍVEL DEBUG]
 
 --
-3. PPMmpi
+PPMmpi
 
 * Executando o PPMparalelo pelo terminal
    usar: ./PPMparalelo --help
@@ -72,8 +72,8 @@ O rank 0 comanda a comunicação. É responsável por enviar o trabalho para os 
   * [NIVEL DEBUG]: permite monitorar os eventos do sistema, permitido 1: nível do node e 2: nível da imagem.
 
 --
-3. Os resultados são gravados na pasta: resultados
+1. Os resultados são gravados na pasta: resultados
 
-4. Imagens PPM/PGM disponíveis na pasta: images_in
+2. Imagens PPM/PGM disponíveis na pasta: images_in
 
-5. Imagens processadas com Smooth na pasta: images_out
+3. Imagens processadas com Smooth na pasta: images_out
