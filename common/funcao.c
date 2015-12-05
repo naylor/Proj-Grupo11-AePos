@@ -99,7 +99,7 @@ void writeFile(initialParams* ct, PPMImageParams* imageParams, tempo* t) {
 
 	//filename
 	char filename[200];
-    sprintf((char*) &filename, "%s%c_%s.txt", ct->DIRRES, ct->typeAlg, ct->filePath);
+    sprintf((char*) &filename, "%s_%s.txt", ct->DIRRES, ct->filePath);
 
     int header=0;
     if( access( filename, F_OK ) == -1 )
