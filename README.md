@@ -5,12 +5,12 @@
 Sistema criado para aplicar um filtro (Smooth) 5x5 em imagens PPM e PGM.
 O comando make criará três binários para processar a imagem:
 
-1. PPMseq: algoritmo sequencial.
+1. **PPMseq:** algoritmo sequencial.
 
-2. PPMmpi: esse programa divide a imagem em linhas e distribui para os nós pelo MPI.
+2. **PPMmpi:** esse programa divide a imagem em linhas e distribui para os nós pelo MPI.
 O rank 0 comanda a comunicação. É responsável por enviar o trabalho para os nós e gerenciar quem pode gravar no disco para não gerar concorrência. Cada nó divide seu trabalho em Threads que realizam a leitura de sua parte da imagem e aplicam a técnica de Smooth. Quando terminado o trabalho, o nó solicita permissão para gravar o resultado no disco.
 
-3. PPMcuda: para processar a imagem é utilizada memória textura, evitando conflito de banco.
+3. **PPMcuda:** para processar a imagem é utilizada memória textura, evitando conflito de banco.
 
 ### Dependências
 1. Interface Gráfica NVIDIA
@@ -32,7 +32,7 @@ O rank 0 comanda a comunicação. É responsável por enviar o trabalho para os 
 3. Rode o comando "make"
 
 ### Executando a aplicação
-PPMcuda:
+**PPMcuda:**
    ```python
    ./PPMcuda --help
   ```
@@ -46,7 +46,7 @@ PPMcuda:
   * [NIVEL DEBUG]: permite monitorar os eventos do sistema.
   ```
 --
-PPMseq
+**PPMseq**
 
 * Utilizando o PPMsequencial por menu
    ```python
@@ -62,7 +62,7 @@ PPMseq
   ```
   
 --
-PPMmpi
+**PPMmpi**
 
 * Executando o PPMparalelo pelo terminal
    ```python
