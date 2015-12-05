@@ -24,12 +24,14 @@ __global__ void kernelTexture(unsigned char* kOutput,const int coluna, const int
     int x = blockIdx.x * blockDim.x + threadIdx.x;
     int y = blockIdx.y * blockDim.y + threadIdx.y;
 
+    float sum = 0.0f;
+    int cont = 0;
+
     // TIRANDO A BORDA DO PROCESSAMENTO
     if ( y > lf-li || x < 2 || x > coluna-2 || (li == 0 && y < 2) || (lf==linha-1 && y > (lf-li)-2) )
         return;
 
-    float sum = 0.0f;
-    int cont = 0;
+
 
     int inicio = 0;
     if (li != 0)
