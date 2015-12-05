@@ -50,13 +50,10 @@ $(SEQ): $(SOURCESEQ:.c=.o)
 	$(CC) -g -c $< -o $@ $(CFLAGS)
 
 ####################################### C U D A ###############################
-SOURCECUDA=(cuda/main.o cuda/menu.o)
-SOURCECOM=$(wildcard $(SRCCUD)*.c)
-
-$(CUDA): $(SOURCECOM:.c=.o) cuda/kernel.o cuda/imagem.o cuda/funcao.o cuda/timer.o
+$(CUDA): cuda/main.o cuda/menu.o cuda/host.o cuda/kernel.o cuda/imagem.o cuda/funcao.o cuda/timer.o
 	$(NVCC) -o $@ $^ $(LIBCU)
 
-$(SOURCECOM:.c=.o): $(SOURCECOM)
+%.o: %.c
 	$(NVCC) -x cu -I. -dc $< -o $@
 
 cuda/imagem.o: common/imagem.c
@@ -68,14 +65,17 @@ cuda/funcao.o: common/funcao.c
 cuda/timer.o: common/timer.c
 	$(NVCC) -x cu -I. -dc $< -o $@
 
-%.o: %.c
+cuda/main.o: cuda/main.c
+	$(NVCC) -x cu -I. -dc $< -o $@
+
+cuda/menu.o: cuda/menu.c
 	$(NVCC) -x cu -I. -dc $< -o $@
 
 cuda/host.o: cuda/host.cu
-	$(NVCC) -c $< -o $@
+	$(NVCC) -c $< -o $@ -Xopencc "-Wall"
 
 cuda/kernel.o: cuda/kernel.cu
-	$(NVCC) -c $< -o $@
+	$(NVCC) -c $< -o $@ -Xopencc "-Wall"
 ####################################### C U D A ###############################
 
 clean:

@@ -103,11 +103,11 @@ int main (int argc, char **argv){
 
             //applySmooth(ct, imageParams, thread, t, streamSmooth);
             if (strcmp(imageParams->tipo, "P6")==0) {
-                relogio[1].tempoF += box_filter_8u_c1(ct, imageParams, thread, t, streamSmooth, 1);
-                relogio[1].tempoF += box_filter_8u_c1(ct, imageParams, thread, t, streamSmooth, 2);
-                relogio[1].tempoF += box_filter_8u_c1(ct, imageParams, thread, t, streamSmooth, 3);
+                relogio[1].tempoF += applySmoothTexture(ct, imageParams, thread, t, streamSmooth, 1);
+                relogio[1].tempoF += applySmoothTexture(ct, imageParams, thread, t, streamSmooth, 2);
+                relogio[1].tempoF += applySmoothTexture(ct, imageParams, thread, t, streamSmooth, 3);
             } else
-                relogio[1].tempoF += box_filter_8u_c1(ct, imageParams, thread, t, streamSmooth, 1);
+                relogio[1].tempoF += applySmoothTexture(ct, imageParams, thread, t, streamSmooth, 1);
 
             // FAZ A GRAVACAO
             start_timer(tempoW); //INICIA O RELOGIO
