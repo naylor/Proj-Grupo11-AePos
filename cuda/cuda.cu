@@ -224,7 +224,7 @@ float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thr
     // DEFINICAO DO TAMANHO PADRAO
     // DO BLOCO
     dim3 blockDims(512,1,1);
-    dim3 gridDims((unsigned int) ceil((double)(thread[numThread].linhasIn/blockDims.x)), 1, 1 );
+    dim3 gridDims((unsigned int) ceil((double)(thread[numThread].linhasIn * imageParams->coluna/blockDims.x)), 1, 1 );
 
     cudaEventRecord(start, 0);
     cudaMemcpyAsync( gpuIn, cpuIn, thread[numThread].linhasIn * imageParams->coluna, cudaMemcpyHostToDevice, streamSmooth[numThread] );
