@@ -18,7 +18,7 @@ texture<unsigned char, cudaTextureType2D> textureIn;
 
 
 //Box Filter Kernel For Gray scale image with 8bit depth
-__global__ void kernelTexture(unsigned char* output,const int width, const int height, const size_t pitch, const int lf, const int li)
+__global__ void kernelTexture(unsigned char* output,const int width, const int height, const int lf, const int li)
 {
 
     int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
@@ -168,7 +168,7 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     gridDims.y = (thread[numThread].linhasIn + blockDims.y - 1)/blockDims.y;
 
     cudaEventRecord(start, 0);
-    kernelTexture<<<gridDims,blockDims, 0, streamSmooth[numThread]>>>(gpuOut,imageParams->coluna,imageParams->linha,pitch,thread[numThread].lf,thread[numThread].li);
+    kernelTexture<<<gridDims,blockDims, 0, streamSmooth[numThread]>>>(gpuOut,imageParams->coluna,imageParams->linha,thread[numThread].lf,thread[numThread].li);
     gpuErrchk( cudaPeekAtLastError() );
     gpuErrchk( cudaDeviceSynchronize() );
 
