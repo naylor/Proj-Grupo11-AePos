@@ -49,20 +49,25 @@ PPMcuda:
 PPMseq
 
 * Utilizando o PPMsequencial por menu
-   usar: 
+   ```python
    `./PPMsequencial`
+  ```
 
 * Executando o PPMsequencial pelo terminal
-   usar: 
+   ```python
    `./PPMsequencial --help`
-   ou
+  ```
+   ```python
    `./PPMsequencial -i [IMAGEM] -d [NÍVEL DEBUG]`
-
+  ```
+  
 --
 PPMmpi
 
 * Executando o PPMparalelo pelo terminal
-   `./PPMparalelo --help`
+   ```python
+   `./PPMparalelo --help
+  ```
    ou usar: 
    ```python
    mpiexec -n [PROCESSOS] -f [NODES] ./PPMparalelo -i [IMAGEM] -t [NÚMERO THREADS] -c [CARGA DE TRABALHO] -a [CARGA ALEATÓRIA] -t [LEITURA INDIVIDUAL] -d [NÍVEL DEBUG]
