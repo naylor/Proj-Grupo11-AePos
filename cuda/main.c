@@ -106,14 +106,16 @@ int main (int argc, char **argv){
                     relogio[1].tempoF += applySmoothTexture(ct, imageParams, thread, t, streamSmooth, 1);
                     relogio[1].tempoF += applySmoothTexture(ct, imageParams, thread, t, streamSmooth, 2);
                     relogio[1].tempoF += applySmoothTexture(ct, imageParams, thread, t, streamSmooth, 3);
-                } else
+                } else {
                     relogio[1].tempoF += applySmoothTexture(ct, imageParams, thread, t, streamSmooth, 1);
+                }
             } else {
                     relogio[1].tempoF += applySmooth(ct, imageParams, thread, t, streamSmooth, 1);
                     relogio[1].tempoF += applySmooth(ct, imageParams, thread, t, streamSmooth, 2);
                     relogio[1].tempoF += applySmooth(ct, imageParams, thread, t, streamSmooth, 3);
-                } else
+                } else {
                     relogio[1].tempoF += applySmooth(ct, imageParams, thread, t, streamSmooth, 1);
+                }
             }
 
             // FAZ A GRAVACAO
