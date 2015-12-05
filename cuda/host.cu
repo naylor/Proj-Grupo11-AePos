@@ -92,12 +92,12 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     dim3 gridDims;
     gridDims.x = (imageParams->coluna + blockDims.x - 1)/blockDims.x;
     gridDims.y = (linhas + blockDims.y - 1)/blockDims.y;
-    exit(1);
 
     cudaEventRecord(start, 0);
     kernelTexture<<<gridDims,blockDims, 0, streamSmooth[numThread]>>>(gpuOut,imageParams->coluna,imageParams->linha,gpu_image_pitch,thread[numThread].lf,thread[numThread].li);
     gpuErrchk( cudaPeekAtLastError() );
     gpuErrchk( cudaDeviceSynchronize() );
+    exit(1);
 
     cudaEventRecord(stop, 0);
     cudaEventSynchronize(stop);
