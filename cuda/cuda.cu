@@ -212,14 +212,14 @@ float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thr
     // BLOCO LIDO E DO BLOCO QUE SERA
     // GRAVADO EM DISCO
     unsigned char *cpuIn, *cpuOut, *gpuIn, *gpuOut;
-    cpuIn = (unsigned char *)malloc(thread[numThread].linhasIn);
-    cpuOut = (unsigned char *)malloc(thread[numThread].linhasOut);
+    cpuIn = (unsigned char *)malloc(thread[numThread].linhasIn * imageParams->coluna * sizeof(unsigned char) );
+    cpuOut = (unsigned char *)malloc(thread[numThread].linhasOut * imageParams->coluna * sizeof(unsigned char) );
 
     structToArray(imageParams, thread, numThread, cpuIn, filtro);
 
     // ALOCAR MEMORIA
-    cudaMalloc( (void**) &gpuIn, thread[numThread].linhasIn);
-    cudaMalloc( (void**) &gpuOut, thread[numThread].linhasOut);
+    cudaMalloc( (void**) &gpuIn, thread[numThread].linhasIn * imageParams->coluna);
+    cudaMalloc( (void**) &gpuOut, thread[numThread].linhasOut * imageParams->coluna);
 
     // DEFINICAO DO TAMANHO PADRAO
     // DO BLOCO
@@ -227,9 +227,9 @@ float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thr
     dim3 gridDims((unsigned int) ceil((double)(thread[numThread].linhasIn/blockDims.x)), 1, 1 );
 
     cudaEventRecord(start, 0);
-    cudaMemcpyAsync( gpuIn, cpuIn, thread[numThread].linhasIn, cudaMemcpyHostToDevice, streamSmooth[numThread] );
+    cudaMemcpyAsync( gpuIn, cpuIn, thread[numThread].linhasIn * imageParams->coluna, cudaMemcpyHostToDevice, streamSmooth[numThread] );
     kernel<<<gridDims, blockDims, 0, streamSmooth[numThread]>>>(gpuIn, gpuOut, imageParams->coluna, imageParams->linha, thread[numThread].li, thread[numThread].lf);
-    cudaMemcpyAsync(cpuOut, gpuOut, thread[numThread].linhasOut, cudaMemcpyDeviceToHost, streamSmooth[numThread] );
+    cudaMemcpyAsync(cpuOut, gpuOut, thread[numThread].linhasOut * imageParams->coluna, cudaMemcpyDeviceToHost, streamSmooth[numThread] );
     gpuErrchk( cudaPeekAtLastError() );
     gpuErrchk( cudaDeviceSynchronize() );
 
