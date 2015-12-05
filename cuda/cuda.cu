@@ -47,15 +47,9 @@ __global__ void kernelTexture(unsigned char* kOutput,const int width, const int 
             }
         }
 
-        //Average the output value
-        output_value = output_value/cont;
 
-        //Write the averaged value to the output.
-        //Transform 2D index to 1D index, because image is actually in linear memory
-        int index = yIndex * pitch + xIndex;
-        //printf("Smooth index:%d, xIndex:%d yIndex %d lf-li %d\n",index, xIndex, yIndex, lf-li);
 
-        kOutput[yIndex * pitch + xIndex] = static_cast<unsigned char>(output_value);
+        kOutput[yIndex * pitch + xIndex] = static_cast<unsigned char>(output_value/cont);
 
 }
 
