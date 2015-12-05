@@ -33,34 +33,45 @@ O rank 0 comanda a comunicação. É responsável por enviar o trabalho para os 
 
 ### Executando a aplicação
 PPMcuda:
-
-   usar: ./PPMcuda --help
-   ou
-   usar: Usar: ./PPMcuda -i [IMAGEM] -m [MEMORIA TEXTURA] -c [CARGA TRABALHO(Opcional)] -d [NIVEL DEBUG(Opcional)]
+   ```python
+   ./PPMcuda --help
+  ```
+   ou usar: 
+   ```python
+   ./PPMcuda -i [IMAGEM] -m [MEMORIA TEXTURA] -c [CARGA TRABALHO(Opcional)] -d [NIVEL DEBUG(Opcional)]
 
   * [IMAGEM]: colocar apenas o nome do arquivo (ex. model.ppm, omitir o diretório).
   * [MEMÓRIA TEXTURA]: se ativado, a memória de textura é utilizada em blocos de 16x16.
   * [CARGA TRABALHO]: número máximo de linhas para processamento por Stream (Assíncrono).
   * [NIVEL DEBUG]: permite monitorar os eventos do sistema.
-
+  ```
 --
 PPMseq
 
 * Utilizando o PPMsequencial por menu
-   usar: ./PPMsequencial
-
+   usar: 
+   ```python
+	./PPMsequencial	
+   ```
 * Executando o PPMsequencial pelo terminal
-   usar: ./PPMsequencial --help
+   usar: 
+   ```python
+   ./PPMsequencial --help
+  ```
    ou
-   usar: ./PPMsequencial -i [IMAGEM] -d [NÍVEL DEBUG]
-
+   ```python
+   ./PPMsequencial -i [IMAGEM] -d [NÍVEL DEBUG]
+  ```
 --
 PPMmpi
 
 * Executando o PPMparalelo pelo terminal
-   usar: ./PPMparalelo --help
-   ou
-   usar: mpiexec -n [PROCESSOS] -f [NODES] ./PPMparalelo -i [IMAGEM] -t [NÚMERO THREADS] -c [CARGA DE TRABALHO] -a [CARGA ALEATÓRIA] -t [LEITURA INDIVIDUAL] -d [NÍVEL DEBUG]
+   ```python
+   ./PPMparalelo --help
+  ```
+   ou usar: 
+   ```python
+   mpiexec -n [PROCESSOS] -f [NODES] ./PPMparalelo -i [IMAGEM] -t [NÚMERO THREADS] -c [CARGA DE TRABALHO] -a [CARGA ALEATÓRIA] -t [LEITURA INDIVIDUAL] -d [NÍVEL DEBUG]
 
   * [PROCESSOS]: número de processos que serão gerados.
   * [IMAGEM]: colocar apenas o nome do arquivo (ex. model.ppm, omitir o diretório).
@@ -70,7 +81,7 @@ PPMmpi
   * [CARGA ALEATÓRIA]: se ativado, as cargas enviadas para os nodes serão aleatórias.
   * [LEITURA INDIVIDUAL]: faz com que cada processo tenha acesso exclusivo a imagem no momento da leitura.
   * [NIVEL DEBUG]: permite monitorar os eventos do sistema, permitido 1: nível do node e 2: nível da imagem.
-
+  ```
 --
 1. Os resultados são gravados na pasta: resultados
 
