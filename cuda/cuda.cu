@@ -44,7 +44,7 @@ __global__ void kernelTexture(unsigned char* kOutput,const int width, const int 
         }
     }
 
-    kOutput[yIndex * pitch + xIndex] = static_cast<unsigned char>(sum/cont);
+    kOutput[y*pitch+x] = static_cast<unsigned char>(sum/cont);
 }
 
 // FUNCAO PARA APLICAR SMOOTH
