@@ -113,7 +113,7 @@ void writeFile(initialParams* ct, PPMImageParams* imageParams, tempo* t) {
 	}
 
 	if (header==1)
-        fprintf(f, "ALGORITMO\tNODES\tTHREADS\tCARGA\tLEITURA\tALEATORIO\tTEXTURE\tNxM\tT.READ\tT.FILTRO\tT.ESCRITA\tT.TOTAL\n";
+        fprintf(f, "ALGORITMO\tNODES\tTHREADS\tCARGA\tLEITURA\tALEATORIO\tTEXTURE\tNxM\tT.READ\tT.FILTRO\tT.ESCRITA\tT.TOTAL\n");
 
 	fprintf(f, "%c\t%i\t%i\t%i\t%s\t%s\t%s\t%ix%i\t%.2f\t%.2f\t%.2f\t%.2f\n",
         ct->typeAlg,
