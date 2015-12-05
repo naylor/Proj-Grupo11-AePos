@@ -218,13 +218,13 @@ float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thr
     // BLOCO LIDO E DO BLOCO QUE SERA
     // GRAVADO EM DISCO
     unsigned char *cpuIn, *cpuOut, *gpuIn, *gpuOut;
-    cpuIn = (unsigned char *)malloc(thread[numThread].linhasIn);
+    cpuIn = (unsigned char *)malloc(linhas*imageParams->coluna);
     cpuOut = (unsigned char *)malloc(thread[numThread].linhasOut);
 
     structToArray(imageParams, thread, numThread, cpuIn, filtro);
 
     // ALOCAR MEMORIA
-    cudaMalloc( (void**) &gpuIn, thread[numThread].linhasIn);
+    cudaMalloc( (void**) &gpuIn, linhas*imageParams->coluna);
     cudaMalloc( (void**) &gpuOut, thread[numThread].linhasOut);
 
     // DEFINICAO DO TAMANHO PADRAO
