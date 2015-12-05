@@ -39,20 +39,22 @@ void structToArray(PPMImageParams* imageParams, PPMThread* thread,
 void arrayToStruct(PPMImageParams* imageParams, PPMThread* thread,
                    int numThread, unsigned char* cpuOut, int filtro) {
 
+    const int linhas = (thread[numThread].lf-thread[numThread].li)+1;
+
     if (strcmp(imageParams->tipo, "P6")==0) {
         if (filtro == 1)
-            for(int t=0; t<thread[numThread].linhasOut; t++)
+            for(int t=0; t<linhas; t++)
                 thread[numThread].ppmOut[t].red = cpuOut[t];
         if (filtro == 2)
-            for(int t=0; t<thread[numThread].linhasOut; t++)
+            for(int t=0; t<linhas; t++)
                 thread[numThread].ppmOut[t].green = cpuOut[t];
         if (filtro == 3)
-            for(int t=0; t<thread[numThread].linhasOut; t++)
+            for(int t=0; t<linhas; t++)
                 thread[numThread].ppmOut[t].blue = cpuOut[t];
     }
 
     if (strcmp(imageParams->tipo, "P5")==0) {
-        for(int t=0; t<thread[numThread].linhasOut; t++)
+        for(int t=0; t<linhas; t++)
             thread[numThread].pgmOut[t].gray = cpuOut[t];
     }
 
@@ -105,7 +107,6 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     gpuErrchk( cudaMemcpy2DAsync(cpuOut,widthStep,gpuOut,gpu_image_pitch,imageParams->coluna,linhas,cudaMemcpyDeviceToHost, streamSmooth[numThread]) );
 
     arrayToStruct(imageParams, thread, numThread, cpuOut, filtro);
-    exit(1);
 
     //Release the texture
     cudaUnbindTexture(textureIn);
