@@ -42,8 +42,9 @@ O rank 0 comanda a comunicação. É responsável por enviar o trabalho para os 
   * [MEMÓRIA TEXTURA]: se ativado, a memória de textura é utilizada em blocos de 16x16.
   * [CARGA TRABALHO]: número máximo de linhas para processamento por Stream (Assíncrono).
   * [NIVEL DEBUG]: permite monitorar os eventos do sistema.
-
-
+  
+--
+  
 2. PPMseq
 
 * Utilizando o PPMsequencial por menu
@@ -53,7 +54,7 @@ O rank 0 comanda a comunicação. É responsável por enviar o trabalho para os 
    usar: ./PPMsequencial --help
    ou
    usar: ./PPMsequencial -i [IMAGEM] -d [NÍVEL DEBUG]
-
+--
 
 3. PPMmpi
 
