@@ -17,15 +17,15 @@ O rank 0 comanda a comunicação. É responsável por enviar o trabalho para os 
 
 2. Pacotes necessários:
 
-* sudo apt-get install nvidia-cuda-toolkit
-* sudo apt-get install build-essential
-* apt-get install libcr-dev mpich2 mpich2-doc
-* sudo apt-get install gcc-multilib
+* `sudo apt-get install nvidia-cuda-toolkit`
+* `sudo apt-get install build-essential`
+* `apt-get install libcr-dev mpich2 mpich2-doc`
+* `sudo apt-get install gcc-multilib`
 
 ### Instalação
 
 1. Faça o clone deste projeto:
-	git clone https://github.com/naylor/Proj-Grupo11-AePos
+   `git clone https://github.com/naylor/Proj-Grupo11-AePos`
 
 2. Entre na pasta do projeto
 
@@ -57,6 +57,7 @@ PPMseq
    `./PPMsequencial --help`
    ou
    `./PPMsequencial -i [IMAGEM] -d [NÍVEL DEBUG]`
+
 --
 PPMmpi
 
