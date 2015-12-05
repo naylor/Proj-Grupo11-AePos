@@ -73,14 +73,14 @@ __global__ void kernel(unsigned char* kInput, unsigned char* kOutput, int coluna
                 int p = (x + 2*coluna)+(l2*coluna)+c2;
                 if (li == 0)
                     p = x + 2*coluna;
-                sumg += kInput[p];
+                sum += kInput[p];
             }
         }
     }
 
     // GRAVANDO O RESULTADO
     // NA IMAGEM DE SAIDA
-    kOutput[offset] = sumg/25;
+    kOutput[x] = sum/25;
 }
 
 void structToArray(PPMImageParams* imageParams, PPMThread* thread,
