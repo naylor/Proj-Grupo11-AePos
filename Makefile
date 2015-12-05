@@ -50,7 +50,7 @@ $(SEQ): $(SOURCESEQ:.c=.o)
 	$(CC) -g -c $< -o $@ $(CFLAGS)
 
 ####################################### C U D A ###############################
-$(CUDA): cuda/main.o cuda/menu.o cuda/host.o cuda/kernel.o cuda/imagem.o cuda/funcao.o cuda/timer.o
+$(CUDA): cuda/main.o cuda/menu.o cuda/cuda.o cuda/imagem.o cuda/funcao.o cuda/timer.o
 	$(NVCC) -o $@ $^ $(LIBCU)
 
 %.o: %.c
@@ -71,10 +71,7 @@ cuda/main.o: cuda/main.c
 cuda/menu.o: cuda/menu.c
 	$(NVCC) -x cu -I. -dc $< -o $@
 
-cuda/host.o: cuda/host.cu
-	$(NVCC) -c $< -o $@
-
-cuda/kernel.o: cuda/kernel.cu
+cuda/cuda.o: cuda/cuda.cu
 	$(NVCC) -c $< -o $@
 ####################################### C U D A ###############################
 

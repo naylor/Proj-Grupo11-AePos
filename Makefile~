@@ -72,10 +72,10 @@ cuda/menu.o: cuda/menu.c
 	$(NVCC) -x cu -I. -dc $< -o $@
 
 cuda/host.o: cuda/host.cu
-	$(NVCC) -c $< -o $@ -Xopencc "-Wall"
+	$(NVCC) -c $< -o $@
 
 cuda/kernel.o: cuda/kernel.cu
-	$(NVCC) -c $< -o $@ -Xopencc "-Wall"
+	$(NVCC) -c $< -o $@
 ####################################### C U D A ###############################
 
 clean:
