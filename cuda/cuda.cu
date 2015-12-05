@@ -150,7 +150,7 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     cpuOut = (unsigned char *)malloc(thread[numThread].linhasOut);
 
     const int linhas = (thread[numThread].lf-thread[numThread].li)+1;
-    const int widthStep = 0;
+    const int widthStep = imageParams->coluna;
 
     structToArray(imageParams, thread, numThread, cpuIn, filtro);
 
