@@ -152,7 +152,7 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     //Allocate 2D memory on GPU. Also known as Pitch Linear Memory
     size_t pitch = 0;
     gpuErrchk( cudaMallocPitch<unsigned char>(&gpuIn,&pitch,imageParams->coluna,imageParams->linha) );
-    gpuErrchk( cudaMallocPitch<unsigned char>(&gpuOut,&pitch,imageParams->coluna,thread[numThread].linhasOut) );
+    gpuErrchk( cudaMallocPitch<unsigned char>(&gpuOut,&pitch,imageParams->coluna,imageParams->linha) );
 
 
     //Copy data from host to device.
