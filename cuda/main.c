@@ -43,19 +43,14 @@ int main (int argc, char **argv){
     int numMaxLinhas = imageParams->linha;
     ct->numThreads = 1;
 
-    // SE FOI DEFINIDA A QUANTIDADE DE LINHAS
-    // PELO MENU, ALTERAR AQUI
-    int r = 517203000/imageParams->coluna;
-    numMaxLinhas = r;
-
     // DEFINA A CARGA MAXIMA DELINHAS
     if (ct->numMaxLinhas > 0)
         numMaxLinhas = ct->numMaxLinhas;
 
-    //if (numMaxLinhas > r) {
-    //    printf("\nCarga de trabalho nao permitido. Maximo para essa imagem: %d\n", r);
-    //    exit(0);
-    //}
+    // SE FOI DEFINIDA A QUANTIDADE DE LINHAS
+    // PELO MENU, ALTERAR AQUI
+    if ( numMaxLinhas > 517203000/imageParams->coluna)
+        numMaxLinhas = 517203000/imageParams->coluna;
 
     int numNodes = (imageParams->linha/numMaxLinhas)+1;
 
