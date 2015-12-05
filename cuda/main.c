@@ -47,10 +47,14 @@ int main (int argc, char **argv){
     if (ct->numMaxLinhas > 0)
         numMaxLinhas = ct->numMaxLinhas;
 
+    int ic = 517203000;
+    if (strcmp(imageParams->tipo, "P6")==0)
+        ic = 3000;
+
     // SE FOI DEFINIDA A QUANTIDADE DE LINHAS
     // PELO MENU, ALTERAR AQUI
-    if ( numMaxLinhas > 261832000/imageParams->coluna)
-        numMaxLinhas = 261832000/imageParams->coluna;
+    if ( numMaxLinhas > ic/imageParams->coluna)
+        numMaxLinhas = ic/imageParams->coluna;
 
     int numNodes = (imageParams->linha/numMaxLinhas)+1;
 
