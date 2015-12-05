@@ -5,6 +5,8 @@
 #include "cuda.cuh"
 
 #define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
+// FUNCAO PARA VISUALIZAR AS
+// MENSAGENS DE ERRO DO SISTEMA
 inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)
 {
    if (code != cudaSuccess)
@@ -14,15 +16,18 @@ inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=t
    }
 }
 
+// MEMORIA TEXTURE
 texture<unsigned char, cudaTextureType2D> textureIn;
 
 
-//Box Filter Kernel For Gray scale image with 8bit depth
+// FUNCAO KERNEL
+// APLICA O SMOOTH UTILIZANDO
+// MEMORIA TEXTURE
 __global__ void kernelTexture(unsigned char* kOutput,const int coluna, const int linha,
                               const size_t pitch, const int lf, const int li) {
 
-    int x = blockIdx.x * blockDim.x + threadIdx.x;
-    int y = blockIdx.y * blockDim.y + threadIdx.y;
+    int x = blockIdx.x * blockDim.x + threadIdx.x; // LINHA
+    int y = blockIdx.y * blockDim.y + threadIdx.y; // COLUNA
 
     // TIRANDO A BORDA DO PROCESSAMENTO
     if ( y > lf-li || x < 2 || x > coluna-2 || (li == 0 && y < 2) || (lf==linha-1 && y > (lf-li)-2) )
@@ -31,6 +36,9 @@ __global__ void kernelTexture(unsigned char* kOutput,const int coluna, const int
     float sum = 0.0f;
     int cont = 0;
 
+    // SE A IMAGEM NAO FOR O PRIMEIRO BLOCO
+    // DEFINE O INICIO PARA DUAS LINHAS ADIANTE
+    // PARA NAO PROCESSAR A BORDA
     int inicio = 0;
     if (li != 0)
         inicio = 2;
@@ -44,15 +52,16 @@ __global__ void kernelTexture(unsigned char* kOutput,const int coluna, const int
         }
     }
 
+    // ARMAZENDO O RESULTADO
+    // NA MEMORIA GLOBAL
     kOutput[y*pitch+x] = static_cast<unsigned char>(sum/cont);
 }
 
 // FUNCAO PARA APLICAR SMOOTH
-// SEM SHARED MEMORY EM IMAGENS PGM
+// SEM TEXTURE
 __global__ void kernel(unsigned char* kInput, unsigned char* kOutput,
                        const int coluna, const int linha, const int li, const int lf) {
 
-    // OFFSET DA COLUNA*LINHA
     unsigned int x = blockIdx.x * blockDim.x + threadIdx.x;
 
     int c = x % coluna; // COLUNA
@@ -62,25 +71,28 @@ __global__ void kernel(unsigned char* kInput, unsigned char* kOutput,
     if ( l > lf-li || c < 2 || c > coluna-2 || (li == 0 && l < 2) || (lf==linha-1 && l > (lf-li)-2) )
         return;
 
-    // APLICANDO O SMOOTH NO BLOCO
+    // APLICANDO O SMOOTH
     float sum = 0.0f;
 
     for(int l2 = -2; l2 <= 2; ++l2) {
         for(int c2 = -2; c2 <= 2; ++c2) {
             if((c+l2) >= 2 && (c+l2) < coluna-2 && (l+c2) >= -2 && (l+c2) <= lf-li+4) {
-                int p = (x + 2*coluna)+(l2*coluna)+c2;
+                int p = (x + 2*coluna)+(l2*coluna)+c2; // NAO E O PRIMEIRO BLOCO
                 if (li == 0)
-                    p = x + 2*coluna;
+                    p = x + 2*coluna; // PRIMEIRO BLOCO
                 sum += kInput[p];
             }
         }
     }
 
-    // GRAVANDO O RESULTADO
-    // NA IMAGEM DE SAIDA
+    // ARMAZENDO O RESULTADO
+    // NA MEMORIA GLOBAL
     kOutput[x] = sum/25;
 }
 
+// FUNCAO PARA TRANSFORMAR A IMAGEM
+// LIDA EM UM ARRAY
+// NECESSARIO PARA UTILIZAR MEMORIA TEXTURA
 void structToArray(PPMImageParams* imageParams, PPMThread* thread,
                    int numThread, unsigned char *cpuIn, int filtro) {
 
@@ -102,6 +114,9 @@ void structToArray(PPMImageParams* imageParams, PPMThread* thread,
     }
 }
 
+// FUNCAO PARA TRANSFORMAR A IMAGEM
+// DE UM ARRAY PARA UM STRUCT PADRAO DO SISTEMA
+// NECESSARIO PARA UTILIZAR MEMORIA TEXTURA
 void arrayToStruct(PPMImageParams* imageParams, PPMThread* thread,
                    int numThread, unsigned char* cpuOut, int filtro) {
 
@@ -124,60 +139,77 @@ void arrayToStruct(PPMImageParams* imageParams, PPMThread* thread,
 
 }
 
+// FUNCAO __HOST__
+// PARA CHAMAR O KERNEL COM TEXTURA
 float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
                        PPMThread* thread, int numThread, cudaStream_t* streamSmooth, int filtro) {
 
+    // INICIANDO O TEMPO
     cudaEvent_t start, stop;
     float time;
     cudaEventCreate(&start);
     cudaEventCreate(&stop);
 
+    // ALOCANDO VARIAVEIS PARA COPIAR
+    // E RECEBER A IMAGEM
     unsigned char *cpuIn, *cpuOut, *gpuIn, *gpuOut;
     cpuIn = (unsigned char *)malloc(thread[numThread].linhasIn * imageParams->coluna * sizeof(unsigned char) );
     cpuOut = (unsigned char *)malloc(thread[numThread].linhasOut * imageParams->coluna * sizeof(unsigned char) );
 
+    // CONVERTENDO O PADRAO DO SISTEMA
+    // PARA ARRAY
     structToArray(imageParams, thread, numThread, cpuIn, filtro);
 
-    //Allocate 2D memory on GPU. Also known as Pitch Linear Memory
+    // ALOCANDO VARIAVEIS PARA
+    // ENVIAR E RECEBER A IMAGEM
+    // PARA O KERNEL
     size_t pitch = 0;
     gpuErrchk( cudaMallocPitch<unsigned char>(&gpuIn,&pitch,imageParams->coluna,thread[numThread].linhasIn) );
     gpuErrchk( cudaMallocPitch<unsigned char>(&gpuOut,&pitch,imageParams->coluna,thread[numThread].linhasOut) );
 
-
-    //Copy data from host to device.
+    // COPIANDO DADOS DO HOST
+    // PARA O DEVICE
     gpuErrchk( cudaMemcpy2DAsync(gpuIn,pitch,cpuIn,imageParams->coluna,imageParams->coluna,thread[numThread].linhasIn,cudaMemcpyHostToDevice, streamSmooth[numThread]) );
 
-    //Bind the image to the texture. Now the kernel will read the input image through the texture cache.
-    //Use tex2D function to read the image
+    // ALOCANDO A IMAGEM NA
+    // MEMORIA TEXTURA
     gpuErrchk( cudaBindTexture2D(NULL,textureIn,gpuIn,imageParams->coluna,thread[numThread].linhasIn,pitch) );
 
+    // DEFININDO O BLOCO
     dim3 blockDims(16,16);
     dim3 gridDims;
     gridDims.x = (imageParams->coluna + blockDims.x - 1)/blockDims.x;
     gridDims.y = (thread[numThread].linhasIn + blockDims.y - 1)/blockDims.y;
 
-    cudaEventRecord(start, 0);
+    // CHAMANDO O KERNEL
+    cudaEventRecord(start, 0); // INICIANDO O RELOGIO
+
+    // CHAMANDO O KERNEL
     kernelTexture<<<gridDims,blockDims, 0, streamSmooth[numThread]>>>(gpuOut,imageParams->coluna,imageParams->linha,pitch,thread[numThread].lf,thread[numThread].li);
     gpuErrchk( cudaPeekAtLastError() );
     gpuErrchk( cudaDeviceSynchronize() );
 
-    cudaEventRecord(stop, 0);
+    cudaEventRecord(stop, 0); // PARANDO O RELOGIO
     cudaEventSynchronize(stop);
 
-    //Copy the results back to CPU
+    // COPIANDO OS DADOS
+    // DO DEVICE PARA O HOST
     cudaMemcpy2DAsync(cpuOut,imageParams->coluna,gpuOut,pitch,imageParams->coluna,thread[numThread].linhasOut,cudaMemcpyDeviceToHost, streamSmooth[numThread]);
 
+    // CONVERTENDO O ARRAY RECEBIDO
+    // PARA A STRUCT PADRAO DO SISTEMA
     arrayToStruct(imageParams, thread, numThread, cpuOut, filtro);
 
-    //Release the texture
+    // LIBERANDO A TEXTURA
     cudaUnbindTexture(textureIn);
 
-    //Free GPU memory
+    // LIBERANDO MEMORIA
     cudaFree(gpuIn);
     cudaFree(gpuOut);
     free(cpuIn);
     free(cpuOut);
 
+    // REGISTRANDO O TEMPO
     cudaEventElapsedTime(&time, start, stop);
 
     if (ct->debug >= 1)
@@ -192,21 +224,25 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
 float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thread,
                  int numThread, cudaStream_t* streamSmooth, int filtro) {
 
+    // INICIANDO O TEMPO
     cudaEvent_t start, stop;
     float time;
     cudaEventCreate(&start);
     cudaEventCreate(&stop);
 
-    // DEFINE A QUANTIDADE DE LINHAS DO
-    // BLOCO LIDO E DO BLOCO QUE SERA
-    // GRAVADO EM DISCO
+    // ALOCANDO VARIAVEIS PARA COPIAR
+    // E RECEBER A IMAGEM
     unsigned char *cpuIn, *cpuOut, *gpuIn, *gpuOut;
     cpuIn = (unsigned char *)malloc(thread[numThread].linhasIn * imageParams->coluna * sizeof(unsigned char) );
     cpuOut = (unsigned char *)malloc(thread[numThread].linhasOut * imageParams->coluna * sizeof(unsigned char) );
 
+    // CONVERTENDO O PADRAO DO SISTEMA
+    // PARA ARRAY
     structToArray(imageParams, thread, numThread, cpuIn, filtro);
 
-    // ALOCAR MEMORIA
+    // ALOCANDO VARIAVEIS PARA
+    // ENVIAR E RECEBER A IMAGEM
+    // PARA O KERNEL
     cudaMalloc( (void**) &gpuIn, thread[numThread].linhasIn * imageParams->coluna);
     cudaMalloc( (void**) &gpuOut, thread[numThread].linhasOut * imageParams->coluna);
 
@@ -215,20 +251,30 @@ float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thr
     dim3 blockDims(512,1,1);
     dim3 gridDims((unsigned int) ceil((double)(thread[numThread].linhasIn * imageParams->coluna/blockDims.x)), 1, 1 );
 
-    cudaEventRecord(start, 0);
+    // COPIANDO DADOS DO HOST
+    // PARA O DEVICE
     cudaMemcpyAsync( gpuIn, cpuIn, thread[numThread].linhasIn * imageParams->coluna, cudaMemcpyHostToDevice, streamSmooth[numThread] );
+
+    cudaEventRecord(start, 0); // INICIANDO O RELOGIO
+
+    // CHAMANDO O KERNEL
     kernel<<<gridDims, blockDims, 0, streamSmooth[numThread]>>>(gpuIn, gpuOut, imageParams->coluna, imageParams->linha, thread[numThread].li, thread[numThread].lf);
-    cudaMemcpyAsync(cpuOut, gpuOut, thread[numThread].linhasOut * imageParams->coluna, cudaMemcpyDeviceToHost, streamSmooth[numThread] );
+
     gpuErrchk( cudaPeekAtLastError() );
     gpuErrchk( cudaDeviceSynchronize() );
 
-    cudaEventRecord(stop, 0);
+    cudaEventRecord(stop, 0); // PARANDO O RELOGIO
     cudaEventSynchronize(stop);
 
+    // COPIANDO OS DADOS
+    // DO DEVICE PARA O HOST
+    cudaMemcpyAsync(cpuOut, gpuOut, thread[numThread].linhasOut * imageParams->coluna, cudaMemcpyDeviceToHost, streamSmooth[numThread] );
 
+    // CONVERTENDO O ARRAY RECEBIDO
+    // PARA A STRUCT PADRAO DO SISTEMA
     arrayToStruct(imageParams, thread, numThread, cpuOut, filtro);
 
-    // LIBERA A MEMORIA
+    // LIBERANDO A MEMORIA
     cudaFree(gpuIn);
     cudaFree(gpuOut);
     free(cpuIn);
@@ -236,6 +282,7 @@ float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thr
 
     cudaDeviceSynchronize();
 
+    // REGISTRANDO O TEMPO
     cudaEventElapsedTime(&time, start, stop);
 
     if (ct->debug >= 1)
