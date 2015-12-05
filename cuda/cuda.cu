@@ -25,12 +25,14 @@ __global__ void kernelTexture(unsigned char* kOutput,const int width, const int 
     int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
 
 
-    float output_value = 0.0f;
-    int cont = 0;
+
 
     // TIRANDO A BORDA DO PROCESSAMENTO
     if ( yIndex > lf-li || xIndex < 2 || xIndex > width-2 || (li == 0 && yIndex < 2) || (lf==height-1 && yIndex > (lf-li)-2) )
         return;
+
+    float sum = 0.0f;
+    int cont = 0;
 
     int inicio = 0;
     if (li != 0)
@@ -41,7 +43,7 @@ __global__ void kernelTexture(unsigned char* kOutput,const int width, const int 
             for(int c2=-2; c2<=2; c2++)
             {
             if(l2 >= 0 && c2 >= 0) {
-                output_value += tex2D(textureIn,inicio+ xIndex+l2,yIndex + c2);
+                sum += tex2D(textureIn,inicio+ xIndex+l2,yIndex + c2);
                 cont++;
             }
             }
@@ -49,7 +51,7 @@ __global__ void kernelTexture(unsigned char* kOutput,const int width, const int 
 
 
 
-        kOutput[yIndex * pitch + xIndex] = static_cast<unsigned char>(output_value/cont);
+        kOutput[yIndex * pitch + xIndex] = static_cast<unsigned char>(sum/cont);
 
 }
 
