@@ -165,7 +165,7 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     dim3 blockDims(16,16);
     dim3 gridDims;
     gridDims.x = (imageParams->coluna + blockDims.x - 1)/blockDims.x;
-    gridDims.y = (thread[numThread].linhasIn + blockDims.y - 1)/blockDims.y;
+    gridDims.y = (imageParams->linha + blockDims.y - 1)/blockDims.y;
 
     cudaEventRecord(start, 0);
     kernelTexture<<<gridDims,blockDims, 0, streamSmooth[numThread]>>>(gpuOut,imageParams->coluna,imageParams->linha,pitch,thread[numThread].lf,thread[numThread].li);
