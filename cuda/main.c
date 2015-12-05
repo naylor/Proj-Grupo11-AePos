@@ -49,8 +49,8 @@ int main (int argc, char **argv){
 
     // SE FOI DEFINIDA A QUANTIDADE DE LINHAS
     // PELO MENU, ALTERAR AQUI
-    if ( numMaxLinhas > 517203000/imageParams->coluna)
-        numMaxLinhas = 517203000/imageParams->coluna;
+    if ( numMaxLinhas > 517000000/imageParams->coluna)
+        numMaxLinhas = 517000000/imageParams->coluna;
 
     int numNodes = (imageParams->linha/numMaxLinhas)+1;
 
