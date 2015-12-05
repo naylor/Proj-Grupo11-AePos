@@ -212,6 +212,8 @@ float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thr
     cudaEventCreate(&start);
     cudaEventCreate(&stop);
 
+    const int linhas = (thread[numThread].lf-thread[numThread].li)+1;
+
     // DEFINE A QUANTIDADE DE LINHAS DO
     // BLOCO LIDO E DO BLOCO QUE SERA
     // GRAVADO EM DISCO
@@ -220,6 +222,7 @@ float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thr
     cpuOut = (unsigned char *)malloc(thread[numThread].linhasOut);
 
     structToArray(imageParams, thread, numThread, cpuIn, filtro);
+
     // ALOCAR MEMORIA
     cudaMalloc( (void**) &gpuIn, thread[numThread].linhasIn);
     cudaMalloc( (void**) &gpuOut, thread[numThread].linhasOut);
@@ -227,7 +230,7 @@ float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thr
     // DEFINICAO DO TAMANHO PADRAO
     // DO BLOCO
     dim3 blockDims(512,1,1);
-    dim3 gridDims((unsigned int) ceil((double)(thread[numThread].linhasIn/blockDims.x)), 1, 1 );
+    dim3 gridDims((unsigned int) ceil((double)(linhas*imageParams->coluna/blockDims.x)), 1, 1 );
 
     cudaEventRecord(start, 0);
     cudaMemcpyAsync( gpuIn, cpuIn, thread[numThread].linhasIn, cudaMemcpyHostToDevice, streamSmooth[numThread] );
