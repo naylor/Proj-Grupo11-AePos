@@ -49,7 +49,7 @@ int main (int argc, char **argv){
 
     int ic = 517203000;
     if (strcmp(imageParams->tipo, "P6")==0)
-        ic = 3000;
+        ic = 261000000;
 
     // SE FOI DEFINIDA A QUANTIDADE DE LINHAS
     // PELO MENU, ALTERAR AQUI
