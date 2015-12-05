@@ -21,14 +21,11 @@ texture<unsigned char, cudaTextureType2D> textureIn;
 __global__ void kernelTexture(unsigned char* kOutput,const int width, const int height,
                               const size_t pitch, const int lf, const int li) {
 
-    int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
-    int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
-
-
-
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
 
     // TIRANDO A BORDA DO PROCESSAMENTO
-    if ( yIndex > lf-li || xIndex < 2 || xIndex > width-2 || (li == 0 && yIndex < 2) || (lf==height-1 && yIndex > (lf-li)-2) )
+    if ( y > lf-li || x < 2 || x > width-2 || (li == 0 && y < 2) || (lf==height-1 && y > (lf-li)-2) )
         return;
 
     float sum = 0.0f;
@@ -38,21 +35,16 @@ __global__ void kernelTexture(unsigned char* kOutput,const int width, const int 
     if (li != 0)
         inicio = 2;
 
-        for(int l2= -2; l2<=2; l2++)
-        {
-            for(int c2=-2; c2<=2; c2++)
-            {
+    for(int l2= -2; l2<=2; l2++) {
+        for(int c2=-2; c2<=2; c2++) {
             if(l2 >= 0 && c2 >= 0) {
-                sum += tex2D(textureIn,inicio+ xIndex+l2,yIndex + c2);
+                sum += tex2D(textureIn, inicio+x+l2, y+c2);
                 cont++;
             }
-            }
         }
+    }
 
-
-
-        kOutput[yIndex * pitch + xIndex] = static_cast<unsigned char>(sum/cont);
-
+    kOutput[yIndex * pitch + xIndex] = static_cast<unsigned char>(sum/cont);
 }
 
 // FUNCAO PARA APLICAR SMOOTH
