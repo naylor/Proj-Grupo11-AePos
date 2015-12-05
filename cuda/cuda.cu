@@ -233,7 +233,7 @@ float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thr
     dim3 gridDims((unsigned int) ceil((double)(linhas*imageParams->coluna/blockDims.x)), 1, 1 );
 
     cudaEventRecord(start, 0);
-    cudaMemcpyAsync( gpuIn, cpuIn, thread[numThread].linhasIn, cudaMemcpyHostToDevice, streamSmooth[numThread] );
+    cudaMemcpyAsync( gpuIn, cpuIn, linhas*imageParams->coluna, cudaMemcpyHostToDevice, streamSmooth[numThread] );
     kernel<<<gridDims, blockDims, 0, streamSmooth[numThread]>>>(gpuIn, gpuOut, imageParams->coluna, imageParams->linha, thread[numThread].li, thread[numThread].lf);
     cudaMemcpyAsync(cpuOut, gpuOut, thread[numThread].linhasOut, cudaMemcpyDeviceToHost, streamSmooth[numThread] );
     gpuErrchk( cudaPeekAtLastError() );
