@@ -212,7 +212,7 @@ int getImageThreads(initialParams* ct, PPMImageParams* imageParams, PPMThread* t
     else
         thread[numThread].pgmOut = (PGMPixel *)malloc(imageParams->coluna * linhas * sizeof(PGMPixel));
 
-    thread[numThread].linhasOut;
+    thread[numThread].linhasOut = linhas;
 
     FILE *fp;
     fp = fopen(imageParams->fileIn, "rb");
@@ -260,7 +260,7 @@ int getImageThreads(initialParams* ct, PPMImageParams* imageParams, PPMThread* t
     }
 
 
-    thread[numThread].linhasIn = imageParams->coluna * linhas;
+    thread[numThread].linhasIn = linhas;
 
     // SETA O PONTEIRO NO ARQUIVO + O CABECALHO
     // PARA A LEITURA DE CADA THREAD
