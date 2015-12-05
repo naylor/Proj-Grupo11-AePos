@@ -39,8 +39,7 @@ void structToArray(PPMImageParams* imageParams, PPMThread* thread,
 void arrayToStruct(PPMImageParams* imageParams, PPMThread* thread,
                    int numThread, unsigned char* cpuOut, int filtro) {
 
-    const int linhas = (thread[numThread].lf-thread[numThread].li)+1;
-    linhas *= imageParams->coluna;
+    const int linhas = ((thread[numThread].lf-thread[numThread].li)+1)*imageParams->coluna;
 
     if (strcmp(imageParams->tipo, "P6")==0) {
         if (filtro == 1)
