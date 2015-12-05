@@ -101,19 +101,28 @@ void writeFile(initialParams* ct, PPMImageParams* imageParams, tempo* t) {
 	char filename[200];
     sprintf((char*) &filename, "%s%c_%s.txt", ct->DIRRES, ct->typeAlg, ct->filePath);
 
+    int header=0;
+    if( access( fname, F_OK ) == -1 )
+        header=1;
+
    	//write to file
 	FILE* f = fopen(filename, "a");
 	if (f == NULL) {
         printf("\nNao foi possivel gravar o arquivo no diretorio dos resultados: %s\n\n", filename);
 		ct->erro = -101;
 	}
-	fprintf(f, "%c\t%i\t%i\t%i\t%s\t%s\t%ix%i\t%.2f\t%.2f\t%.2f\t%.2f\n",
+
+	if (header==1)
+        fprintf(f, "ALGORITMO\tNODES\tTHREADS\tCARGA\tLEITURA\tALEATORIO\tTEXTURE\tNxM\tT.READ\tT.FILTRO\tT.ESCRITA\tT.TOTAL\n";
+
+	fprintf(f, "%c\t%i\t%i\t%i\t%s\t%s\t%s\t%ix%i\t%.2f\t%.2f\t%.2f\t%.2f\n",
         ct->typeAlg,
 		ct->numProcessos,
 		ct->numThreads,
         ct->numMaxLinhas,
         ct->leituraIndividual?"yes":"no",
         ct->cargaAleatoria?"yes":"no",
+        ct->texture?"yes":"no",
         imageParams->linha,
         imageParams->coluna,
 		t[0].tempoR,

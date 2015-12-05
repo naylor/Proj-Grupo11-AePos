@@ -34,35 +34,52 @@
 		<Linker>
 			<Add library="cublas" />
 		</Linker>
-		<Unit filename="../common/funcao.cu">
-			<Option compile="1" />
-			<Option link="1" />
+		<Unit filename="common/funcao.c">
+			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../common/funcao.cuh" />
-		<Unit filename="../common/imagem.cu">
-			<Option compile="1" />
-			<Option link="1" />
+		<Unit filename="common/funcao.h" />
+		<Unit filename="common/imagem.c">
+			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../common/imagem.cuh" />
-		<Unit filename="../common/timer.cu">
-			<Option compile="1" />
-			<Option link="1" />
+		<Unit filename="common/imagem.h" />
+		<Unit filename="common/timer.c">
+			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../common/timer.cuh" />
-		<Unit filename="../cuda/host.cu" />
-		<Unit filename="../cuda/host.cuh" />
-		<Unit filename="../cuda/kernel.cu" />
-		<Unit filename="../cuda/kernel.cuh" />
-		<Unit filename="main.cu">
-			<Option compile="1" />
-			<Option link="1" />
+		<Unit filename="common/timer.h" />
+		<Unit filename="cuda/cuda.cu" />
+		<Unit filename="cuda/cuda.cuh" />
+		<Unit filename="cuda/main.c">
+			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="main.cuh" />
-		<Unit filename="menu.cu">
-			<Option compile="1" />
-			<Option link="1" />
+		<Unit filename="cuda/main.h" />
+		<Unit filename="cuda/menu.c">
+			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="menu.cuh" />
+		<Unit filename="cuda/menu.h" />
+		<Unit filename="mpi/main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="mpi/main.h" />
+		<Unit filename="mpi/menu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="mpi/menu.h" />
+		<Unit filename="mpi/openmpi.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="mpi/openmpi.h" />
+		<Unit filename="sequencial/main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="sequencial/main.h" />
+		<Unit filename="sequencial/menu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="sequencial/menu.h" />
+		<Unit filename="sequencial/sequencial.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="sequencial/sequencial.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />

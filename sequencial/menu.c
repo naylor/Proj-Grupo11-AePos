@@ -22,7 +22,7 @@ void menu(initialParams* ct, int argc, char *argv[]){
             printf("Usar: ./PPMseq -i [IMAGEM] -d [NIVEL DEBUG]\n\n");
             printf("[IMAGEM]: colocar apenas o nome do arquivo (ex. model.ppm, omitir o diretorio).\n");
             printf("[NIVEL DEBUG]: permite monitorar os eventos do sistema.\n");
-            printf("\nExemplo: ./PPMsequencial -i model.ppm -d 1\n\n");
+            printf("\nExemplo: ./PPMseq -i model.ppm -d 1\n\n");
             exit(0);
         }
 
