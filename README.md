@@ -1,5 +1,5 @@
-﻿Usando CUDA, MPI e OpenMP para aplicação de Smooth em Imagens PPM/PGM
-===========================================================
+﻿Usando CUDA e MPI+OpenMP para aplicação de Smooth em Imagens PPM/PGM
+==========================================================================
 
 ### Introdução
 Sistema criado para aplicar um filtro (Smooth) 5x5 em imagens PPM e PGM.
@@ -8,7 +8,7 @@ O comando make criará três binários para processar a imagem:
 1. **PPMseq:** algoritmo sequencial.
 
 2. **PPMmpi:** esse programa divide a imagem em linhas e distribui para os nós pelo MPI.
-O rank 0 comanda a comunicação. É responsável por enviar o trabalho para os nós e gerenciar quem pode gravar no disco para não gerar concorrência. Cada nó divide seu trabalho em Threads que realizam a leitura de sua parte da imagem e aplicam a técnica de Smooth. Quando terminado o trabalho, o nó solicita permissão para gravar o resultado no disco.
+O rank 0 comanda a comunicação e cria 1 thread (OpenMP) para controlar cada processo. É responsável por enviar o trabalho para os nós e gerenciar quem pode gravar no disco para não gerar concorrência. Cada nó divide seu trabalho em threads (OpenMP) que realizam a leitura de sua parte da imagem e aplicam a técnica de Smooth. Quando terminado o trabalho, o nó solicita permissão para gravar o resultado no disco.
 
 3. **PPMcuda:** para processar a imagem é utilizada memória textura, evitando conflito de banco.
 
@@ -50,15 +50,15 @@ O rank 0 comanda a comunicação. É responsável por enviar o trabalho para os 
 
 * Utilizando o PPMsequencial por menu
    ```python
-   `./PPMsequencial`
+   `./PPMseq`
   ```
 
 * Executando o PPMsequencial pelo terminal
    ```python
-   `./PPMsequencial --help`
+   `./PPMseq --help`
   ```
    ```python
-   `./PPMsequencial -i [IMAGEM] -d [NÍVEL DEBUG]`
+   `./PPMseq -i [IMAGEM] -d [NÍVEL DEBUG]`
   ```
   
 --
@@ -66,11 +66,11 @@ O rank 0 comanda a comunicação. É responsável por enviar o trabalho para os 
 
 * Executando o PPMparalelo pelo terminal
    ```python
-   `./PPMparalelo --help
+   `./PPMmpi --help
   ```
    ou usar: 
    ```python
-   mpiexec -n [PROCESSOS] -f [NODES] ./PPMparalelo -i [IMAGEM] -t [NÚMERO THREADS] -c [CARGA DE TRABALHO] -a [CARGA ALEATÓRIA] -t [LEITURA INDIVIDUAL] -d [NÍVEL DEBUG]
+   mpiexec -n [PROCESSOS] -f [NODES] ./PPMmpi -i [IMAGEM] -t [NÚMERO THREADS] -c [CARGA DE TRABALHO] -r [CARGA ALEATÓRIA] -l [LEITURA INDIVIDUAL] -d [NÍVEL DEBUG]
 
   * [PROCESSOS]: número de processos que serão gerados.
   * [IMAGEM]: colocar apenas o nome do arquivo (ex. model.ppm, omitir o diretório).
