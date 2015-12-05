@@ -149,9 +149,9 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
 
     const int linhas = (thread[numThread].lf-thread[numThread].li)+1;
     const int widthStep = 0;
-    exit(3);
 
     structToArray(imageParams, thread, numThread, cpuIn, filtro);
+    exit(3);
 
     //Allocate 2D memory on GPU. Also known as Pitch Linear Memory
     size_t gpu_image_pitch = 0;
