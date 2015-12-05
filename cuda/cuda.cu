@@ -97,18 +97,18 @@ void structToArray(PPMImageParams* imageParams, PPMThread* thread,
 
     if (strcmp(imageParams->tipo, "P6")==0) {
         if (filtro == 1)
-            for(int t=0; t<thread[numThread].linhas*imageParams->coluna; t++)
+            for(int t=0; t<thread[numThread].linhasIn; t++)
                 cpuIn[t] = thread[numThread].ppmIn[t].red;
         if (filtro == 2)
-            for(int t=0; t<thread[numThread].linhas*imageParams->coluna; t++)
+            for(int t=0; t<thread[numThread].linhasIn; t++)
                 cpuIn[t] = thread[numThread].ppmIn[t].green;
         if (filtro == 3)
-            for(int t=0; t<thread[numThread].linhas*imageParams->coluna; t++)
+            for(int t=0; t<thread[numThread].linhasIn; t++)
                 cpuIn[t] = thread[numThread].ppmIn[t].blue;
     }
 
     if (strcmp(imageParams->tipo, "P5")==0) {
-        for(int t=0; t<thread[numThread].linhas*imageParams->coluna; t++)
+        for(int t=0; t<thread[numThread].linhasIn; t++)
             cpuIn[t] = thread[numThread].pgmIn[t].gray;
     }
 }
@@ -116,22 +116,20 @@ void structToArray(PPMImageParams* imageParams, PPMThread* thread,
 void arrayToStruct(PPMImageParams* imageParams, PPMThread* thread,
                    int numThread, unsigned char* cpuOut, int filtro) {
 
-    const int linhas = (thread[numThread].lf-thread[numThread].li)+1;
-
     if (strcmp(imageParams->tipo, "P6")==0) {
         if (filtro == 1)
-            for(int t=0; t<linhas*imageParams->coluna; t++)
+            for(int t=0; t<thread[numThread].linhasOut; t++)
                 thread[numThread].ppmOut[t].red = cpuOut[t];
         if (filtro == 2)
-            for(int t=0; t<linhas*imageParams->coluna; t++)
+            for(int t=0; t<thread[numThread].linhasOut; t++)
                 thread[numThread].ppmOut[t].green = cpuOut[t];
         if (filtro == 3)
-            for(int t=0; t<linhas*imageParams->coluna; t++)
+            for(int t=0; t<thread[numThread].linhasOut; t++)
                 thread[numThread].ppmOut[t].blue = cpuOut[t];
     }
 
     if (strcmp(imageParams->tipo, "P5")==0) {
-        for(int t=0; t<linhas*imageParams->coluna; t++)
+        for(int t=0; t<thread[numThread].linhasOut; t++)
             thread[numThread].pgmOut[t].gray = cpuOut[t];
     }
 
@@ -149,27 +147,25 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     cpuIn = (unsigned char *)malloc(thread[numThread].linhasIn);
     cpuOut = (unsigned char *)malloc(thread[numThread].linhasOut);
 
-    const int linhas = (thread[numThread].lf-thread[numThread].li)+1;
-
     structToArray(imageParams, thread, numThread, cpuIn, filtro);
 
     //Allocate 2D memory on GPU. Also known as Pitch Linear Memory
     size_t pitch = 0;
-    gpuErrchk( cudaMallocPitch<unsigned char>(&gpuIn,&pitch,imageParams->coluna,thread[numThread].linhas) );
-    gpuErrchk( cudaMallocPitch<unsigned char>(&gpuOut,&pitch,imageParams->coluna,linhas) );
+    gpuErrchk( cudaMallocPitch<unsigned char>(&gpuIn,&pitch,imageParams->coluna,thread[numThread].linhasIn) );
+    gpuErrchk( cudaMallocPitch<unsigned char>(&gpuOut,&pitch,imageParams->coluna,thread[numThread].linhasOut) );
 
 
     //Copy data from host to device.
-    gpuErrchk( cudaMemcpy2DAsync(gpuIn,pitch,cpuIn,imageParams->coluna,imageParams->coluna,thread[numThread].linhas,cudaMemcpyHostToDevice, streamSmooth[numThread]) );
+    gpuErrchk( cudaMemcpy2DAsync(gpuIn,pitch,cpuIn,imageParams->coluna,imageParams->coluna,thread[numThread].linhasIn,cudaMemcpyHostToDevice, streamSmooth[numThread]) );
 
     //Bind the image to the texture. Now the kernel will read the input image through the texture cache.
     //Use tex2D function to read the image
-    gpuErrchk( cudaBindTexture2D(NULL,textureIn,gpuIn,imageParams->coluna,thread[numThread].linhas,pitch) );
+    gpuErrchk( cudaBindTexture2D(NULL,textureIn,gpuIn,imageParams->coluna,thread[numThread].linhasIn,pitch) );
 
     dim3 blockDims(16,16);
     dim3 gridDims;
     gridDims.x = (imageParams->coluna + blockDims.x - 1)/blockDims.x;
-    gridDims.y = (linhas + blockDims.y - 1)/blockDims.y;
+    gridDims.y = (thread[numThread].linhasIn + blockDims.y - 1)/blockDims.y;
 
     cudaEventRecord(start, 0);
     kernelTexture<<<gridDims,blockDims, 0, streamSmooth[numThread]>>>(gpuOut,imageParams->coluna,imageParams->linha,pitch,thread[numThread].lf,thread[numThread].li);
@@ -180,7 +176,7 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     cudaEventSynchronize(stop);
 
     //Copy the results back to CPU
-    cudaMemcpy2DAsync(cpuOut,imageParams->coluna,gpuOut,pitch,imageParams->coluna,linhas,cudaMemcpyDeviceToHost, streamSmooth[numThread]);
+    cudaMemcpy2DAsync(cpuOut,imageParams->coluna,gpuOut,pitch,imageParams->coluna,thread[numThread].linhasOut,cudaMemcpyDeviceToHost, streamSmooth[numThread]);
 
     arrayToStruct(imageParams, thread, numThread, cpuOut, filtro);
 
@@ -212,28 +208,26 @@ float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thr
     cudaEventCreate(&start);
     cudaEventCreate(&stop);
 
-    const int linhas = (thread[numThread].lf-thread[numThread].li)+1;
-
     // DEFINE A QUANTIDADE DE LINHAS DO
     // BLOCO LIDO E DO BLOCO QUE SERA
     // GRAVADO EM DISCO
     unsigned char *cpuIn, *cpuOut, *gpuIn, *gpuOut;
-    cpuIn = (unsigned char *)malloc(linhas*imageParams->coluna);
+    cpuIn = (unsigned char *)malloc(thread[numThread].linhasIn);
     cpuOut = (unsigned char *)malloc(thread[numThread].linhasOut);
 
     structToArray(imageParams, thread, numThread, cpuIn, filtro);
 
     // ALOCAR MEMORIA
-    cudaMalloc( (void**) &gpuIn, linhas*imageParams->coluna);
+    cudaMalloc( (void**) &gpuIn, thread[numThread].linhasIn);
     cudaMalloc( (void**) &gpuOut, thread[numThread].linhasOut);
 
     // DEFINICAO DO TAMANHO PADRAO
     // DO BLOCO
     dim3 blockDims(512,1,1);
-    dim3 gridDims((unsigned int) ceil((double)(linhas*imageParams->coluna/blockDims.x)), 1, 1 );
+    dim3 gridDims((unsigned int) ceil((double)(thread[numThread].linhasIn/blockDims.x)), 1, 1 );
 
     cudaEventRecord(start, 0);
-    cudaMemcpyAsync( gpuIn, cpuIn, linhas*imageParams->coluna, cudaMemcpyHostToDevice, streamSmooth[numThread] );
+    cudaMemcpyAsync( gpuIn, cpuIn, thread[numThread].linhasIn, cudaMemcpyHostToDevice, streamSmooth[numThread] );
     kernel<<<gridDims, blockDims, 0, streamSmooth[numThread]>>>(gpuIn, gpuOut, imageParams->coluna, imageParams->linha, thread[numThread].li, thread[numThread].lf);
     cudaMemcpyAsync(cpuOut, gpuOut, thread[numThread].linhasOut, cudaMemcpyDeviceToHost, streamSmooth[numThread] );
     gpuErrchk( cudaPeekAtLastError() );

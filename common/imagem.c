@@ -260,12 +260,8 @@ int getImageThreads(initialParams* ct, PPMImageParams* imageParams, PPMThread* t
         linhas += 2;
     }
 
-    if (strcmp(imageParams->tipo, "P6")==0)
-        thread[numThread].linhasIn = imageParams->coluna * linhas * sizeof(PPMPixel);
-    else
-        thread[numThread].linhasIn = imageParams->coluna * linhas * sizeof(PGMPixel);
 
-    thread[numThread].linhas = linhas;
+    thread[numThread].linhasIn = imageParams->coluna * linhas;
 
     // SETA O PONTEIRO NO ARQUIVO + O CABECALHO
     // PARA A LEITURA DE CADA THREAD
