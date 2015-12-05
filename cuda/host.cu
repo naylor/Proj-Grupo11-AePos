@@ -83,7 +83,6 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
 
     //Copy data from host to device.
     gpuErrchk( cudaMemcpy2DAsync(gpuIn,gpu_image_pitch,cpuIn,widthStep,imageParams->coluna,thread[numThread].linhas,cudaMemcpyHostToDevice, streamSmooth[numThread]) );
-    exit(1);
 
     //Bind the image to the texture. Now the kernel will read the input image through the texture cache.
     //Use tex2D function to read the image
@@ -93,6 +92,7 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     dim3 gridDims;
     gridDims.x = (imageParams->coluna + blockDims.x - 1)/blockDims.x;
     gridDims.y = (linhas + blockDims.y - 1)/blockDims.y;
+    exit(1);
 
     cudaEventRecord(start, 0);
     kernelTexture<<<gridDims,blockDims, 0, streamSmooth[numThread]>>>(gpuOut,imageParams->coluna,imageParams->linha,gpu_image_pitch,thread[numThread].lf,thread[numThread].li);
