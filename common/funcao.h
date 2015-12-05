@@ -14,7 +14,6 @@ typedef struct {
     const char* DIRRES;
     int numMaxLinhas;
     int texture;
-    int async;
     int debug;
     int erro;
     int numThreads;

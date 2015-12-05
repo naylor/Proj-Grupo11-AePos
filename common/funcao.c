@@ -46,8 +46,6 @@ void getCommandLineOptions(initialParams* ct, files* f, int argc, char *argv[]) 
 
         //PEGA O NUMERO DE THREADS
         //E O NUMERO MAIS DE LINHAS
-        if (argv[i] && strcmp(argv[i], "-a")==0)
-            if (argv[i+1]) sscanf (argv[i+1],"%d",&ct->async);
         if (argv[i] && strcmp(argv[i], "-m")==0)
             if (argv[i+1]) sscanf (argv[i+1],"%d",&ct->texture);
         if (argv[i] && strcmp(argv[i], "-c")==0)

@@ -14,9 +14,8 @@ void menu(initialParams* ct, int argc, char **argv){
             printf("\tDecomposicao de imagens com Smooth\n\n");
             printf("\tNaylor Garcia Bachiega (NUSP 5567669)\n\n");
 
-            printf("Usar: ./PPMcuda -i [IMAGEM] -a [MEMORIA ASSINCRONA] -m [MEMORIA TEXTURA] -c [CARGA TRABALHO(Opcional)] -d [NIVEL DEBUG(Opcional)]\n\n");
+            printf("Usar: ./PPMcuda -i [IMAGEM] -m [MEMORIA TEXTURA] -c [CARGA TRABALHO(Opcional)] -d [NIVEL DEBUG(Opcional)]\n\n");
             printf("[IMAGEM]: colocar apenas o nome do arquivo (ex. model.ppm, omitir o diretorio).\n");
-            printf("[MEMORIA ASSINCRONA]: se ativado, cudaMemcpyAsync e utilizado para copia da imagem.\n");
             printf("[MEMORIA TEXTURA]: se ativado, a memoria de textura e utilizada em blocos de 16x16.\n");
             printf("[CARGA TRABALHO]: numero maximo de linhas, que o Rank0 alocara para cada processo, se omitido, sera uma divisao igualitaria.\n");
             printf("[NIVEL DEBUG]: permite monitorar os eventos do sistema.\n");

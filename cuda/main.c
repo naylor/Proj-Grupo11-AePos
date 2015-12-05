@@ -60,8 +60,8 @@ int main (int argc, char **argv){
     int numNodes = (imageParams->linha/numMaxLinhas)+1;
 
     printf("\nCarga de Trabalho: %d", numMaxLinhas);
-    printf("\nMemoria Compartilhada: %s", ct->sharedMemory==1?"Ativado":"Desativado");
-    printf("\nMemoria Assincrona: %s\n", ct->async==1?"Ativado":"Desativado");
+    printf("\nMemoria Textura: %s", ct->texture==1?"Ativado":"Desativado");
+    printf("\nMemoria Assincrona: Ativado");
 
     tempo* relogio = (tempo* )malloc(sizeof(tempo) * 2);
     timer* tempoA = (timer* )malloc(sizeof(timer)); // RELOGIO APLICACAO
@@ -78,9 +78,8 @@ int main (int argc, char **argv){
     // CRIA OS CUDA STREAM PARA ASYNC
     cudaStream_t streamSmooth[numNodes];
 
-    if (ct->async == 1)
-        for (int i = 0; i < numNodes; ++i)
-            cudaStreamCreate(&streamSmooth[i]);
+    for (int i = 0; i < numNodes; ++i)
+        cudaStreamCreate(&streamSmooth[i]);
 
     // ALOCA MEMORIA PARA A QUANTIDADE
     // DE BLOCOS QUE SERAO GERADOS
@@ -128,9 +127,8 @@ int main (int argc, char **argv){
     show_timer(relogio, 1);
 
     // DESTROI O CUDA STREAM
-    if (ct->async == 1)
-        for (int i = 0; i < numNodes; ++i)
-            cudaStreamDestroy(streamSmooth[i]);
+    for (int i = 0; i < numNodes; ++i)
+        cudaStreamDestroy(streamSmooth[i]);
 
     //ESCREVE NO ARQUIVO DE LOGS
     writeFile(ct, imageParams, relogio);
