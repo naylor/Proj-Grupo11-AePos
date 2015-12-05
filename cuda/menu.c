@@ -22,9 +22,7 @@ void menu(initialParams* ct, int argc, char **argv){
             printf("\nExemplo: ./PPMcuda -i model.ppm -a 1 -m 1 -c 300 -d 1\n\n");
 
             // SE FOI SOLICITADO O HELP
-            // FINALIZADO OS NODES...
-            ct->erro = -101;
-            return;
+            exit(0);
         }
 
         getCommandLineOptions(ct, f, argc, argv);
