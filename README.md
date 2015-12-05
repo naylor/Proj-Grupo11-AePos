@@ -50,25 +50,18 @@ PPMseq
 
 * Utilizando o PPMsequencial por menu
    usar: 
-   ```python
-	./PPMsequencial	
-   ```
+   `./PPMsequencial`
+
 * Executando o PPMsequencial pelo terminal
    usar: 
-   ```python
-   ./PPMsequencial --help
-  ```
+   `./PPMsequencial --help`
    ou
-   ```python
-   ./PPMsequencial -i [IMAGEM] -d [NÍVEL DEBUG]
-  ```
+   `./PPMsequencial -i [IMAGEM] -d [NÍVEL DEBUG]`
 --
 PPMmpi
 
 * Executando o PPMparalelo pelo terminal
-   ```python
-   ./PPMparalelo --help
-  ```
+   `./PPMparalelo --help`
    ou usar: 
    ```python
    mpiexec -n [PROCESSOS] -f [NODES] ./PPMparalelo -i [IMAGEM] -t [NÚMERO THREADS] -c [CARGA DE TRABALHO] -a [CARGA ALEATÓRIA] -t [LEITURA INDIVIDUAL] -d [NÍVEL DEBUG]
@@ -83,6 +76,7 @@ PPMmpi
   * [NIVEL DEBUG]: permite monitorar os eventos do sistema, permitido 1: nível do node e 2: nível da imagem.
   ```
 --
+
 1. Os resultados são gravados na pasta: resultados
 
 2. Imagens PPM/PGM disponíveis na pasta: images_in
