@@ -106,7 +106,6 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     gpuErrchk( cudaMemcpy2DAsync(cpuOut,widthStep,gpuOut,gpu_image_pitch,imageParams->coluna,linhas,cudaMemcpyDeviceToHost, streamSmooth[numThread]) );
 
     arrayToStruct(imageParams, thread, numThread, cpuOut, filtro);
-    exit(1);
 
     //Release the texture
     cudaUnbindTexture(textureIn);
