@@ -42,9 +42,8 @@ O rank 0 comanda a comunicação. É responsável por enviar o trabalho para os 
   * [MEMÓRIA TEXTURA]: se ativado, a memória de textura é utilizada em blocos de 16x16.
   * [CARGA TRABALHO]: número máximo de linhas para processamento por Stream (Assíncrono).
   * [NIVEL DEBUG]: permite monitorar os eventos do sistema.
-  
+
 --
-  
 2. PPMseq
 
 * Utilizando o PPMsequencial por menu
@@ -54,8 +53,8 @@ O rank 0 comanda a comunicação. É responsável por enviar o trabalho para os 
    usar: ./PPMsequencial --help
    ou
    usar: ./PPMsequencial -i [IMAGEM] -d [NÍVEL DEBUG]
---
 
+--
 3. PPMmpi
 
 * Executando o PPMparalelo pelo terminal
@@ -72,7 +71,7 @@ O rank 0 comanda a comunicação. É responsável por enviar o trabalho para os 
   * [LEITURA INDIVIDUAL]: faz com que cada processo tenha acesso exclusivo a imagem no momento da leitura.
   * [NIVEL DEBUG]: permite monitorar os eventos do sistema, permitido 1: nível do node e 2: nível da imagem.
 
-
+--
 3. Os resultados são gravados na pasta: resultados
 
 4. Imagens PPM/PGM disponíveis na pasta: images_in
