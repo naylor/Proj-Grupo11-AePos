@@ -160,7 +160,7 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
 
     //Bind the image to the texture. Now the kernel will read the input image through the texture cache.
     //Use tex2D function to read the image
-    gpuErrchk( cudaBindTexture2D(NULL,textureIn,gpuIn,imageParams->coluna,thread[numThread].linhasIn,pitch) );
+    gpuErrchk( cudaBindTexture2D(NULL,textureIn,gpuIn,imageParams->coluna,imageParams->linha,pitch) );
 
     dim3 blockDims(16,16);
     dim3 gridDims;
