@@ -151,21 +151,21 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
 
     //Allocate 2D memory on GPU. Also known as Pitch Linear Memory
     size_t pitch = 0;
-    gpuErrchk( cudaMallocPitch<unsigned char>(&gpuIn,&pitch,imageParams->coluna,imageParams->linha) );
-    gpuErrchk( cudaMallocPitch<unsigned char>(&gpuOut,&pitch,imageParams->coluna,imageParams->linha) );
+    gpuErrchk( cudaMallocPitch<unsigned char>(&gpuIn,&pitch,imageParams->coluna,thread[numThread].linhasIn) );
+    gpuErrchk( cudaMallocPitch<unsigned char>(&gpuOut,&pitch,imageParams->coluna,thread[numThread].linhasOut) );
 
 
     //Copy data from host to device.
-    gpuErrchk( cudaMemcpy2DAsync(gpuIn,pitch,cpuIn,imageParams->coluna,imageParams->coluna,imageParams->linha,cudaMemcpyHostToDevice, streamSmooth[numThread]) );
+    gpuErrchk( cudaMemcpy2DAsync(gpuIn,pitch,cpuIn,imageParams->coluna,imageParams->coluna,thread[numThread].linhasIn,cudaMemcpyHostToDevice, streamSmooth[numThread]) );
 
     //Bind the image to the texture. Now the kernel will read the input image through the texture cache.
     //Use tex2D function to read the image
-    gpuErrchk( cudaBindTexture2D(NULL,textureIn,gpuIn,imageParams->coluna,imageParams->linha,pitch) );
+    gpuErrchk( cudaBindTexture2D(NULL,textureIn,gpuIn,imageParams->coluna,thread[numThread].linhasIn,pitch) );
 
     dim3 blockDims(16,16);
     dim3 gridDims;
     gridDims.x = (imageParams->coluna + blockDims.x - 1)/blockDims.x;
-    gridDims.y = (imageParams->linha + blockDims.y - 1)/blockDims.y;
+    gridDims.y = (thread[numThread].linhasIn + blockDims.y - 1)/blockDims.y;
 
     cudaEventRecord(start, 0);
     kernelTexture<<<gridDims,blockDims, 0, streamSmooth[numThread]>>>(gpuOut,imageParams->coluna,imageParams->linha,pitch,thread[numThread].lf,thread[numThread].li);
