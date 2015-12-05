@@ -144,8 +144,8 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     cudaEventCreate(&stop);
 
     unsigned char *cpuIn, *cpuOut, *gpuIn, *gpuOut;
-    cpuIn = (unsigned char *)malloc(thread[numThread].linhasIn);
-    cpuOut = (unsigned char *)malloc(thread[numThread].linhasOut);
+    cpuIn = (unsigned char *)malloc(thread[numThread].linhasIn * sizeof(unsigned char) );
+    cpuOut = (unsigned char *)malloc(thread[numThread].linhasOut * sizeof(unsigned char) );
 
     structToArray(imageParams, thread, numThread, cpuIn, filtro);
 
