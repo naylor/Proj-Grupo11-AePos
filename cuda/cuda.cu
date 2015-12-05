@@ -14,11 +14,11 @@ inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=t
    }
 }
 
-texture<unsigned char, cudaTextureType2D> tex8u;
+texture<unsigned char, cudaTextureType2D> textuteIn;
 
 
 //Box Filter Kernel For Gray scale image with 8bit depth
-__global__ void box_filter_kernel_8u_c1(unsigned char* output,const int width, const int height, const size_t pitch, const int lf, const int li)
+__global__ void kernelTexture(unsigned char* output,const int width, const int height, const size_t pitch, const int lf, const int li)
 {
 
     int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
