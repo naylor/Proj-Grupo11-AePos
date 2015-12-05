@@ -18,8 +18,8 @@ texture<unsigned char, cudaTextureType2D> textureIn;
 
 
 //Box Filter Kernel For Gray scale image with 8bit depth
-__global__ void kernelTexture(unsigned char* output,const int width, const int height, const size_t pitch, const int lf, const int li)
-{
+__global__ void kernelTexture(unsigned char* kOutput,const int width, const int height,
+                              const size_t pitch, const int lf, const int li) {
 
     int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
     int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
@@ -55,7 +55,7 @@ __global__ void kernelTexture(unsigned char* output,const int width, const int h
         int index = yIndex * pitch + xIndex;
         //printf("Smooth index:%d, xIndex:%d yIndex %d lf-li %d\n",index, xIndex, yIndex, lf-li);
 
-        output[index] = static_cast<unsigned char>(output_value);
+        kOutput[yIndex * pitch + xIndex] = static_cast<unsigned char>(output_value);
 
 }
 
