@@ -74,12 +74,12 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     const int widthStep = imageParams->coluna;
 
     structToArray(imageParams, thread, numThread, cpuIn, filtro);
-    exit(1);
 
     //Allocate 2D memory on GPU. Also known as Pitch Linear Memory
     size_t gpu_image_pitch = 0;
     gpuErrchk( cudaMallocPitch<unsigned char>(&gpuIn,&gpu_image_pitch,imageParams->coluna,thread[numThread].linhas) );
     gpuErrchk( cudaMallocPitch<unsigned char>(&gpuOut,&gpu_image_pitch,imageParams->coluna,linhas) );
+    exit(1);
 
 
     //Copy data from host to device.
