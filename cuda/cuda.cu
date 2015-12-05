@@ -55,7 +55,7 @@ __global__ void kernelTexture(unsigned char* output,const int width, const int h
         int index = yIndex + xIndex;
         //printf("Smooth index:%d, xIndex:%d yIndex %d lf-li %d\n",index, xIndex, yIndex, lf-li);
 
-        output[index] = static_cast<unsigned char>(output_value);
+        output[xIndex] = static_cast<unsigned char>(output_value);
 
 }
 
