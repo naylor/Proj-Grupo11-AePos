@@ -72,7 +72,7 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     cpuIn = (unsigned char *)malloc(thread[numThread].linhasIn);
     cpuOut = (unsigned char *)malloc(thread[numThread].linhasOut);
 
-    const int linhas = (thread[numThread].lf-thread[numThread].li)+1;
+    int linhas = (thread[numThread].lf-thread[numThread].li)+1;
     const int widthStep = imageParams->coluna;
 
     structToArray(imageParams, thread, numThread, cpuIn, filtro);
@@ -104,9 +104,9 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
 
     //Copy the results back to CPU
     gpuErrchk( cudaMemcpy2DAsync(cpuOut,widthStep,gpuOut,gpu_image_pitch,imageParams->coluna,linhas,cudaMemcpyDeviceToHost, streamSmooth[numThread]) );
-    exit(1);
 
     arrayToStruct(imageParams, thread, numThread, cpuOut, filtro);
+    exit(1);
 
     //Release the texture
     cudaUnbindTexture(textureIn);
