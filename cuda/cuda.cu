@@ -138,6 +138,10 @@ void arrayToStruct(PPMImageParams* imageParams, PPMThread* thread,
 float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
                        PPMThread* thread, int numThread, cudaStream_t* streamSmooth, int filtro) {
 
+    if (ct->debug >= 1)
+        printf("Apply Smooth[%d][%s] - linhas: %d, li:%d, lf:%d\n",
+               numThread, imageParams->tipo, thread[numThread].linhasIn, thread[numThread].li, thread[numThread].lf);
+
     cudaEvent_t start, stop;
     float time;
     cudaEventCreate(&start);
@@ -190,10 +194,6 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     free(cpuOut);
 
     cudaEventElapsedTime(&time, start, stop);
-
-    if (ct->debug >= 1)
-        printf("Apply Smooth[%d][%s] - linhas: %d, li:%d, lf:%d\n",
-               numThread, imageParams->tipo, thread[numThread].linhasIn, thread[numThread].li, thread[numThread].lf);
 
     return time;
 }
