@@ -40,21 +40,12 @@ int main (int argc, char **argv){
 
     // DEFINE A QUANTIDADE DE LINHAS
     // DA IMAGEM PARA LEITURA E SMOOTH
-    int numMaxLinhas = imageParams->linha;
+    int numMaxLinhas = imageParams->linha*0.1;
     ct->numThreads = 1;
 
     // DEFINA A CARGA MAXIMA DELINHAS
     if (ct->numMaxLinhas > 0)
         numMaxLinhas = ct->numMaxLinhas;
-
-    int ic = 517203000;
-    if (strcmp(imageParams->tipo, "P6")==0)
-        ic = 261000000;
-
-    // SE FOI DEFINIDA A QUANTIDADE DE LINHAS
-    // PELO MENU, ALTERAR AQUI
-    if ( numMaxLinhas > ic/imageParams->coluna)
-        numMaxLinhas = ic/imageParams->coluna;
 
     int numNodes = (imageParams->linha/numMaxLinhas)+1;
 
