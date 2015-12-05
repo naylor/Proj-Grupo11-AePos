@@ -18,45 +18,35 @@ texture<unsigned char, cudaTextureType2D> textureIn;
 
 
 //Box Filter Kernel For Gray scale image with 8bit depth
-__global__ void kernelTexture(unsigned char* output,const int width, const int height, const size_t pitch, const int lf, const int li)
-{
+__global__ void kernelTexture(unsigned char* kOutput, const int coluna,
+                              const int linha, const int lf, const int li) {
 
-    int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
-    int yIndex = blockIdx.y * blockDim.y + threadIdx.y;
-
-
-    float output_value = 0.0f;
-    int cont = 0;
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
 
     // TIRANDO A BORDA DO PROCESSAMENTO
-    if ( yIndex > lf-li || xIndex < 2 || xIndex > width-2 || (li == 0 && yIndex < 2) || (lf==height-1 && yIndex > (lf-li)-2) )
+    if ( y > lf-li || x < 2 || x > coluna-2 || (li == 0 && y < 2) || (lf==linha-1 && y > (lf-li)-2) )
         return;
+
+    float sum = 0.0f;
+    int cont = 0;
 
     int inicio = 0;
     if (li != 0)
         inicio = 2;
 
-        for(int l2= -2; l2<=2; l2++)
-        {
-            for(int c2=-2; c2<=2; c2++)
-            {
+    for(int l2= -2; l2<=2; l2++) {
+        for(int c2=-2; c2<=2; c2++) {
             if(l2 >= 0 && c2 >= 0) {
-                output_value += tex2D(textureIn,inicio+ xIndex+l2,yIndex + c2);
+                sum += tex2D(textureIn,inicio+ x+l2,y + c2);
                 cont++;
             }
-            }
         }
+    }
 
-        //Average the output value
-        output_value = output_value/cont;
+    sum = sum/cont;
 
-        //Write the averaged value to the output.
-        //Transform 2D index to 1D index, because image is actually in linear memory
-        int index = yIndex * pitch + xIndex;
-        //printf("Smooth index:%d, xIndex:%d yIndex %d lf-li %d\n",index, xIndex, yIndex, lf-li);
-
-        output[index] = static_cast<unsigned char>(output_value);
-
+    kOutput[x+y] = static_cast<unsigned char>(sum);
 }
 
 // FUNCAO PARA APLICAR SMOOTH
@@ -64,32 +54,32 @@ __global__ void kernelTexture(unsigned char* output,const int width, const int h
 __global__ void kernel(unsigned char* kInput, unsigned char* kOutput, int coluna, int linha, int li, int lf) {
 
     // OFFSET DA COLUNA*LINHA
-    unsigned int offset = blockIdx.x * blockDim.x + threadIdx.x;
+    unsigned int x = blockIdx.x * blockDim.x + threadIdx.x;
 
-    int c = offset % coluna; // COLUNA
-    int l = (offset-c)/coluna; // LINHA
+    int c = x % coluna; // COLUNA
+    int l = (x-c)/coluna; // LINHA
 
     // TIRANDO A BORDA DO PROCESSAMENTO
     if ( l > lf-li || c < 2 || c > coluna-2 || (li == 0 && l < 2) || (lf==linha-1 && l > (lf-li)-2) )
         return;
 
     // APLICANDO O SMOOTH NO BLOCO
-    int sumg = 0;
+    float sum = 0.0f;
 
     for(int l2 = -2; l2 <= 2; ++l2) {
         for(int c2 = -2; c2 <= 2; ++c2) {
             if((c+l2) >= 2 && (c+l2) < coluna-2 && (l+c2) >= -2 && (l+c2) <= lf-li+4) {
-                int p = (offset + 2*coluna)+(l2*coluna)+c2;
+                int p = (x + 2*coluna)+(l2*coluna)+c2;
                 if (li == 0)
-                    p = offset + 2*coluna;
-                sumg += kInput[p];
+                    p = x + 2*coluna;
+                sum += kInput[p];
             }
         }
     }
 
     // GRAVANDO O RESULTADO
     // NA IMAGEM DE SAIDA
-    kOutput[offset] = sumg/25;
+    kOutput[x] = sum/25;
 }
 
 void structToArray(PPMImageParams* imageParams, PPMThread* thread,
