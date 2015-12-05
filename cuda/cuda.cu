@@ -14,7 +14,7 @@ inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=t
    }
 }
 
-texture<unsigned char, cudaTextureType2D> textuteIn;
+texture<unsigned char, cudaTextureType2D> textureIn;
 
 
 //Box Filter Kernel For Gray scale image with 8bit depth
@@ -41,7 +41,7 @@ __global__ void kernelTexture(unsigned char* output,const int width, const int h
             for(int c2=-2; c2<=2; c2++)
             {
             if(l2 >= 0 && c2 >= 0) {
-                output_value += tex2D(tex8u,inicio+ xIndex+l2,yIndex + c2);
+                output_value += tex2D(textureIn,inicio+ xIndex+l2,yIndex + c2);
                 cont++;
             }
             }
@@ -201,7 +201,7 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
 
 // FUNCAO __HOST__
 // DEFINICAO DOS PARAMETROS DE CHAMADA DO KERNEL
-void applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thread,
+float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thread,
                  int numThread, cudaStream_t* streamSmooth, int filtro) {
 
     // DEFINE A QUANTIDADE DE LINHAS DO
