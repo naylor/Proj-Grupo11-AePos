@@ -79,11 +79,11 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     size_t gpu_image_pitch = 0;
     gpuErrchk( cudaMallocPitch<unsigned char>(&gpuIn,&gpu_image_pitch,imageParams->coluna,thread[numThread].linhas) );
     gpuErrchk( cudaMallocPitch<unsigned char>(&gpuOut,&gpu_image_pitch,imageParams->coluna,linhas) );
-    exit(1);
 
 
     //Copy data from host to device.
     gpuErrchk( cudaMemcpy2DAsync(gpuIn,gpu_image_pitch,cpuIn,widthStep,imageParams->coluna,thread[numThread].linhas,cudaMemcpyHostToDevice, streamSmooth[numThread]) );
+    exit(1);
 
     //Bind the image to the texture. Now the kernel will read the input image through the texture cache.
     //Use tex2D function to read the image
