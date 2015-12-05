@@ -18,14 +18,14 @@ texture<unsigned char, cudaTextureType2D> textureIn;
 
 
 //Box Filter Kernel For Gray scale image with 8bit depth
-__global__ void kernelTexture(unsigned char* kOutput,const int width, const int height,
+__global__ void kernelTexture(unsigned char* kOutput,const int coluna, const int linha,
                               const size_t pitch, const int lf, const int li) {
 
     int x = blockIdx.x * blockDim.x + threadIdx.x;
     int y = blockIdx.y * blockDim.y + threadIdx.y;
 
     // TIRANDO A BORDA DO PROCESSAMENTO
-    if ( y > lf-li || x < 2 || x > width-2 || (li == 0 && y < 2) || (lf==height-1 && y > (lf-li)-2) )
+    if ( y > lf-li || x < 2 || x > coluna-2 || (li == 0 && y < 2) || (lf==linha-1 && y > (lf-li)-2) )
         return;
 
     float sum = 0.0f;
@@ -49,7 +49,8 @@ __global__ void kernelTexture(unsigned char* kOutput,const int width, const int 
 
 // FUNCAO PARA APLICAR SMOOTH
 // SEM SHARED MEMORY EM IMAGENS PGM
-__global__ void kernel(unsigned char* kInput, unsigned char* kOutput, int coluna, int linha, int li, int lf) {
+__global__ void kernel(unsigned char* kInput, unsigned char* kOutput,
+                       const int coluna, const int linha, const int li, const int lf) {
 
     // OFFSET DA COLUNA*LINHA
     unsigned int x = blockIdx.x * blockDim.x + threadIdx.x;
