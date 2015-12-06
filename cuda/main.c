@@ -58,10 +58,10 @@ int main (int argc, char **argv){
     // IMAGENS MAIORES QUE 512MB...
     if (ct->texture == 1) {
         int numMaxLinMem = imageParams->linha * imageParams->coluna * sizeof(unsigned char);
-        numMaxLinMem = (numMaxLinMem/1024*1024)/512;
+        numMaxLinMem = (numMaxLinMem/(1024*1024))/512;
 
         if (numMaxLinMem > 1)
-            numMaxLinhas = numMaxLinMem;
+            numMaxLinhas = numMaxLinMem+1;
     }
 
     ct->numThreads = 1;
