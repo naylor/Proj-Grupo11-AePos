@@ -154,7 +154,7 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     // E RECEBER A IMAGEM
     unsigned char *cpuIn, *cpuOut, *gpuIn, *gpuOut;
     cpuIn = (unsigned char *)malloc(thread[numThread].linhasIn * imageParams->coluna * sizeof(unsigned char) );
-    cpuOut = (unsigned char *)malloc( imageParams->coluna * sizeof(unsigned char) );
+    cpuOut = (unsigned char *)malloc(thread[numThread].linhasOut * imageParams->coluna * sizeof(unsigned char) );
 
     // CONVERTENDO O PADRAO DO SISTEMA
     // PARA ARRAY
@@ -163,8 +163,6 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     // ALOCANDO VARIAVEIS PARA
     // ENVIAR E RECEBER A IMAGEM
     // PARA O KERNEL
-    printf("S:%d\n", thread[numThread].linhasOut * imageParams->coluna * sizeof(unsigned char));
-
     size_t pitch = 0;
     gpuErrchk( cudaMallocPitch<unsigned char>(&gpuIn,&pitch,imageParams->coluna,thread[numThread].linhasIn) );
     gpuErrchk( cudaMallocPitch<unsigned char>(&gpuOut,&pitch,imageParams->coluna,thread[numThread].linhasOut) );
