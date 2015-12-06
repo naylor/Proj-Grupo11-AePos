@@ -62,32 +62,7 @@ __global__ void kernelTexture(unsigned char* kOutput,const int coluna, const int
 __global__ void kernel(unsigned char* kInput, unsigned char* kOutput,
                        const int coluna, const int linha, const int li, const int lf) {
 
-    unsigned int x = blockIdx.x * blockDim.x + threadIdx.x;
 
-    int c = x % coluna; // COLUNA
-    int l = (x-c)/coluna; // LINHA
-
-    // TIRANDO A BORDA DO PROCESSAMENTO
-    if ( l > lf-li || c < 2 || c > coluna-2 || (li == 0 && l < 2) || (lf==linha-1 && l > (lf-li)-2) )
-        return;
-
-    // APLICANDO O SMOOTH
-    float sum = 0.0f;
-
-    for(int l2 = -2; l2 <= 2; ++l2) {
-        for(int c2 = -2; c2 <= 2; ++c2) {
-            if((c+l2) >= 2 && (c+l2) < coluna-2 && (l+c2) >= -2 && (l+c2) <= lf-li+4) {
-                int p = (x + 2*coluna)+(l2*coluna)+c2; // NAO E O PRIMEIRO BLOCO
-                if (li == 0)
-                    p = x + 2*coluna; // PRIMEIRO BLOCO
-                sum += kInput[p];
-            }
-        }
-    }
-
-    // ARMAZENDO O RESULTADO
-    // NA MEMORIA GLOBAL
-    kOutput[x] = sum/25;
 }
 
 // FUNCAO PARA TRANSFORMAR A IMAGEM
@@ -258,7 +233,7 @@ float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thr
     cudaEventRecord(start, 0); // INICIANDO O RELOGIO
 
     // CHAMANDO O KERNEL
-    //kernel<<<gridDims, blockDims, 0, streamSmooth[numThread]>>>(gpuIn, gpuOut, imageParams->coluna, imageParams->linha, thread[numThread].li, thread[numThread].lf);
+    kernel<<<gridDims, blockDims, 0, streamSmooth[numThread]>>>(gpuIn, gpuOut, imageParams->coluna, imageParams->linha, thread[numThread].li, thread[numThread].lf);
 
     gpuErrchk( cudaPeekAtLastError() );
     gpuErrchk( cudaDeviceSynchronize() );
