@@ -52,14 +52,13 @@ int main (int argc, char **argv){
     ct->numThreads = 1;
 
     // DEFINA A CARGA MAXIMA DELINHAS
-    if (ct->numMaxLinhas < numMaxLinhas)
+    if (ct->numMaxLinhas > 0 && ct->numMaxLinhas < numMaxLinhas)
         numMaxLinhas = ct->numMaxLinhas;
     else {
         printf("\nEsse carga excede os parametros da GPU");
         exit(0);
     }
-        printf("\n%d", numMaxLinhas);
-        exit(1);
+
     int numNodes = (imageParams->linha/numMaxLinhas)+1;
 
     printf("\nCarga de Trabalho: %d %f", numMaxLinhas, numMaxGrids);
