@@ -54,7 +54,7 @@ int main (int argc, char **argv){
     // DEFINA A CARGA MAXIMA DELINHAS
     if (ct->numMaxLinhas > 0 && ct->numMaxLinhas < numMaxLinhas)
         numMaxLinhas = ct->numMaxLinhas;
-    else {
+    else if (ct->numMaxLinhas > numMaxLinhas) {
         printf("\nEsse carga excede os parametros da GPU");
         exit(0);
     }
