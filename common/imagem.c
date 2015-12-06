@@ -146,7 +146,7 @@ int getDivisionNodes(initialParams* ct, PPMImageParams *imageParams, PPMNode *no
 // E RETORNA O PONTEIRO PARA O STRUCT
 PPMThread* getDivisionThreads(initialParams* ct, PPMImageParams* imageParams, PPMNode *node, int numNode) {
 
-    int linhas = (node[numNode].lf-node[numNode].li);
+    int linhas = (node[numNode].lf-node[numNode].li)+1;
 
     int numElementos;
     int t=0;
@@ -184,9 +184,9 @@ PPMThread* getDivisionThreads(initialParams* ct, PPMImageParams* imageParams, PP
             linhas += 2;
 
         if (strcmp(imageParams->tipo, "P6")==0)
-            thread[t].ppmIn = (PPMPixel *)malloc(imageParams->coluna * (linhas+1) * sizeof(PPMPixel));
+            thread[t].ppmIn = (PPMPixel *)malloc(imageParams->coluna * linhas * sizeof(PPMPixel));
         else
-            thread[t].pgmIn = (PGMPixel *)malloc(imageParams->coluna * (linhas+1) * sizeof(PGMPixel));
+            thread[t].pgmIn = (PGMPixel *)malloc(imageParams->coluna * linhas * sizeof(PGMPixel));
 
         if (ct->debug >= 2)
             printf("Division Thread(linha)[%d][%d], li:%d, lf:%d\n", numNode, t,
