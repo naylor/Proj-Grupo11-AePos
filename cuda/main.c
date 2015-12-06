@@ -45,7 +45,7 @@ int main (int argc, char **argv){
     int numMaxLinhas = imageParams->linha;
 
 
-    if (numMaxGrids > 1)
+    if (numMaxLinGrids > 1)
         numMaxLinhas = numMaxLinGrids;
 
 
@@ -62,7 +62,7 @@ int main (int argc, char **argv){
 
     int numNodes = (imageParams->linha/numMaxLinhas)+1;
 
-    printf("\nCarga de Trabalho: %d %f", numMaxLinhas, numMaxGrids);
+    printf("\nCarga de Trabalho: %d %f", numMaxLinhas, numMaxLinGrids);
     printf("\nMemoria Textura: %s", ct->texture==1?"Ativado":"Desativado");
     printf("\nMemoria Assincrona: Ativado");
 
