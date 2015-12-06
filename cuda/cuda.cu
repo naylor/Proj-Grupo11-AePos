@@ -59,8 +59,11 @@ __global__ void kernelTexture(unsigned char* kOutput,const int coluna, const int
 
 // FUNCAO PARA APLICAR SMOOTH
 // SEM TEXTURE
-__global__ void kernel(unsigned char* kInput, unsigned char* kOutput,
+__global__ void kernel(
                        const int coluna, const int linha, const int li, const int lf) {
+
+    unsigned int x = blockIdx.x * blockDim.x + threadIdx.x;
+
 
 
 }
@@ -233,7 +236,7 @@ float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thr
     cudaEventRecord(start, 0); // INICIANDO O RELOGIO
 
     // CHAMANDO O KERNEL
-    kernel<<<gridDims, blockDims, 0, streamSmooth[numThread]>>>(gpuIn, gpuOut, imageParams->coluna, imageParams->linha, thread[numThread].li, thread[numThread].lf);
+    kernel<<<gridDims, blockDims, 0, streamSmooth[numThread]>>>(imageParams->coluna, imageParams->linha, thread[numThread].li, thread[numThread].lf);
 
     gpuErrchk( cudaPeekAtLastError() );
     gpuErrchk( cudaDeviceSynchronize() );
