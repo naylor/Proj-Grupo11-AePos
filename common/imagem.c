@@ -186,7 +186,7 @@ PPMThread* getDivisionThreads(initialParams* ct, PPMImageParams* imageParams, PP
         if (strcmp(imageParams->tipo, "P6")==0)
             thread[t].ppmIn = (PPMPixel *)malloc(imageParams->coluna * (linhas+1) * sizeof(PPMPixel));
         else
-            thread[t].pgmIn = (PGMPixel *)malloc(imageParams->coluna * (linhas+1) * sizeof(PPMPixel));
+            thread[t].pgmIn = (PGMPixel *)malloc(imageParams->coluna * (linhas+1) * sizeof(PGMPixel));
 
         if (ct->debug >= 2)
             printf("Division Thread(linha)[%d][%d], li:%d, lf:%d\n", numNode, t,
@@ -210,7 +210,7 @@ int getImageThreads(initialParams* ct, PPMImageParams* imageParams, PPMThread* t
     if (strcmp(imageParams->tipo, "P6")==0)
         thread[numThread].ppmOut = (PPMPixel *)malloc(imageParams->coluna * linhas * sizeof(PPMPixel));
     else
-        thread[numThread].pgmOut = (PGMPixel *)malloc(imageParams->coluna * linhas * sizeof(PPMPixel));
+        thread[numThread].pgmOut = (PGMPixel *)malloc(imageParams->coluna * linhas * sizeof(PGMPixel));
 
     thread[numThread].linhasOut = linhas;
 
