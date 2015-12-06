@@ -42,7 +42,7 @@ int main (int argc, char **argv){
     // DA IMAGEM PARA LEITURA E SMOOTH
     int numMaxLinhas = imageParams->linha;
 
-    if (ct->texture != 1 && strcmp(imageParams->tipo, "P6")==0) {
+    if (ct->texture != 1) {
         int numMaxLinGrids = (imageParams->coluna / 512)+1;
         numMaxLinGrids = 65535/numMaxLinGrids;
 
