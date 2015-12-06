@@ -61,7 +61,9 @@ int main (int argc, char **argv){
         exit(0);
     }
 
-    int numNodes = (imageParams->linha/numMaxLinhas)+1;
+    int numNodes = 1;
+    if (imageParams->linha != numMaxLinhas)
+        numNodes = (imageParams->linha/numMaxLinhas)+1;
 
     printf("\nCarga de Trabalho: %d", numMaxLinhas);
     printf("\nMemoria Textura: %s", ct->texture==1?"Ativado":"Desativado");
