@@ -57,10 +57,10 @@ int main (int argc, char **argv){
     // ALGUMA CONFIG NO CUDA NAO PERMITE
     // IMAGENS MAIORES QUE 512MB...
     if (ct->texture == 1) {
-        int numMaxLinMem = imageParams->linha * imageParams->coluna * sizeof(unsigned char);
+        float numMaxLinMem = imageParams->linha * imageParams->coluna * sizeof(unsigned char);
         numMaxLinMem = (numMaxLinMem/(1024*1024))/512;
 
-        printf("\nED %d", numMaxLinMem);
+        printf("\nED %f", numMaxLinMem);
 
         if (numMaxLinMem > 1)
             numMaxLinhas = numMaxLinMem+1;
