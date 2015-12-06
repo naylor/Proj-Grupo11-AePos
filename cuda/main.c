@@ -40,7 +40,7 @@ int main (int argc, char **argv){
 
     // DEFINE A QUANTIDADE DE LINHAS
     // DA IMAGEM PARA LEITURA E SMOOTH
-    double numMaxGrids = ceil((double)(65535 / (imageParams->linha * imageParams->coluna)));
+    double numMaxGrids = (65535 / (imageParams->linha * imageParams->coluna));
         printf("\nE %d", numMaxGrids);
     exit(0);
     int numMaxLinhas = imageParams->linha;
