@@ -60,6 +60,8 @@ int main (int argc, char **argv){
         int numMaxLinMem = imageParams->linha * imageParams->coluna * sizeof(unsigned char);
         numMaxLinMem = (numMaxLinMem/(1024*1024))/512;
 
+        printf("\nED %d", numMaxLinMem);
+
         if (numMaxLinMem > 1)
             numMaxLinhas = numMaxLinMem+1;
     }
