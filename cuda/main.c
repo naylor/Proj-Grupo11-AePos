@@ -42,12 +42,19 @@ int main (int argc, char **argv){
     // DA IMAGEM PARA LEITURA E SMOOTH
     double numMaxGrids = ceil((double)(65535 / (imageParams->linha * imageParams->coluna)));
 
-    int numMaxLinhas = imageParams->linha*0.1;
+    int numMaxLinhas = imageParams->linha;
+    if (numMaxGrids > 1)
+        numMaxLinhas = imageParams->linha/numMaxGrids;
+
     ct->numThreads = 1;
 
     // DEFINA A CARGA MAXIMA DELINHAS
-    if (ct->numMaxLinhas > 0)
+    if (ct->numMaxLinhas < numMaxLinhas)
         numMaxLinhas = ct->numMaxLinhas;
+    else {
+        printf("\nEsse carga excede os parametros da GPU");
+        exit(0);
+    }
 
     int numNodes = (imageParams->linha/numMaxLinhas)+1;
 
