@@ -56,7 +56,7 @@ int main (int argc, char **argv){
     // DE MEMORIA NAO SUPORTE A IMAGEM TODA
     // ALGUMA CONFIG NO CUDA NAO PERMITE
     // IMAGENS MAIORES QUE 512MB...
-    if (ct->texture != 1) {
+    if (ct->texture == 1) {
         int numMaxLinMem = imageParams->linha * imageParams->coluna * sizeof(unsigned char);
         numMaxLinMem = (numMaxLinMem/1024*1024)/512;
 
