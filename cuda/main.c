@@ -44,10 +44,12 @@ int main (int argc, char **argv){
 
     int numMaxLinhas = imageParams->linha;
 
-        printf("\nE %d", numMaxLinhas);
-    exit(0);
+
     if (numMaxGrids > 1)
         numMaxLinhas = imageParams->linha/numMaxGrids;
+
+        printf("\nE %d %d", numMaxGrids, numMaxLinhas);
+    exit(0);
 
     ct->numThreads = 1;
 
