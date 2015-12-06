@@ -43,6 +43,9 @@ int main (int argc, char **argv){
     int numMaxGrids = (unsigned int) ceil((double)(65535/imageParams->linha * imageParams->coluna));
 
     int numMaxLinhas = imageParams->linha;
+
+        printf("\nE %d", numMaxLinhas);
+    exit(0);
     if (numMaxGrids > 1)
         numMaxLinhas = imageParams->linha/numMaxGrids;
 
