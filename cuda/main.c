@@ -46,7 +46,7 @@ int main (int argc, char **argv){
 
 
     if (numMaxGrids > 1)
-        numMaxLinhas = imageParams->linha/numMaxGrids;
+        numMaxLinhas = (imageParams->linha * imageParams->coluna)/numMaxGrids;
 
         printf("\nE %d %d", numMaxGrids, numMaxLinhas);
     exit(0);
