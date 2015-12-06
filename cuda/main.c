@@ -60,10 +60,8 @@ int main (int argc, char **argv){
         float numMaxLinMem = imageParams->linha * imageParams->coluna * sizeof(unsigned char);
         numMaxLinMem = (numMaxLinMem/(1024*1024))/512;
 
-        printf("\nED %f", numMaxLinMem);
-
         if (numMaxLinMem > 1)
-            numMaxLinhas = numMaxLinMem+1;
+            numMaxLinhas = numMaxLinhas/(numMaxLinMem+1);
     }
 
     ct->numThreads = 1;
