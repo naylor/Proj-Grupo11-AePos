@@ -42,12 +42,26 @@ int main (int argc, char **argv){
     // DA IMAGEM PARA LEITURA E SMOOTH
     int numMaxLinhas = imageParams->linha;
 
+    // CALCULA SE A QUANTIDADE DE LINHAS
+    // COMPORTAM 655335 GRIDS COM 512 BLOCOS
     if (ct->texture != 1) {
         int numMaxLinGrids = (imageParams->coluna / 512)+1;
         numMaxLinGrids = 65535/numMaxLinGrids;
 
         if (numMaxLinhas > numMaxLinGrids)
             numMaxLinhas = numMaxLinGrids;
+    }
+
+    // DIVIDE EM LINHAS CASO A QUANTIDADE
+    // DE MEMORIA NAO SUPORTE A IMAGEM TODA
+    // ALGUMA CONFIG NO CUDA NAO PERMITE
+    // IMAGENS MAIORES QUE 512MB...
+    if (ct->texture != 1) {
+        int numMaxLinMem = imageParams->linha * imageParams->coluna * sizeof(unsigned char);
+        numMaxLinMem = (numMaxLinMem/1024*1024)/512;
+
+        if (numMaxLinMem > 1)
+            numMaxLinhas = numMaxLinMem;
     }
 
     ct->numThreads = 1;
