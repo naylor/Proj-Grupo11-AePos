@@ -42,6 +42,8 @@ int main (int argc, char **argv){
     // DA IMAGEM PARA LEITURA E SMOOTH
     int numMaxLinGrids = (unsigned int) ceil((double)(65535 / (imageParams->coluna / 512)));
 
+        printf("\nE %d", numMaxLinGrids);
+
     int numMaxLinhas = imageParams->linha;
 
 
