@@ -46,7 +46,6 @@ int main (int argc, char **argv){
         int numMaxLinGrids = (imageParams->coluna / 512)+1;
         numMaxLinGrids = 65535/numMaxLinGrids;
 
-
         if (numMaxLinhas > numMaxLinGrids)
             numMaxLinhas = numMaxLinGrids;
     }

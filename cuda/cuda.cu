@@ -163,6 +163,8 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     // ALOCANDO VARIAVEIS PARA
     // ENVIAR E RECEBER A IMAGEM
     // PARA O KERNEL
+    printf("S:%d\n", sizeof(unsigned char));
+
     size_t pitch = 0;
     gpuErrchk( cudaMallocPitch<unsigned char>(&gpuIn,&pitch,imageParams->coluna,thread[numThread].linhasIn) );
     gpuErrchk( cudaMallocPitch<unsigned char>(&gpuOut,&pitch,imageParams->coluna,thread[numThread].linhasOut) );
