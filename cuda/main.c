@@ -40,12 +40,12 @@ int main (int argc, char **argv){
 
     // DEFINE A QUANTIDADE DE LINHAS
     // DA IMAGEM PARA LEITURA E SMOOTH
-    int numMaxLinGrids = (unsigned int) ceil((double)(65535/imageParams->linha * imageParams->coluna));
+    int numMaxLinGrids = (unsigned int) ceil((double)(65535 / (imageParams->coluna / 512)));
 
     int numMaxLinhas = imageParams->linha;
 
 
-    if (numMaxLinGrids > 1)
+    if (numMaxLinGrids > numMaxLinhas)
         numMaxLinhas = numMaxLinGrids;
 
 
