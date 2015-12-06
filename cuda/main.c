@@ -42,7 +42,7 @@ int main (int argc, char **argv){
     // DA IMAGEM PARA LEITURA E SMOOTH
     int numMaxLinGrids = (65535 / (imageParams->coluna / 512)+1);
 
-        printf("\nE %d %d %d", numMaxLinGrids, imageParams->coluna, (imageParams->coluna / 512) );
+        printf("\nE %d %d %d", numMaxLinGrids, imageParams->coluna, (imageParams->coluna / 512)+1 );
 
     int numMaxLinhas = imageParams->linha;
 
