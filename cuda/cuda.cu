@@ -234,6 +234,11 @@ float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thr
 
     cudaEventRecord(start, 0); // INICIANDO O RELOGIO
 
+    if (ct->debug >= 1)
+        printf("Apply Smooth[%d][%s] - li:%d, lf:%d\n",
+               numThread, imageParams->tipo, gridDims.x, blockDims.x);
+
+
     // CHAMANDO O KERNEL
     kernel<<<gridDims, blockDims, 0, streamSmooth[numThread]>>>();
 
@@ -262,9 +267,6 @@ float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thr
     // REGISTRANDO O TEMPO
     cudaEventElapsedTime(&time, start, stop);
 
-    if (ct->debug >= 1)
-        printf("Apply Smooth[%d][%s] - li:%d, lf:%d\n",
-               numThread, imageParams->tipo, thread[numThread].li, thread[numThread].lf);
 
     return time;
 }
