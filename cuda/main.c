@@ -40,6 +40,8 @@ int main (int argc, char **argv){
 
     // DEFINE A QUANTIDADE DE LINHAS
     // DA IMAGEM PARA LEITURA E SMOOTH
+    int numMaxGrids = ceil((double)(65535 / imageParams->linha * imageParams->coluna);
+
     int numMaxLinhas = imageParams->linha*0.1;
     ct->numThreads = 1;
 
@@ -49,7 +51,7 @@ int main (int argc, char **argv){
 
     int numNodes = (imageParams->linha/numMaxLinhas)+1;
 
-    printf("\nCarga de Trabalho: %d", numMaxLinhas);
+    printf("\nCarga de Trabalho: %d %d", numMaxLinhas, numMaxGrids);
     printf("\nMemoria Textura: %s", ct->texture==1?"Ativado":"Desativado");
     printf("\nMemoria Assincrona: Ativado");
 
