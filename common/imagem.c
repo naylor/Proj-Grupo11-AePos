@@ -210,7 +210,7 @@ int getImageThreads(initialParams* ct, PPMImageParams* imageParams, PPMThread* t
     if (strcmp(imageParams->tipo, "P6")==0)
         thread[numThread].ppmOut = (PPMPixel *)malloc(imageParams->coluna * linhas * sizeof(PPMPixel));
     else
-        thread[numThread].pgmOut = (PGMPixel *)malloc(imageParams->coluna * linhas * sizeof(PGMPixel));
+        thread[numThread].pgmOut = (PGMPixel *)malloc(imageParams->coluna * linhas * sizeof(PPMPixel));
 
     thread[numThread].linhasOut = linhas;
 
