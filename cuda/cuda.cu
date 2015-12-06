@@ -59,12 +59,35 @@ __global__ void kernelTexture(unsigned char* kOutput,const int coluna, const int
 
 // FUNCAO PARA APLICAR SMOOTH
 // SEM TEXTURE
-__global__ void kernel() {
+__global__ void kernel(unsigned char* kInput, unsigned char* kOutput,
+                       const int coluna, const int linha, const int li, const int lf) {
 
     unsigned int x = blockIdx.x * blockDim.x + threadIdx.x;
 
+    int c = x % coluna; // COLUNA
+    int l = (x-c)/coluna; // LINHA
 
+    // TIRANDO A BORDA DO PROCESSAMENTO
+    if ( l > lf-li || c < 2 || c > coluna-2 || (li == 0 && l < 2) || (lf==linha-1 && l > (lf-li)-2) )
+        return;
 
+    // APLICANDO O SMOOTH
+    float sum = 0.0f;
+
+    for(int l2 = -2; l2 <= 2; ++l2) {
+        for(int c2 = -2; c2 <= 2; ++c2) {
+            if((c+l2) >= 2 && (c+l2) < coluna-2 && (l+c2) >= -2 && (l+c2) <= lf-li+4) {
+                int p = (x + 2*coluna)+(l2*coluna)+c2; // NAO E O PRIMEIRO BLOCO
+                if (li == 0)
+                    p = x + 2*coluna; // PRIMEIRO BLOCO
+                sum += kInput[p];
+            }
+        }
+    }
+
+    // ARMAZENDO O RESULTADO
+    // NA MEMORIA GLOBAL
+    kOutput[x] = sum/25;
 }
 
 // FUNCAO PARA TRANSFORMAR A IMAGEM
@@ -161,6 +184,10 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     // CHAMANDO O KERNEL
     cudaEventRecord(start, 0); // INICIANDO O RELOGIO
 
+    if (ct->debug >= 1)
+        printf("Kernel Smooth[%d][%s] - Grid:%d, Block:%d, li:%d, lf:%d\n",
+               numThread, imageParams->tipo, gridDims.x, blockDims.x, thread[numThread].li, thread[numThread].lf);
+
     // CHAMANDO O KERNEL
     kernelTexture<<<gridDims,blockDims, 0, streamSmooth[numThread]>>>(gpuOut,imageParams->coluna,imageParams->linha,pitch,thread[numThread].lf,thread[numThread].li);
     gpuErrchk( cudaPeekAtLastError() );
@@ -190,7 +217,7 @@ float applySmoothTexture(initialParams* ct, PPMImageParams* imageParams,
     cudaEventElapsedTime(&time, start, stop);
 
     if (ct->debug >= 1)
-        printf("Apply Smooth[%d][%s] - linhas: %d, li:%d, lf:%d\n",
+        printf("Done Smooth[%d][%s] - linhas: %d, li:%d, lf:%d\n",
                numThread, imageParams->tipo, thread[numThread].linhasIn, thread[numThread].li, thread[numThread].lf);
 
     return time;
@@ -235,12 +262,11 @@ float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thr
     cudaEventRecord(start, 0); // INICIANDO O RELOGIO
 
     if (ct->debug >= 1)
-        printf("Apply Smooth[%d][%s] - li:%d, lf:%d\n",
-               numThread, imageParams->tipo, gridDims.x, blockDims.x);
-
+        printf("Kernel Smooth[%d][%s] - Grid:%d, Block:%d, li:%d, lf:%d\n",
+               numThread, imageParams->tipo, gridDims.x, blockDims.x, thread[numThread].li, thread[numThread].lf);
 
     // CHAMANDO O KERNEL
-    kernel<<<gridDims, blockDims, 0, streamSmooth[numThread]>>>();
+    kernel<<<gridDims, blockDims, 0, streamSmooth[numThread]>>>(gpuIn, gpuOut, imageParams->coluna, imageParams->linha, thread[numThread].li, thread[numThread].lf);
 
     gpuErrchk( cudaPeekAtLastError() );
     gpuErrchk( cudaDeviceSynchronize() );
@@ -267,6 +293,9 @@ float applySmooth(initialParams* ct, PPMImageParams* imageParams, PPMThread* thr
     // REGISTRANDO O TEMPO
     cudaEventElapsedTime(&time, start, stop);
 
+    if (ct->debug >= 1)
+        printf("Done Smooth[%d][%s] - li:%d, lf:%d\n",
+               numThread, imageParams->tipo, thread[numThread].li, thread[numThread].lf);
 
     return time;
 }
