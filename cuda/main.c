@@ -58,7 +58,8 @@ int main (int argc, char **argv){
         printf("\nEsse carga excede os parametros da GPU");
         exit(0);
     }
-
+        printf("\n%d", numMaxLinhas);
+        exit(1);
     int numNodes = (imageParams->linha/numMaxLinhas)+1;
 
     printf("\nCarga de Trabalho: %d %f", numMaxLinhas, numMaxGrids);
